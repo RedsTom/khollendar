@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@source "../jte/**";
+
+* {
+    @apply transition;
+}
