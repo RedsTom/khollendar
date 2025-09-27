@@ -61,4 +61,16 @@ public class UserService {
         user.codeInitialized(true);
         userRepository.save(user);
     }
+
+    public void resetUserCode(Long userId) {
+        userRepository.findById(userId).ifPresent(user -> {
+            user.secretCode(null);
+            user.codeInitialized(false);
+            userRepository.save(user);
+        });
+    }
+
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
 }

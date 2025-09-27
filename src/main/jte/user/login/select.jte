@@ -13,16 +13,20 @@ content = @`
             @if(users.isEmpty())
                 <div class="p-3 bg-ctp-surface0 border border-ctp-yellow rounded-lg text-ctp-text text-sm">
                     <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-ctp-yellow" viewBox="0 0 20 20"
-                             fill="currentColor">
-                            <path fill-rule="evenodd"
-                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 01-1-1v-4a1 1 0 112 0v4a1 1 0 01-1 1z"
-                                  clip-rule="evenodd"/>
-                        </svg>
+                        <i class="h-5 w-5 mr-4 text-ctp-yellow" data-feather="info"></i>
                         <span>Aucun utilisateur disponible. Veuillez contacter l'administrateur.</span>
                     </div>
                 </div>
             @else
+                <div class="mb-6 p-3 bg-ctp-surface0 border border-ctp-yellow rounded-lg text-ctp-text text-sm">
+                    <div class="flex items-center">
+                        <i class="h-5 w-5 mr-4 text-ctp-yellow" data-feather="info"></i>
+                        <span>
+                            Vous ne vous voyez pas dans la liste ? Contactez l'administrateur pour qu'il crée votre compte.
+                        </span>
+                    </div>
+                </div>
+
                 <form action="/user-auth/select" method="post" class="space-y-6">
                     <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}">
 
@@ -47,12 +51,6 @@ content = @`
                     </div>
                 </form>
             @endif
-
-            <div class="mt-4 text-center">
-                <a href="/login" class="text-ctp-blue hover:text-ctp-blue/80 text-sm">
-                    Connexion administrateur
-                </a>
-            </div>
         </div>
     </div>
 `)

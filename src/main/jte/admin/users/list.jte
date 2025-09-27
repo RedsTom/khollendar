@@ -54,6 +54,7 @@ content = @`
                                 <th class="py-3 px-4 text-left text-sm font-medium text-ctp-text border-b border-ctp-surface1">ID</th>
                                 <th class="py-3 px-4 text-left text-sm font-medium text-ctp-text border-b border-ctp-surface1">Nom d'utilisateur</th>
                                 <th class="py-3 px-4 text-left text-sm font-medium text-ctp-text border-b border-ctp-surface1">Code initialisé</th>
+                                <th class="py-3 px-4 text-left text-sm font-medium text-ctp-text border-b border-ctp-surface1">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-ctp-surface1">
@@ -71,6 +72,31 @@ content = @`
                                                 Non
                                             </span>
                                         @endif
+                                    </td>
+                                    <td class="py-2 px-4 text-sm">
+                                        <div class="flex gap-2">
+                                            @if(user.codeInitialized())
+                                                <form action="/admin/users/${user.id()}/reset-code" method="post">
+                                                    <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
+                                                    <button type="submit"
+                                                            class="px-2 py-1 bg-ctp-yellow hover:bg-ctp-yellow/80 text-ctp-base rounded-md text-xs flex items-center gap-1"
+                                                            onclick="return confirm('Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?')">
+                                                        <i data-feather="key" class="w-3 h-3"></i>
+                                                        Réinitialiser code
+                                                    </button>
+                                                </form>
+                                            @endif
+                                            <form action="/admin/users/${user.id()}" method="post">
+                                                <input type="hidden" name="_method" value="DELETE"/>
+                                                <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
+                                                <button type="submit"
+                                                        class="px-2 py-1 bg-ctp-red hover:bg-ctp-red/80 text-ctp-base rounded-md text-xs flex items-center gap-1"
+                                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ${user.username()} ?')">
+                                                    <i data-feather="trash-2" class="w-3 h-3"></i>
+                                                    Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endfor

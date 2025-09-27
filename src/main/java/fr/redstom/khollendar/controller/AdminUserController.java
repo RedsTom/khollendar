@@ -66,4 +66,57 @@ public class AdminUserController {
 
         return "redirect:/admin/users";
     }
+
+    @PostMapping("/{userId}/reset-code")
+    public String resetUserCode(
+            @PathVariable Long userId,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            userService.getUserById(userId).ifPresentOrElse(
+                    user -> {
+                        userService.resetUserCode(userId);
+                        redirectAttributes.addFlashAttribute("success", "Code de l'utilisateur " + user.username() + " réinitialisé avec succès");
+                    },
+                    () -> redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé")
+            );
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de la réinitialisation du code : " + e.getMessage());
+        }
+
+        return "redirect:/admin/users";
+    }
+
+    @DeleteMapping("/{userId}")
+    public String deleteUser(
+            @PathVariable Long userId,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            userService.getUserById(userId).ifPresentOrElse(
+                    user -> {
+                        userService.deleteUser(userId);
+                        redirectAttributes.addFlashAttribute("success", "Utilisateur " + user.username() + " supprimé avec succès");
+                    },
+                    () -> redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé")
+            );
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de la suppression : " + e.getMessage());
+        }
+
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/{userId}")
+    public String handleDeleteUser(
+            @PathVariable Long userId,
+            @RequestParam(name = "_method", required = false) String method,
+            RedirectAttributes redirectAttributes
+    ) {
+        if ("DELETE".equalsIgnoreCase(method)) {
+            return deleteUser(userId, redirectAttributes);
+        }
+
+        return "redirect:/admin/users";
+    }
 }
