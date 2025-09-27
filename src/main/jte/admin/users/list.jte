@@ -1,4 +1,3 @@
-@param fr.redstom.khollendar.entity.User newUser
 @param org.springframework.data.domain.Page<fr.redstom.khollendar.entity.User> users
 @param int currentPage
 

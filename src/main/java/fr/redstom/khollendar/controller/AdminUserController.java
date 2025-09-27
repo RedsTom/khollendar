@@ -33,7 +33,6 @@ public class AdminUserController {
         model.addAttribute("title", "Gestion des utilisateurs");
         model.addAttribute("users", users);
         model.addAttribute("currentPage", page);
-        model.addAttribute("newUser", new UserCreationDto());
         model.addAttribute("_csrf", csrf);
 
         return "admin/users/list";

@@ -1,4 +1,5 @@
 @import fr.redstom.khollendar.entity.KholleSession
+@import fr.redstom.khollendar.utils.AuthUtils
 @import java.util.List
 
 @param String title
@@ -17,7 +18,30 @@ content = @`
             <p class="text-xl text-ctp-subtext0">Visualisez, planifiez et inscrivez-vous aux khôlles en toute simplicité !</p>
         </div>
 
-        <div class="bg-ctp-surface0 rounded-lg p-6 mb-6">
+        @if(AuthUtils.admin())
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-ctp-surface0 rounded-lg p-6">
+                    <h2 class="text-xl font-semibold mb-3">Créer une nouvelle session</h2>
+                    <p class="text-ctp-subtext0 mb-4">Ajoutez une nouvelle session de khôlle pour vos étudiants</p>
+                    <a href="/kholles/create"
+                       class="inline-block bg-ctp-blue hover:bg-ctp-blue/80 text-ctp-base px-4 py-2 rounded-lg">
+                        Créer une session
+                    </a>
+                </div>
+
+                <div class="bg-ctp-surface0 rounded-lg p-6">
+                    <h2 class="text-xl font-semibold mb-3">Gérer les utilisateurs</h2>
+                    <p class="text-ctp-subtext0 mb-4">Créez et gérez les utilisateurs de l'application</p>
+                    <a href="/admin/users"
+                       class="inline-block bg-ctp-blue hover:bg-ctp-blue/80 text-ctp-base px-4 py-2 rounded-lg">
+                        Gérer les utilisateurs
+                    </a>
+                </div>
+            </div>
+        @endif
+
+
+        <div class="bg-ctp-surface0 rounded-lg p-6">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
                 <h2 class="text-2xl font-semibold">Prochaines sessions de khôlles</h2>
                 <a href="/kholles" class="text-ctp-blue hover:text-ctp-blue/80 flex items-center my-4 sm:my-0">
@@ -37,26 +61,6 @@ content = @`
                     @endfor
                 </div>
             @endif
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-ctp-surface0 rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-3">Créer une nouvelle session</h2>
-                <p class="text-ctp-subtext0 mb-4">Ajoutez une nouvelle session de khôlle pour vos étudiants</p>
-                <a href="/kholles/create"
-                   class="inline-block bg-ctp-blue hover:bg-ctp-blue/80 text-ctp-base px-4 py-2 rounded-lg">
-                    Créer une session
-                </a>
-            </div>
-
-            <div class="bg-ctp-surface0 rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-3">Voir son planning</h2>
-                <p class="text-ctp-subtext0 mb-4">Consultez votre planning de khôlles personnel</p>
-                <a href="/planning"
-                   class="inline-block bg-ctp-blue hover:bg-ctp-blue/80 text-ctp-base px-4 py-2 rounded-lg">
-                    Mon planning
-                </a>
-            </div>
         </div>
     </div>
 `
