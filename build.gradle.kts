@@ -7,7 +7,7 @@ plugins {
 
 group = "fr.redstom"
 version = "0.0.1-SNAPSHOT"
-description = "kholles-manager"
+description = "kholle-n-dar"
 
 java {
     toolchain {
@@ -31,7 +31,7 @@ dependencies {
     implementation("gg.jte:jte-spring-boot-starter-3:3.1.16")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
- implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")

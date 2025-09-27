@@ -16,9 +16,8 @@ public class MainController {
     @GetMapping("/")
     public String index(CsrfToken csrf, Model model) {
         model.addAttribute("title", "Accueil");
-        model.addAttribute("content", "Bienvenue sur KhollesManager, votre application de gestion de khôlles !");
+        model.addAttribute("content", "Bienvenue sur Khôlle'n'dar, votre application de gestion de khôlles !");
 
-        // Récupération des 5 prochaines sessions de khôlle
         model.addAttribute("upcomingSessions", kholleService.getUpcomingKholleSessions(0, 5).getContent());
 
         model.addAttribute("_csrf", csrf);

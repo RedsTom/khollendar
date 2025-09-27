@@ -1,9 +1,9 @@
-![Logo KhollesManager](src/main/resources/static/images/logo.svg)
-# KhollesManager
+![Logo Khôlle'n'dar](src/main/resources/static/images/logo.svg)
+# Khôlle'n'dar
 
 ## 📚 Présentation
 
-KhollesManager est une application web dédiée à la gestion et l'organisation des sessions de khôlles en milieu universitaire. L'objectif principal est d'optimiser l'affectation des étudiants aux différentes sessions de khôlles, permettant ainsi une meilleure organisation pour les enseignants et les étudiants. La plateforme centralise toutes les informations relatives aux khôlles, facilitant le suivi et la planification.
+Khôlle'n'dar est une application web dédiée à la gestion et l'organisation des sessions de khôlles en milieu universitaire. L'objectif principal est d'optimiser l'affectation des étudiants aux différentes sessions de khôlles, permettant ainsi une meilleure organisation pour les enseignants et les étudiants. La plateforme centralise toutes les informations relatives aux khôlles, facilitant le suivi et la planification.
 
 ## ✨ Fonctionnalités
 
