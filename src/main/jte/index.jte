@@ -1,4 +1,4 @@
-@import fr.redstom.khollesmanager.entity.KholleSession
+@import fr.redstom.khollendar.entity.KholleSession
 @import java.util.List
 
 @param String title

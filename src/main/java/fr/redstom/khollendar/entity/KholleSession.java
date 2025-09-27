@@ -1,6 +1,6 @@
-package fr.redstom.khollesmanager.entity;
+package fr.redstom.khollendar.entity;
 
-import fr.redstom.khollesmanager.dto.DateRange;
+import fr.redstom.khollendar.dto.DateRange;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

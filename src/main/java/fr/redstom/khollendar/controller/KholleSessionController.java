@@ -1,8 +1,8 @@
-package fr.redstom.khollesmanager.controller;
+package fr.redstom.khollendar.controller;
 
-import fr.redstom.khollesmanager.dto.KholleSessionCreationDto;
-import fr.redstom.khollesmanager.entity.KholleSession;
-import fr.redstom.khollesmanager.service.KholleService;
+import fr.redstom.khollendar.dto.KholleSessionCreationDto;
+import fr.redstom.khollendar.entity.KholleSession;
+import fr.redstom.khollendar.service.KholleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;

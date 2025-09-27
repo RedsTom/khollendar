@@ -1,7 +1,7 @@
-@import fr.redstom.khollesmanager.dto.DateRange
+@import fr.redstom.khollendar.dto.DateRange
 @import java.time.LocalDateTime
-@import static fr.redstom.khollesmanager.utils.WordUtils.plural
-@param fr.redstom.khollesmanager.entity.KholleSession session
+@import static fr.redstom.khollendar.utils.WordUtils.plural
+@param fr.redstom.khollendar.entity.KholleSession session
 
 !{boolean isEnded = session.calculateDateRange().map(DateRange::end).map(date -> date.isBefore(LocalDateTime.now())).orElse(false);}
 

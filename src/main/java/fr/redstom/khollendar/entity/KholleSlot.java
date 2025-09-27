@@ -1,4 +1,4 @@
-package fr.redstom.khollesmanager.entity;
+package fr.redstom.khollendar.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

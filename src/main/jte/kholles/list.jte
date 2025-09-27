@@ -1,4 +1,4 @@
-@import fr.redstom.khollesmanager.entity.KholleSession
+@import fr.redstom.khollendar.entity.KholleSession
 @import org.springframework.data.domain.Page
 
 @param String title

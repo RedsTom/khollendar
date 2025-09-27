@@ -1,11 +1,10 @@
-package fr.redstom.khollesmanager.service;
+package fr.redstom.khollendar.service;
 
-import fr.redstom.khollesmanager.dto.KholleCreationDto;
-import fr.redstom.khollesmanager.dto.KholleSessionCreationDto;
-import fr.redstom.khollesmanager.entity.KholleSession;
-import fr.redstom.khollesmanager.entity.KholleSlot;
-import fr.redstom.khollesmanager.repository.KholleRepository;
-import fr.redstom.khollesmanager.repository.KholleSessionRepository;
+import fr.redstom.khollendar.dto.KholleCreationDto;
+import fr.redstom.khollendar.dto.KholleSessionCreationDto;
+import fr.redstom.khollendar.entity.KholleSession;
+import fr.redstom.khollendar.entity.KholleSlot;
+import fr.redstom.khollendar.repository.KholleSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

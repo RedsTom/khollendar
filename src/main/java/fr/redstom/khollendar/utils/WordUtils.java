@@ -1,4 +1,4 @@
-package fr.redstom.khollesmanager.utils;
+package fr.redstom.khollendar.utils;
 
 import java.util.List;
 

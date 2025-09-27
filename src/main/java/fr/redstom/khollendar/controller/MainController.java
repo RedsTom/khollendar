@@ -1,6 +1,6 @@
-package fr.redstom.khollesmanager.controller;
+package fr.redstom.khollendar.controller;
 
-import fr.redstom.khollesmanager.service.KholleService;
+import fr.redstom.khollendar.service.KholleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,8 +1,8 @@
-package fr.redstom.khollesmanager.config;
+package fr.redstom.khollendar.config;
 
-import fr.redstom.khollesmanager.entity.KholleSession;
-import fr.redstom.khollesmanager.entity.KholleSlot;
-import fr.redstom.khollesmanager.repository.KholleSessionRepository;
+import fr.redstom.khollendar.entity.KholleSession;
+import fr.redstom.khollendar.entity.KholleSlot;
+import fr.redstom.khollendar.repository.KholleSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

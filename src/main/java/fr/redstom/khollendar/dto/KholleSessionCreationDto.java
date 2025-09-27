@@ -1,4 +1,4 @@
-package fr.redstom.khollesmanager.dto;
+package fr.redstom.khollendar.dto;
 
 import lombok.Builder;
 import lombok.NonNull;
