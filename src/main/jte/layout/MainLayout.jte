@@ -13,9 +13,13 @@
         Khôlle'n'Dar | ${title}
     </title>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js"
+            integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <link rel="stylesheet" href="/main.css">
 </head>
-<body class="bg-slate-800 text-white">
+<body class="bg-slate-800 text-white grid grid-rows-[auto_1fr_auto] min-h-screen">
 <header class="bg-slate-900 w-full flex items-center justify-between p-4">
     <a id="logo" class="flex gap-4 items-center hover:bg-slate-800 p-3 rounded-lg" href="/">
         <img src="/images/logo.svg" alt="Logo" class="h-10 w-10">
@@ -34,11 +38,23 @@
         </svg>
     </span>
 </header>
-<main>
+<main class="h-full relative">
     ${content}
 </main>
-<footer>
+<footer class="w-full flex items-center justify-between p-4 bg-slate-900">
+    <p>
+        Copyright &copy; ${java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)} - Tom BUTIN - GNU GPL v3
+    </p>
 
+    <a class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
+       href="https://etulab.univ-amu.fr/b24013559/khollendar">
+        <i data-feather="gitlab" class="w-5 h-5"></i>
+        GitLab
+    </a>
 </footer>
+
+<script>
+    feather.replace();
+</script>
 </body>
 </html>
