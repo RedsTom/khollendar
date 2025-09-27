@@ -47,7 +47,7 @@
     </p>
 
     <a class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
-       href="https://etulab.univ-amu.fr/b24013559/khollendar">
+       href="https://etulab.univ-amu.fr/b24013559/khollendar" target="_blank">
         <i data-feather="gitlab" class="w-5 h-5"></i>
         GitLab
     </a>
