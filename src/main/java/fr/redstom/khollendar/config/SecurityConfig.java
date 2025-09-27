@@ -24,7 +24,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/kholles/create", "/kholles/create/**").hasRole("ADMIN")
+                .requestMatchers("/user-auth/**").permitAll()
                 .requestMatchers("/**").permitAll()
             )
             .formLogin(formLogin -> formLogin
@@ -50,7 +52,6 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        // Encodage du mot de passe administrateur
         String encodedPassword = passwordEncoder.encode(adminPassword);
 
         UserDetails admin = User.builder()
