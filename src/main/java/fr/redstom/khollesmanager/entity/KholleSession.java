@@ -13,28 +13,28 @@ import java.util.Optional;
 
 @Entity
 
-@Table(name = "kholle_groups")
+@Table(name = "kholle_sessions")
 
 @NoArgsConstructor
 @AllArgsConstructor
 
 @Getter
 @Builder(toBuilder = true)
-public class KholleGroup {
+public class KholleSession {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "kholle_group_seq")
-    @SequenceGenerator(name = "kholle_group_seq", sequenceName = "kholle_group_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "kholle_session_seq")
+    @SequenceGenerator(name = "kholle_session_seq", sequenceName = "kholle_session_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
     private String subject;
 
-    @OneToMany
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<KholleSlot> kholleSlots;
 
     /**
-     * Calcule la plage de dates couverte par tous les KholleSlot de ce groupe.
+     * Calcule la plage de dates couverte par tous les KholleSlot de cette session.
      * @return Un objet contenant la date de début et de fin, ou null si aucun slot n'est présent
      */
     public Optional<DateRange> calculateDateRange() {
@@ -51,10 +51,6 @@ public class KholleGroup {
                 .map(KholleSlot::dateTime)
                 .max(LocalDateTime::compareTo)
                 .orElse(null);
-
-        if (minDate == null || maxDate == null) {
-            return Optional.empty();
-        }
 
         return Optional.of(new DateRange(minDate, maxDate));
     }

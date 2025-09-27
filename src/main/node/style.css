@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @source "../jte/**";
 
+@source inline("line-through text-slate-600");
+
 * {
     @apply transition;
 }

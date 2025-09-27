@@ -25,5 +25,5 @@ public class KholleSlot {
     private LocalDateTime dateTime;
 
     @ManyToOne
-    private KholleGroup group;
+    private KholleSession session;
 }
