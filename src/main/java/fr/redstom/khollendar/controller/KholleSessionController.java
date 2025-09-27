@@ -5,6 +5,7 @@ import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.service.KholleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class KholleSessionController {
             @RequestParam(defaultValue = "0") int previousPage,
             @RequestParam(defaultValue = "0") int upcomingPage,
             @RequestParam(defaultValue = "0") int allPage,
+            CsrfToken csrf,
             Model model
     ) {
         model.addAttribute("title", "Liste des sessions de khôlles");
@@ -40,22 +42,22 @@ public class KholleSessionController {
         model.addAttribute("upcomingPage", upcomingPage);
         model.addAttribute("allPage", allPage);
 
+        model.addAttribute("_csrf", csrf);
+
         return "kholles/list";
     }
 
     @GetMapping("/create")
-    public String createForm(Model model) {
+    public String createForm(CsrfToken csrf, Model model) {
         model.addAttribute("title", "Créer une session de khôlles");
+        model.addAttribute("_csrf", csrf);
 
         return "kholles/create";
     }
 
     @PostMapping("/create")
     public String create(@ModelAttribute KholleSessionCreationDto dto) {
-        System.out.println(dto);
-        KholleSession session = kholleService.createKholle(dto);
-        System.out.println(session);
-
+        kholleService.createKholle(dto);
         return "redirect:/kholles";
     }
 }

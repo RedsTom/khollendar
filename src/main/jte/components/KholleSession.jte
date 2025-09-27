@@ -5,11 +5,11 @@
 
 !{boolean isEnded = session.calculateDateRange().map(DateRange::end).map(date -> date.isBefore(LocalDateTime.now())).orElse(false);}
 
-<div class="bg-slate-800 p-3 rounded-lg">
-    <h3 class="text-lg font-medium @if(isEnded) line-through text-slate-600 @endif">
+<div class="bg-ctp-base p-3 rounded-lg">
+    <h3 class="text-lg font-medium @if(isEnded) line-through text-ctp-subtext1 @endif">
         ${session.subject()}
     </h3>
-    <div class="text-sm text-gray-300 mt-2">
+    <div class="text-sm text-ctp-subtext0 mt-2">
         @if(session.calculateDateRange().isPresent())
             <p>
                 Du ${session.calculateDateRange().get().start().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}

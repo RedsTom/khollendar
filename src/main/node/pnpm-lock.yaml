@@ -14,8 +14,16 @@ importers:
       tailwindcss:
         specifier: ^4.1.13
         version: 4.1.13
+    devDependencies:
+      '@catppuccin/tailwindcss':
+        specifier: ^1.0.0
+        version: 1.0.0
 
 packages:
+
+  '@catppuccin/tailwindcss@1.0.0':
+    resolution: {integrity: sha512-l8pOlcYe2ncGd8a1gUmL5AHmKlxR2+CHuG5kt4Me6IZwzntW1DoLmj89BH+DcsPHBsdDGLrTSv35emlYyU3FeQ==}
+    engines: {node: '>=22.0.0'}
 
   '@isaacs/fs-minipass@4.0.1':
     resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
@@ -369,6 +377,8 @@ packages:
     engines: {node: '>=18'}
 
 snapshots:
+
+  '@catppuccin/tailwindcss@1.0.0': {}
 
   '@isaacs/fs-minipass@4.0.1':
     dependencies:

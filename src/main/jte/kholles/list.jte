@@ -9,24 +9,27 @@
 @param int upcomingPage
 @param int allPage
 
+@param org.springframework.security.web.csrf.CsrfToken _csrf
+
 @template.layout.MainLayout(
 title = title,
+_csrf = _csrf,
 content = @`
     <div class="container mx-auto p-4">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">${title}</h1>
             <a href="/kholles/create"
-               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+               class="bg-ctp-blue hover:bg-ctp-blue/80 text-ctp-base px-4 py-2 rounded-lg flex items-center">
                 <i data-feather="plus" class="mr-2"></i>
                 Créer une session
             </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-slate-700 p-4 rounded-lg">
+            <div class="bg-ctp-surface0 p-4 rounded-lg">
                 <h2 class="text-xl font-semibold mb-4">Sessions de khôlles passées</h2>
                 @if(previousSessions.isEmpty())
-                    <p class="text-gray-400">Aucune session de khôlles passée</p>
+                    <p class="text-ctp-subtext0">Aucune session de khôlles passée</p>
                 @else
                     <div class="space-y-3 mb-4">
                         @for(KholleSession session : previousSessions.getContent())
@@ -44,10 +47,10 @@ content = @`
                 @endif
             </div>
 
-            <div class="bg-slate-700 p-4 rounded-lg">
+            <div class="bg-ctp-surface0 p-4 rounded-lg">
                 <h2 class="text-xl font-semibold mb-4">Sessions de khôlles à venir</h2>
                 @if(upcomingSessions.isEmpty())
-                    <p class="text-gray-400">Aucune session de khôlles à venir</p>
+                    <p class="text-ctp-subtext0">Aucune session de khôlles à venir</p>
                 @else
                     <div class="space-y-3 mb-4">
                         @for(KholleSession session : upcomingSessions.getContent())
@@ -66,12 +69,12 @@ content = @`
             </div>
         </div>
 
-        <div class="bg-slate-700 p-4 rounded-lg">
+        <div class="bg-ctp-surface0 p-4 rounded-lg">
             <h2 class="text-xl font-semibold mb-4">Toutes les sessions de khôlles</h2>
             @if(allSessions.isEmpty())
-                <p class="text-gray-400">Aucune session de khôlles</p>
+                <p class="text-ctp-subtext0">Aucune session de khôlles</p>
             @else
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                <div class="space-y-3 mb-4">
                     @for(KholleSession session : allSessions.getContent())
                         @template.components.KholleSession(session = session)
                     @endfor
