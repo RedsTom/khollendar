@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/kholles")
 @RequiredArgsConstructor
@@ -59,5 +61,19 @@ public class KholleSessionController {
     public String create(@ModelAttribute KholleSessionCreationDto dto) {
         kholleService.createKholle(dto);
         return "redirect:/kholles";
+    }
+
+    @GetMapping("/{id}")
+    public String show(@PathVariable Long id, CsrfToken csrf, Model model) {
+        Optional<KholleSession> session = kholleService.getKholleSessionById(id);
+
+        if(session.isEmpty()) {
+            return "redirect:/kholles";
+        }
+
+        model.addAttribute("title", "Détails de la session de khôlle");
+        model.addAttribute("session", session.get());
+        model.addAttribute("_csrf", csrf);
+        return "kholles/show";
     }
 }

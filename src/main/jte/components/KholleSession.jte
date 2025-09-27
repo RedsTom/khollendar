@@ -1,20 +1,23 @@
 @import fr.redstom.khollendar.dto.DateRange
+@import fr.redstom.khollendar.entity.KholleSession
+@import fr.redstom.khollendar.utils.WordUtils
 @import java.time.LocalDateTime
-@import static fr.redstom.khollendar.utils.WordUtils.plural
-@param fr.redstom.khollendar.entity.KholleSession session
+@import java.time.format.DateTimeFormatter
+
+@param KholleSession session
 
 !{boolean isEnded = session.calculateDateRange().map(DateRange::end).map(date -> date.isBefore(LocalDateTime.now())).orElse(false);}
 
-<div class="bg-ctp-base p-3 rounded-lg">
+<a href="/kholles/${session.id()}" class="block bg-ctp-surface1 p-4 rounded-lg hover:bg-ctp-surface2 transition-colors duration-200 ease-in-out">
     <h3 class="text-lg font-medium @if(isEnded) line-through text-ctp-subtext1 @endif">
         ${session.subject()}
     </h3>
     <div class="text-sm text-ctp-subtext0 mt-2">
         @if(session.calculateDateRange().isPresent())
             <p>
-                Du ${session.calculateDateRange().get().start().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}
-                au ${session.calculateDateRange().get().end().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}</p>
+                Du ${session.calculateDateRange().get().start().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}
+                au ${session.calculateDateRange().get().end().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}</p>
         @endif
-        <p class="mt-1">${session.kholleSlots().size()} ${plural("créneau", "x", session.kholleSlots())} ${plural("programmé", session.kholleSlots())}</p>
+        <p class="mt-1">${session.kholleSlots().size()} ${WordUtils.plural("créneau", "x", session.kholleSlots())} ${WordUtils.plural("programmé", "s", session.kholleSlots())}</p>
     </div>
-</div>
+</a>

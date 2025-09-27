@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -93,5 +94,9 @@ public class KholleService {
                 LocalDateTime.now(),
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"))
         );
+    }
+
+    public Optional<KholleSession> getKholleSessionById(Long id) {
+        return kholleSessionRepository.findKholleSessionById(id);
     }
 }

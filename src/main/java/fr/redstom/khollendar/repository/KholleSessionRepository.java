@@ -9,6 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface KholleSessionRepository extends CrudRepository<KholleSession, Long>, PagingAndSortingRepository<KholleSession, Long> {
     
@@ -20,5 +21,7 @@ public interface KholleSessionRepository extends CrudRepository<KholleSession, L
 
     @Query("SELECT ks FROM KholleSession ks JOIN ks.kholleSlots slot WHERE slot.dateTime < ?1 GROUP BY ks ORDER BY MAX(slot.dateTime) DESC")
     Page<KholleSession> findPreviousKholleSessions(LocalDateTime now, Pageable pageable);
+
+    Optional<KholleSession> findKholleSessionById(Long id);
 }
 
