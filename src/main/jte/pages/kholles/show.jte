@@ -24,34 +24,38 @@
     title = "Détails de la session",
     _csrf = _csrf,
     content = @`
-        <div class="container mx-auto p-4">
-            <div class="bg-ctp-surface0 rounded-lg p-6">
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4">
-                    <div>
-                        <h1 class="text-3xl font-bold">${session.subject()}</h1>
+        <div class="container mx-auto p-4 max-w-7xl">
+            <div class="bg-ctp-surface0 rounded-lg p-4 sm:p-6">
+                <!-- En-tête de la session -->
+                <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
+                    <div class="flex-1 min-w-0">
+                        <h1 class="text-2xl sm:text-3xl font-bold break-words">${session.subject()}</h1>
                         @if(session.calculateDateRange().isPresent())
-                            <p class="text-ctp-subtext0">
+                            <p class="text-sm sm:text-base text-ctp-subtext0 mt-1">
                                 Du ${session.calculateDateRange().get().start().format(formatter)}
                                 au ${session.calculateDateRange().get().end().format(formatter)}
                             </p>
                         @endif
                     </div>
 
-                    <div class="mt-4 sm:mt-0">
+                    <div class="flex-shrink-0">
                         @if(userAuthenticated)
-                            <a href="/kholles/${session.id()}/preferences" class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors">
+                            <a href="/kholles/${session.id()}/preferences"
+                               class="inline-block w-full sm:w-auto px-4 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors text-center font-medium">
                                 Indiquer mes disponibilités
                             </a>
                         @else
-                            <a href="/user-auth/select?redirectTo=/kholles/${session.id()}/preferences" class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors">
+                            <a href="/user-auth/select?redirectTo=/kholles/${session.id()}/preferences"
+                               class="inline-block w-full sm:w-auto px-4 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors text-center font-medium">
                                 Indiquer mes disponibilités
                             </a>
                         @endif
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <h2 class="text-2xl font-semibold mb-4">Horaires disponibles</h2>
+                <!-- Section des horaires disponibles -->
+                <div class="mb-8">
+                    <h2 class="text-xl sm:text-2xl font-semibold mb-4">Horaires disponibles</h2>
                     @if(session.kholleSlots().isEmpty())
                         <p class="text-ctp-subtext0">Aucun horaire disponible pour cette session.</p>
                     @else
@@ -59,12 +63,12 @@
                             List<KholleSlot> sortedSlots = new ArrayList<>(session.kholleSlots());
                             sortedSlots.sort(Comparator.comparing(KholleSlot::dateTime));
                         }
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                             @for(KholleSlot slot : sortedSlots)
-                                <div class="bg-ctp-surface1 p-4 rounded-lg flex justify-between items-center">
-                                    <div>
-                                        <p class="font-semibold">${slot.dateTime().format(DateTimeFormatter.ofPattern("EEEE d MMMM yyyy 'à' HH:mm", Locale.FRENCH))}</p>
-                                    </div>
+                                <div class="bg-ctp-surface1 p-3 sm:p-4 rounded-lg">
+                                    <p class="font-semibold text-sm sm:text-base leading-tight">
+                                        ${slot.dateTime().format(DateTimeFormatter.ofPattern("EEEE d MMMM yyyy 'à' HH:mm", Locale.FRENCH))}
+                                    </p>
                                 </div>
                             @endfor
                         </div>
@@ -72,39 +76,42 @@
                 </div>
 
                 <!-- Section des préférences des utilisateurs -->
-                <div class="mt-8">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-semibold">Préférences des utilisateurs</h2>
-                        <div class="text-sm text-ctp-subtext0">
+                <div>
+                    <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
+                        <h2 class="text-xl sm:text-2xl font-semibold">Préférences des utilisateurs</h2>
+                        <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
                             ${registeredUsersCount} utilisateur${registeredUsersCount > 1 ? "s ont" : " a"} enregistré ${registeredUsersCount > 1 ? "leurs" : "ses"} préférences
                         </div>
                     </div>
 
                     @if(userPreferences.isEmpty())
-                        <div class="bg-ctp-surface1 rounded-lg p-6 text-center">
+                        <div class="bg-ctp-surface1 rounded-lg p-4 sm:p-6 text-center">
                             <p class="text-ctp-subtext0">Aucune préférence n'a encore été enregistrée pour cette session.</p>
                         </div>
                     @else
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                             @for(var userEntry : userPreferences.entrySet())
                                 !{
                                     User user = userEntry.getKey();
                                     List<UserPreference> preferences = userEntry.getValue();
                                     List<KholleSlot> unavailableSlots = userUnavailableSlots.get(user);
                                 }
-                                <div class="bg-ctp-surface1 rounded-lg p-4">
-                                    <h3 class="text-lg font-semibold mb-3 text-ctp-blue">
+                                <div class="bg-ctp-surface1 rounded-lg p-3 sm:p-4 break-inside-avoid">
+                                    <h3 class="text-base sm:text-lg font-semibold mb-3 text-ctp-blue break-words">
                                         ${user.username()}
                                     </h3>
 
                                     <!-- Préférences -->
                                     @if(!preferences.isEmpty())
-                                        <div class="mb-4">
-                                            <h4 class="text-sm font-medium text-ctp-green mb-2">✓ Préférences</h4>
-                                            <div class="space-y-1">
+                                        <div class="mb-3 sm:mb-4">
+                                            <h4 class="text-xs sm:text-sm font-medium text-ctp-green mb-2 flex items-center gap-1">
+                                                <span class="inline-block w-3 h-3 sm:w-4 sm:h-4">✓</span>
+                                                Préférences
+                                            </h4>
+                                            <div class="space-y-1 sm:space-y-2">
                                                 @for(UserPreference preference : preferences)
-                                                    <div class="flex items-center gap-2 text-sm">
-                                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full
+                                                    <div class="flex items-center gap-2 text-xs sm:text-sm">
+                                                        <span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full flex-shrink-0
                                                             @if(preference.preferenceRank() == 1)
                                                                 bg-ctp-green text-ctp-base
                                                             @elseif(preference.preferenceRank() == 2)
@@ -117,7 +124,7 @@
                                                             font-semibold text-xs">
                                                             ${preference.preferenceRank()}
                                                         </span>
-                                                        <span class="text-ctp-text">
+                                                        <span class="text-ctp-text leading-tight min-w-0 break-words">
                                                             ${preference.slot().dateTime().format(DateTimeFormatter.ofPattern("dd/MM à HH:mm", Locale.FRENCH))}
                                                         </span>
                                                     </div>
@@ -128,15 +135,18 @@
 
                                     <!-- Indisponibilités -->
                                     @if(unavailableSlots != null && !unavailableSlots.isEmpty())
-                                        <div>
-                                            <h4 class="text-sm font-medium text-ctp-red mb-2">✗ Indisponibilités</h4>
-                                            <div class="space-y-1">
+                                        <div class="mb-2">
+                                            <h4 class="text-xs sm:text-sm font-medium text-ctp-red mb-2 flex items-center gap-1">
+                                                <span class="inline-block w-3 h-3 sm:w-4 sm:h-4">✗</span>
+                                                Indisponibilités
+                                            </h4>
+                                            <div class="space-y-1 sm:space-y-2">
                                                 @for(KholleSlot slot : unavailableSlots)
-                                                    <div class="flex items-center gap-2 text-sm">
-                                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-ctp-red text-ctp-base font-semibold text-xs">
+                                                    <div class="flex items-center gap-2 text-xs sm:text-sm">
+                                                        <span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-ctp-red text-ctp-base font-semibold text-xs flex-shrink-0">
                                                             ✗
                                                         </span>
-                                                        <span class="text-ctp-subtext0">
+                                                        <span class="text-ctp-subtext0 leading-tight min-w-0 break-words">
                                                             ${slot.dateTime().format(DateTimeFormatter.ofPattern("dd/MM à HH:mm", Locale.FRENCH))}
                                                         </span>
                                                     </div>
@@ -146,7 +156,7 @@
                                     @endif
 
                                     @if(preferences.isEmpty() && (unavailableSlots == null || unavailableSlots.isEmpty()))
-                                        <p class="text-ctp-subtext0 italic text-sm">Aucune préférence enregistrée.</p>
+                                        <p class="text-ctp-subtext0 italic text-xs sm:text-sm">Aucune préférence enregistrée.</p>
                                     @endif
                                 </div>
                             @endfor

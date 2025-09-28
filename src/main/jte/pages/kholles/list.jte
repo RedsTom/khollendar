@@ -15,21 +15,24 @@
 title = title,
 _csrf = _csrf,
 content = @`
-    <div class="container mx-auto p-4">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">${title}</h1>
+    <div class="container mx-auto p-4 max-w-7xl">
+        <!-- En-tête responsive -->
+        <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold break-words">${title}</h1>
             <a href="/kholles/create"
-               class="bg-ctp-blue hover:bg-ctp-blue/80 text-ctp-base px-4 py-2 rounded-lg flex items-center">
-                <i data-feather="plus" class="mr-2"></i>
+               class="inline-flex items-center justify-center w-full sm:w-auto bg-ctp-blue hover:bg-ctp-blue/80 text-ctp-base px-4 py-2 rounded-lg font-medium transition-colors">
+                <i data-feather="plus" class="mr-2 w-4 h-4 sm:w-5 sm:h-5"></i>
                 Créer une session
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-ctp-surface0 p-4 rounded-lg">
-                <h2 class="text-xl font-semibold mb-4">Sessions de khôlles passées</h2>
+        <!-- Grille responsive pour les sessions passées et à venir -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8">
+            <!-- Sessions passées -->
+            <div class="bg-ctp-surface0 p-4 sm:p-6 rounded-lg">
+                <h2 class="text-lg sm:text-xl font-semibold mb-4">Sessions de khôlles passées</h2>
                 @if(previousSessions.isEmpty())
-                    <p class="text-ctp-subtext0">Aucune session de khôlles passée</p>
+                    <p class="text-ctp-subtext0 text-sm sm:text-base">Aucune session de khôlles passée</p>
                 @else
                     <div class="space-y-3 mb-4">
                         @for(KholleSession session : previousSessions.getContent())
@@ -47,10 +50,11 @@ content = @`
                 @endif
             </div>
 
-            <div class="bg-ctp-surface0 p-4 rounded-lg">
-                <h2 class="text-xl font-semibold mb-4">Sessions de khôlles à venir</h2>
+            <!-- Sessions à venir -->
+            <div class="bg-ctp-surface0 p-4 sm:p-6 rounded-lg">
+                <h2 class="text-lg sm:text-xl font-semibold mb-4">Sessions de khôlles à venir</h2>
                 @if(upcomingSessions.isEmpty())
-                    <p class="text-ctp-subtext0">Aucune session de khôlles à venir</p>
+                    <p class="text-ctp-subtext0 text-sm sm:text-base">Aucune session de khôlles à venir</p>
                 @else
                     <div class="space-y-3 mb-4">
                         @for(KholleSession session : upcomingSessions.getContent())
@@ -69,10 +73,11 @@ content = @`
             </div>
         </div>
 
-        <div class="bg-ctp-surface0 p-4 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4">Toutes les sessions de khôlles</h2>
+        <!-- Toutes les sessions -->
+        <div class="bg-ctp-surface0 p-4 sm:p-6 rounded-lg">
+            <h2 class="text-lg sm:text-xl font-semibold mb-4">Toutes les sessions de khôlles</h2>
             @if(allSessions.isEmpty())
-                <p class="text-ctp-subtext0">Aucune session de khôlles</p>
+                <p class="text-ctp-subtext0 text-sm sm:text-base">Aucune session de khôlles</p>
             @else
                 <div class="space-y-3 mb-4">
                     @for(KholleSession session : allSessions.getContent())
@@ -102,11 +107,11 @@ content = @`
                 localStorage.removeItem('scrollPosition');
             }
 
-            // Ajouter les gestionnaires d'événements à tous les liens de pagination
-            document.querySelectorAll('a.scroll-preserve').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // Sauvegarder la position actuelle du défilement
-                    localStorage.setItem('scrollPosition', window.pageYOffset);
+            // Sauvegarder la position avant navigation
+            const paginationLinks = document.querySelectorAll('a[href*="Page="]');
+            paginationLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    localStorage.setItem('scrollPosition', window.scrollY.toString());
                 });
             });
         });
