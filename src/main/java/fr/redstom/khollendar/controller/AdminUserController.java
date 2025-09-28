@@ -35,7 +35,7 @@ public class AdminUserController {
         model.addAttribute("currentPage", page);
         model.addAttribute("_csrf", csrf);
 
-        return "admin/users/list";
+        return "pages/admin/users/list";
     }
 
     @PostMapping

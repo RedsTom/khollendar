@@ -5,6 +5,19 @@ import java.util.regex.Pattern;
 
 public class WordUtils {
 
+    /**
+     * Met en majuscule la première lettre d'une chaîne
+     *
+     * @param str La chaîne à traiter
+     * @return La chaîne avec la première lettre en majuscule
+     */
+    public static String capitalizeFirst(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
     public static String plural(String word, String suffix, List<?> elements){
         return word + (elements.size() > 1 ? suffix : "");
     }

@@ -4,31 +4,29 @@ import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.entity.KholleSlot;
 import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service de gestion des créneaux de khôlles
+ * Gère le réordonnancement des préférences utilisateur pour les créneaux
+ */
 @Service
+@RequiredArgsConstructor
 public class KholleSlotService {
 
     private final KholleService kholleService;
-    private final PreferenceService preferenceService;
     private final SessionService sessionService;
 
-    @Autowired
-    public KholleSlotService(KholleService kholleService, PreferenceService preferenceService, SessionService sessionService) {
-        this.kholleService = kholleService;
-        this.preferenceService = preferenceService;
-        this.sessionService = sessionService;
-    }
-
     /**
-     * Réordonne un slot dans la liste des préférences de l'utilisateur
+     * Réordonne un créneau dans la liste des préférences de l'utilisateur
+     *
      * @param sessionId ID de la session de khôlle
-     * @param slotId ID du slot à déplacer
+     * @param slotId ID du créneau à déplacer
      * @param direction Direction ("up" ou "down")
      * @param httpSession Session HTTP pour récupérer/stocker les préférences
      * @param model Modèle pour la vue (peut être null si utilisé avec redirection)
@@ -52,11 +50,9 @@ public class KholleSlotService {
         boolean moveUp = "up".equalsIgnoreCase(direction);
 
         try {
-            // Réordonner les créneaux
-            List<KholleSlot> reorderedSlots = this.doReorderSlots(
+            List<KholleSlot> reorderedSlots = doReorderSlots(
                     sessionId, preferences.unavailableSlotIds(), slotId, moveUp);
 
-            // Mettre à jour le modèle pour le rendu si disponible
             if (model != null) {
                 model.addAttribute("availableSlots", reorderedSlots);
             }
@@ -68,25 +64,28 @@ public class KholleSlotService {
 
             return true;
         } catch (Exception e) {
-            System.err.println("Erreur lors de la réorganisation des slots : " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Effectue le réordonnancement des slots
+     * Effectue le réordonnancement des créneaux disponibles
+     *
+     * @param kholleId ID de la session de khôlle
+     * @param unavailableSlotIds IDs des créneaux indisponibles
+     * @param slotIdToMove ID du créneau à déplacer
+     * @param moveUp true pour monter, false pour descendre
+     * @return Liste des créneaux réordonnés
      */
     private List<KholleSlot> doReorderSlots(Long kholleId, List<Long> unavailableSlotIds,
                                           Long slotIdToMove, boolean moveUp) {
-        // Récupérer la session de khôlle
         KholleSession kholleSession = kholleService.getKholleSessionById(kholleId)
                 .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));
 
-        // Récupérer tous les créneaux disponibles
         List<KholleSlot> allSlots = new ArrayList<>(kholleSession.kholleSlots());
         List<Long> finalUnavailableSlots = unavailableSlotIds != null ? unavailableSlotIds : new ArrayList<>();
 
-        // Filtrer les slots disponibles et les trier par date
+        // Filtrer les créneaux disponibles et les trier par date
         List<KholleSlot> availableSlots = allSlots.stream()
                 .filter(slot -> !finalUnavailableSlots.contains(slot.id()))
                 .sorted(Comparator.comparing(KholleSlot::dateTime))
@@ -101,7 +100,7 @@ public class KholleSlotService {
             }
         }
 
-        // Si l'index est valide, échanger les positions
+        // Échanger les positions si possible
         if (moveUp && currentIndex > 0) {
             Collections.swap(availableSlots, currentIndex, currentIndex - 1);
         } else if (!moveUp && currentIndex >= 0 && currentIndex < availableSlots.size() - 1) {
@@ -109,13 +108,5 @@ public class KholleSlotService {
         }
 
         return availableSlots;
-    }
-
-    /**
-     * Prépare le formulaire de classement des slots pour l'affichage
-     */
-    public void prepareSlotRankingView(Long sessionId, Long userId, List<Long> unavailableSlotIds,
-                                      List<Long> rankedSlotIds, Model model) {
-        preferenceService.prepareRankingForm(sessionId, userId, unavailableSlotIds, rankedSlotIds, model);
     }
 }

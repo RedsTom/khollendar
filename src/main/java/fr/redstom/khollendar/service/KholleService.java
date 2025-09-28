@@ -124,7 +124,6 @@ public class KholleService {
      */
     @Transactional
     public void savePreferences(Long userId, Long sessionId, List<Long> unavailableSlots, List<Long> rankedSlots) {
-        // Récupérer l'utilisateur et la session
         User user = userService.getUserById(userId).orElseThrow(() ->
             new IllegalArgumentException("Utilisateur avec l'ID " + userId + " non trouvé"));
 
@@ -154,17 +153,6 @@ public class KholleService {
 
             userPreferenceRepository.save(preference);
         }
-
-        System.out.println("Préférences sauvegardées avec succès pour l'utilisateur " + userId + " et la session " + sessionId);
-        System.out.println("Nombre de créneaux classés : " + rankedSlots.size());
-        System.out.println("Créneaux indisponibles (non enregistrés) : " + unavailableSlots);
-    }
-
-    /**
-     * Méthode de compatibilité pour l'enregistrement des indisponibilités uniquement
-     */
-    public void saveUnavailabilities(Long userId, Long sessionId, List<Long> unavailableSlots) {
-        savePreferences(userId, sessionId, unavailableSlots, List.of());
     }
 
     /**

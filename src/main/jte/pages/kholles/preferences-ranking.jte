@@ -89,9 +89,10 @@ content = @`
                         <ul id="slot-ranking" class="space-y-2 sm:space-y-3">
                             @for(int i = 0; i < availableSlots.size(); i++)
                                 !{KholleSlot slot = availableSlots.get(i);}
+                                !{var slotId = slot.id().toString();}
 
-                                <li class="slot-item bg-ctp-surface1 rounded-lg p-3 sm:p-4 flex items-center justify-between gap-3" data-slot-id="${slot.id()}">
-                                    <input type="hidden" name="ranked-slots" value="${slot.id()}" />
+                                <li class="slot-item bg-ctp-surface1 rounded-lg p-3 sm:p-4 flex items-center justify-between gap-3" data-slot-id="${slotId}">
+                                    <input type="hidden" name="ranked-slots" value="${slotId}" />
                                     <div class="flex items-center gap-3 flex-1 min-w-0">
                                         <div class="rank-number flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-ctp-blue text-ctp-base rounded-full flex items-center justify-center text-sm sm:text-base font-semibold">
                                             ${i + 1}
