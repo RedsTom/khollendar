@@ -62,7 +62,7 @@ public class KholleService {
      * Récupère toutes les sessions de khôlles avec pagination
      * @param page La page à récupérer
      * @param size Le nombre d'éléments par page
-     * @return Page contenant les sessions de khôlles
+     * @return Page contenant les sessions de khôlles, triées par ID décroissant
      */
     public Page<KholleSession> getAllKholleSessions(int page, int size) {
         return kholleSessionRepository.findAll(
@@ -74,7 +74,7 @@ public class KholleService {
      * Récupère toutes les sessions de khôlles à venir avec pagination
      * @param page La page à récupérer
      * @param size Le nombre d'éléments par page
-     * @return Page contenant les sessions de khôlles à venir
+     * @return Page contenant les sessions de khôlles à venir, triées par date croissante
      */
     public Page<KholleSession> getUpcomingKholleSessions(int page, int size) {
         return kholleSessionRepository.findUpcomingKholleSessionsPaged(
@@ -87,16 +87,50 @@ public class KholleService {
      * Récupère les sessions de khôlles passées avec pagination
      * @param page La page à récupérer
      * @param size Le nombre d'éléments par page
-     * @return Page contenant les sessions de khôlles passées
+     * @return Page contenant les sessions de khôlles passées, triées par date décroissante
      */
     public Page<KholleSession> getPreviousKholleSessions(int page, int size) {
         return kholleSessionRepository.findPreviousKholleSessions(
                 LocalDateTime.now(),
-                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"))
+                PageRequest.of(page, size)
         );
     }
 
+    /**
+     * Récupère une session de khôlle par son ID
+     * @param id L'identifiant de la session à récupérer
+     * @return La session correspondante, si elle existe
+     */
     public Optional<KholleSession> getKholleSessionById(Long id) {
         return kholleSessionRepository.findKholleSessionById(id);
+    }
+
+    /**
+     * Sauvegarde les préférences d'un utilisateur pour une session de khôlle
+     *
+     * @param userId L'ID de l'utilisateur
+     * @param sessionId L'ID de la session de khôlle
+     * @param unavailableSlots Liste des IDs des créneaux marqués comme indisponibles
+     * @param rankedSlots Liste des IDs des créneaux disponibles classés par ordre de préférence
+     */
+    public void savePreferences(Long userId, Long sessionId, List<Long> unavailableSlots, List<Long> rankedSlots) {
+        // Cette méthode devrait enregistrer les préférences dans la base de données
+        // Par exemple, en créant des entités de type UserPreference ou en mettant à jour des entrées existantes
+        // Pour l'instant, nous allons simplement afficher un log pour simuler la sauvegarde
+
+        System.out.println("Sauvegarde des préférences pour l'utilisateur " + userId + " et la session " + sessionId);
+        System.out.println("Créneaux indisponibles : " + unavailableSlots);
+        System.out.println("Classement des créneaux disponibles : " + rankedSlots);
+
+        // TODO: Implémenter la sauvegarde réelle en base de données
+        // Cela pourrait impliquer la création d'un repository spécifique pour les préférences
+        // et l'ajout d'entités correspondantes
+    }
+
+    /**
+     * Méthode de compatibilité pour l'enregistrement des indisponibilités uniquement
+     */
+    public void saveUnavailabilities(Long userId, Long sessionId, List<Long> unavailableSlots) {
+        savePreferences(userId, sessionId, unavailableSlots, List.of());
     }
 }
