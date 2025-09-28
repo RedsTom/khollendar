@@ -56,8 +56,8 @@
 <main class="h-full relative">
     ${content}
 </main>
-<footer class="w-full flex items-center justify-between p-4 bg-ctp-crust">
-    <p>
+<footer class="w-full flex flex-col md:flex-row gap-4 items-center justify-between p-4 bg-ctp-crust">
+    <p class="text-center md:text-left">
         Copyright &copy; ${java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)} - Tom BUTIN - GNU GPL v3
     </p>
 

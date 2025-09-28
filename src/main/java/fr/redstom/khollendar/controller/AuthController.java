@@ -19,6 +19,6 @@ public class AuthController {
         model.addAttribute("logout", logout);
         model.addAttribute("_csrf", csrf);
 
-        return "auth/login";
+        return "pages/auth/login";
     }
 }

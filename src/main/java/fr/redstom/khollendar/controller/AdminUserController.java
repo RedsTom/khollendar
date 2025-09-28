@@ -54,7 +54,7 @@ public class AdminUserController {
             model.addAttribute("currentPage", 0);
             model.addAttribute("_csrf", csrf);
 
-            return "admin/users/list";
+            return "pages/admin/users/list";
         }
 
         try {

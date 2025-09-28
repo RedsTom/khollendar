@@ -24,6 +24,12 @@
                             </p>
                         @endif
                     </div>
+
+                    <div class="mt-4 sm:mt-0">
+                        <a href="/kholles/${session.id()}/preferences" class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors">
+                            Indiquer mes disponibilités
+                        </a>
+                    </div>
                 </div>
 
                 <div class="mt-6">

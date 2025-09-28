@@ -32,7 +32,7 @@ public class UserAuthController {
         model.addAttribute("users", users);
         model.addAttribute("_csrf", csrf);
         
-        return "user/login/select";
+        return "pages/user/login/select";
     }
 
     // Étape 2 : Entrée ou définition du code secret
@@ -79,7 +79,7 @@ public class UserAuthController {
         model.addAttribute("username", user.username());
         model.addAttribute("_csrf", csrf);
         
-        return "user/login/enter-code";
+        return "pages/user/login/enter-code";
     }
 
     // Traiter l'entrée du code secret
@@ -110,7 +110,7 @@ public class UserAuthController {
             model.addAttribute("title", "Entrer votre code secret");
             model.addAttribute("username", user.username());
             model.addAttribute("_csrf", csrf);
-            return "user/login/enter-code";
+            return "pages/user/login/enter-code";
         }
         
         if (!userService.isValidSecretCode(user, secretCodeDto.secretCode())) {
@@ -118,7 +118,7 @@ public class UserAuthController {
             model.addAttribute("username", user.username());
             model.addAttribute("error", "Code secret invalide");
             model.addAttribute("_csrf", csrf);
-            return "user/login/enter-code";
+            return "pages/user/login/enter-code";
         }
         
         // Authentification réussie
@@ -151,7 +151,7 @@ public class UserAuthController {
         model.addAttribute("username", user.username());
         model.addAttribute("_csrf", csrf);
         
-        return "user/login/initialize-code";
+        return "pages/user/login/initialize-code";
     }
 
     // Traiter l'initialisation du code secret
@@ -182,7 +182,7 @@ public class UserAuthController {
             model.addAttribute("title", "Définir votre code secret");
             model.addAttribute("username", user.username());
             model.addAttribute("_csrf", csrf);
-            return "user/login/initialize-code";
+            return "pages/user/login/initialize-code";
         }
         
         try {
@@ -196,7 +196,7 @@ public class UserAuthController {
             model.addAttribute("username", user.username());
             model.addAttribute("error", e.getMessage());
             model.addAttribute("_csrf", csrf);
-            return "user/login/initialize-code";
+            return "pages/user/login/initialize-code";
         }
     }
 }

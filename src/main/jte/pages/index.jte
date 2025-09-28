@@ -13,13 +13,13 @@ title = "Accueil",
 _csrf = _csrf,
 content = @`
     <div class="container mx-auto p-4">
-        <div class="rounded-lg p-6 pl-0 mb-8">
+        <div class="rounded-lg mb-4">
             <h1 class="text-3xl font-bold mb-4">Bienvenue sur Khôlle'n'dar</h1>
             <p class="text-xl text-ctp-subtext0">Visualisez, planifiez et inscrivez-vous aux khôlles en toute simplicité !</p>
         </div>
 
         @if(AuthUtils.admin())
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div class="bg-ctp-surface0 rounded-lg p-6">
                     <h2 class="text-xl font-semibold mb-3">Créer une nouvelle session</h2>
                     <p class="text-ctp-subtext0 mb-4">Ajoutez une nouvelle session de khôlle pour vos étudiants</p>
@@ -62,6 +62,8 @@ content = @`
                 </div>
             @endif
         </div>
+
+        @template.components.HowItWorks()
     </div>
 `
 )

@@ -22,7 +22,7 @@ public class MainController {
 
         model.addAttribute("_csrf", csrf);
 
-        return "index";
+        return "pages/index";
     }
 
 }
