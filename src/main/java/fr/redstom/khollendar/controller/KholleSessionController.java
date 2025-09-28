@@ -93,8 +93,26 @@ public class KholleSessionController {
             return "redirect:/kholles";
         }
 
+        KholleSession kholleSession = session.get();
+
+        // Récupérer toutes les préférences des utilisateurs pour cette session
+        Map<User, List<UserPreference>> userPreferences = kholleService.getAllUserPreferencesForSession(id);
+
+        // Récupérer les créneaux indisponibles pour chaque utilisateur
+        Map<User, List<KholleSlot>> userUnavailableSlots = new LinkedHashMap<>();
+        for (User user : userPreferences.keySet()) {
+            List<KholleSlot> unavailableSlots = kholleService.getUnavailableSlots(user.id(), id);
+            userUnavailableSlots.put(user, unavailableSlots);
+        }
+
+        // Récupérer le nombre d'utilisateurs ayant enregistré leurs préférences
+        long registeredUsersCount = kholleService.getRegisteredUsersCount(id);
+
         model.addAttribute("title", "Détails de la session de khôlle");
-        model.addAttribute("session", session.get());
+        model.addAttribute("session", kholleSession);
+        model.addAttribute("userPreferences", userPreferences);
+        model.addAttribute("userUnavailableSlots", userUnavailableSlots);
+        model.addAttribute("registeredUsersCount", registeredUsersCount);
         model.addAttribute("_csrf", csrf);
         return "pages/kholles/show";
     }
