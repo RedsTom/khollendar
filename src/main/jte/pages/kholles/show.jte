@@ -5,9 +5,13 @@
 @import java.util.List
 @import java.util.ArrayList
 @import java.util.Comparator
+@import jakarta.servlet.http.HttpSession
 
 @param KholleSession session
 @param org.springframework.security.web.csrf.CsrfToken _csrf
+@param HttpSession httpSession = null
+
+!{Boolean userAuthenticated = httpSession != null && httpSession.getAttribute("selectedUserId") != null;}
 
 !{DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);}
 
@@ -29,9 +33,15 @@
                     </div>
 
                     <div class="mt-4 sm:mt-0">
-                        <a href="/kholles/${session.id()}/preferences" class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors">
-                            Indiquer mes disponibilités
-                        </a>
+                        @if(userAuthenticated)
+                            <a href="/kholles/${session.id()}/preferences" class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors">
+                                Indiquer mes disponibilités
+                            </a>
+                        @else
+                            <a href="/user-auth/select?redirectTo=/kholles/${session.id()}/preferences" class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors">
+                                Indiquer mes disponibilités
+                            </a>
+                        @endif
                     </div>
                 </div>
 

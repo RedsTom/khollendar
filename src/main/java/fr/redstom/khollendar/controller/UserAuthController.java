@@ -25,9 +25,19 @@ public class UserAuthController {
 
     // Étape 1 : Sélection de l'utilisateur
     @GetMapping("/select")
-    public String selectUser(CsrfToken csrf, Model model) {
+    public String selectUser(
+            @RequestParam(required = false) String redirectTo,
+            HttpSession httpSession,
+            CsrfToken csrf,
+            Model model
+    ) {
         List<User> users = userService.getAllUsers();
         
+        // Stocker l'URL de redirection dans la session si elle est présente
+        if (redirectTo != null && !redirectTo.isEmpty()) {
+            httpSession.setAttribute("redirectAfterLogin", redirectTo);
+        }
+
         model.addAttribute("title", "Connexion utilisateur");
         model.addAttribute("users", users);
         model.addAttribute("_csrf", csrf);
@@ -124,7 +134,15 @@ public class UserAuthController {
         // Authentification réussie
         session.setAttribute("authenticatedUserId", userId);
         redirectAttributes.addFlashAttribute("success", "Connexion réussie");
-        return "redirect:/kholles"; // Redirection vers la page principale après connexion
+
+        // Rediriger vers l'URL stockée dans la session si elle existe
+        String redirectTo = (String) session.getAttribute("redirectAfterLogin");
+        if (redirectTo != null && !redirectTo.isEmpty()) {
+            session.removeAttribute("redirectAfterLogin"); // Supprimer l'URL de redirection après utilisation
+            return "redirect:" + redirectTo;
+        } else {
+            return "redirect:/kholles"; // Redirection par défaut
+        }
     }
 
     // Initialiser le code secret (première utilisation)
@@ -190,7 +208,15 @@ public class UserAuthController {
             // Authentification réussie après initialisation
             session.setAttribute("authenticatedUserId", userId);
             redirectAttributes.addFlashAttribute("success", "Code secret défini avec succès");
-            return "redirect:/"; // Redirection vers la page principale après connexion
+
+            // Rediriger vers l'URL stockée dans la session si elle existe
+            String redirectTo = (String) session.getAttribute("redirectAfterLogin");
+            if (redirectTo != null && !redirectTo.isEmpty()) {
+                session.removeAttribute("redirectAfterLogin"); // Supprimer l'URL de redirection après utilisation
+                return "redirect:" + redirectTo;
+            } else {
+                return "redirect:/"; // Redirection par défaut
+            }
         } catch (IllegalArgumentException e) {
             model.addAttribute("title", "Définir votre code secret");
             model.addAttribute("username", user.username());
