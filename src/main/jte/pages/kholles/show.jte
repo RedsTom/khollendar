@@ -2,6 +2,9 @@
 @import fr.redstom.khollendar.entity.KholleSlot
 @import java.time.format.DateTimeFormatter
 @import java.util.Locale
+@import java.util.List
+@import java.util.ArrayList
+@import java.util.Comparator
 
 @param KholleSession session
 @param org.springframework.security.web.csrf.CsrfToken _csrf
@@ -37,8 +40,12 @@
                     @if(session.kholleSlots().isEmpty())
                         <p class="text-ctp-subtext0">Aucun horaire disponible pour cette session.</p>
                     @else
+                        !{
+                            List<KholleSlot> sortedSlots = new ArrayList<>(session.kholleSlots());
+                            sortedSlots.sort(Comparator.comparing(KholleSlot::dateTime));
+                        }
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            @for(KholleSlot slot : session.kholleSlots())
+                            @for(KholleSlot slot : sortedSlots)
                                 <div class="bg-ctp-surface1 p-4 rounded-lg flex justify-between items-center">
                                     <div>
                                         <p class="font-semibold">${slot.dateTime().format(DateTimeFormatter.ofPattern("EEEE d MMMM yyyy 'à' HH:mm", Locale.FRENCH))}</p>
