@@ -90,11 +90,11 @@ content = @`
                                         <span class="text-lg font-medium">${slot.dateTime().format(formatter)}</span>
                                     </div>
                                     <div class="flex items-center gap-1">
-                                        <button type="button" class="move-up p-2 rounded hover:bg-ctp-surface2 transition-colors">
-                                            <i class="h-5 w-5" data-feather="chevron-up"></i>
+                                        <button type="button" class="move-up p-1 rounded hover:bg-ctp-surface2 transition-colors">
+                                            <i class="h-4 w-4" data-feather="chevron-up"></i>
                                         </button>
-                                        <button type="button" class="move-down p-2 rounded hover:bg-ctp-surface2 transition-colors">
-                                            <i class="h-5 w-5" data-feather="chevron-down"></i>
+                                        <button type="button" class="move-down p-1 rounded hover:bg-ctp-surface2 transition-colors">
+                                            <i class="h-4 w-4" data-feather="chevron-down"></i>
                                         </button>
                                     </div>
                                 </li>
@@ -103,12 +103,12 @@ content = @`
 
                         <div class="mt-6 flex justify-between">
                             <a href="/kholles/${session.id()}/preferences?step=1"
-                               class="px-6 py-3 border border-ctp-blue text-ctp-blue font-medium rounded-lg hover:bg-ctp-blue/10 transition-colors flex items-center gap-2">
+                               class="px-4 py-2 border border-ctp-blue text-ctp-blue font-medium rounded-lg hover:bg-ctp-blue/10 transition-colors flex items-center gap-2">
                                 <i data-feather="arrow-left" class="h-4 w-4"></i>
                                 Retour
                             </a>
                             <button type="submit"
-                                    class="px-6 py-3 bg-ctp-green text-ctp-base font-medium rounded-lg hover:bg-ctp-green/80 transition-colors flex items-center gap-2">
+                                    class="px-4 py-2 bg-ctp-green text-ctp-base font-medium rounded-lg hover:bg-ctp-green/80 transition-colors flex items-center gap-2">
                                 Suivant
                                 <i data-feather="arrow-right" class="h-4 w-4"></i>
                             </button>

@@ -577,6 +577,9 @@
       background-color: color-mix(in oklab, var(--catppuccin-color-yellow) 20%, transparent);
     }
   }
+  .p-1 {
+    padding: calc(var(--spacing) * 1);
+  }
   .p-2 {
     padding: calc(var(--spacing) * 2);
   }

@@ -30,8 +30,8 @@
                     <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}" />
                     <input type="hidden" name="slotId" value="${slotId}">
                     <input type="hidden" name="direction" value="up">
-                    <button type="submit" class="p-2 rounded hover:bg-ctp-surface2 transition-colors" disabled="${isFirst}">
-                        <i class="h-5 w-5 ${isFirst ? "text-ctp-overlay0" : "text-ctp-text"}" data-feather="chevron-up"></i>
+                    <button type="submit" class="p-1 rounded hover:bg-ctp-surface2 transition-colors" disabled="${isFirst}">
+                        <i class="h-4 w-4 ${isFirst ? "text-ctp-overlay0" : "text-ctp-text"}" data-feather="chevron-up"></i>
                     </button>
                 </form>
 
@@ -39,8 +39,8 @@
                     <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}" />
                     <input type="hidden" name="slotId" value="${slotId}">
                     <input type="hidden" name="direction" value="down">
-                    <button type="submit" class="p-2 rounded hover:bg-ctp-surface2 transition-colors" disabled="${isLast}">
-                        <i class="h-5 w-5 ${isLast ? "text-ctp-overlay0" : "text-ctp-text"}" data-feather="chevron-down"></i>
+                    <button type="submit" class="p-1 rounded hover:bg-ctp-surface2 transition-colors" disabled="${isLast}">
+                        <i class="h-4 w-4 ${isLast ? "text-ctp-overlay0" : "text-ctp-text"}" data-feather="chevron-down"></i>
                     </button>
                 </form>
             </div>

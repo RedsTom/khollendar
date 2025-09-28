@@ -104,7 +104,7 @@ content = @`
 
                 <div class="mt-6 flex justify-end">
                     <button type="submit"
-                            class="px-6 py-3 bg-ctp-blue text-ctp-base font-medium rounded-lg hover:bg-ctp-blue/80 transition-colors flex items-center gap-2">
+                            class="px-4 py-2 bg-ctp-blue text-ctp-base font-medium rounded-lg hover:bg-ctp-blue/80 transition-colors flex items-center gap-2">
                         Suivant
                         <i data-feather="arrow-right" class="h-4 w-4"></i>
                     </button>
