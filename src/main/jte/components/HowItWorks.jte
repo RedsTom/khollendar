@@ -1,10 +1,10 @@
 <div class="bg-ctp-surface0 rounded-lg p-4 mt-4">
     <h2 class="text-lg font-semibold mb-3">Comment ça marche ?</h2>
 
-    <div class="relative">
-        <div class="absolute h-full w-0.5 bg-ctp-blue left-6 top-0"></div>
+    <div class="relative flex flex-col gap-6">
+        <div class="absolute h-[calc(100%-2rem)] w-0.5 bg-ctp-blue left-6 top-4"></div>
 
-        <div class="flex items-center mb-6 relative">
+        <div class="flex items-center relative">
             <div class="h-12 w-12 rounded-full bg-ctp-blue flex items-center justify-center text-ctp-base font-bold z-10">
                 1
             </div>
@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <div class="flex items-center mb-6 relative">
+        <div class="flex items-center relative">
             <div class="h-12 w-12 rounded-full bg-ctp-blue flex items-center justify-center text-ctp-base font-bold z-10">
                 2
             </div>
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div class="flex items-center mb-6 relative">
+        <div class="flex items-center relative">
             <div class="h-12 w-12 rounded-full bg-ctp-blue flex items-center justify-center text-ctp-base font-bold z-10">
                 3
             </div>
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <div class="flex items-center mb-6 relative">
+        <div class="flex items-center relative">
             <div class="h-12 w-12 rounded-full bg-ctp-blue flex items-center justify-center text-ctp-base font-bold z-10">
                 4
             </div>
@@ -50,7 +50,7 @@
                 <h3 class="font-medium text-ctp-text">Publication des résultats</h3>
                 <p class="text-ctp-subtext0 text-sm mt-1">
                     Les affectations définitives sont publiées <span class="font-medium">24 heures minimum</span> avant
-                    le début de la première khôlle.
+                    le début de la première khôlle de la session.
                 </p>
             </div>
         </div>
