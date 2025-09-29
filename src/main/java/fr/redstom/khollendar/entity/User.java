@@ -25,5 +25,6 @@ public class User {
     private String secretCode;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean codeInitialized = false;
 }
