@@ -16,7 +16,8 @@
 !{var modalClasses = "inline-block align-bottom bg-ctp-base rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle " + sizeClasses + " sm:w-full";}
 !{var titleId = id + "-title";}
 
-<div id="${id}" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="${titleId}" role="dialog" aria-modal="true">
+<div id="${id}" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="${titleId}" role="dialog"
+     aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <!-- Overlay -->
         <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onclick="closeModal('${id}')"></div>
@@ -32,7 +33,8 @@
                     <h3 class="text-lg font-medium text-ctp-text" id="${titleId}">
                         ${title}
                     </h3>
-                    <button type="button" class="text-ctp-subtext1 hover:text-ctp-text focus:outline-none" onclick="closeModal('${id}')">
+                    <button type="button" class="text-ctp-subtext1 hover:text-ctp-text focus:outline-none"
+                            onclick="closeModal('${id}')">
                         <i data-feather="x" class="w-5 h-5"></i>
                     </button>
                 </div>
@@ -54,13 +56,13 @@
 </div>
 
 <script>
-function openModal(modalId) {
-    document.getElementById(modalId).classList.remove('hidden');
-    document.body.classList.add('overflow-hidden');
-}
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
 
-function closeModal(modalId) {
-    document.getElementById(modalId).classList.add('hidden');
-    document.body.classList.remove('overflow-hidden');
-}
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
 </script>

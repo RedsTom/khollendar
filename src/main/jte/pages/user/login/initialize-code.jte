@@ -8,53 +8,61 @@ title = "Définir votre code secret",
 _csrf = _csrf,
 content = @`
     <div class="flex justify-center items-center min-h-[80vh]">
-        <div class="bg-ctp-base rounded-lg p-8 shadow-lg w-full max-w-md border border-ctp-surface0">
-            <h2 class="text-2xl font-bold mb-6 text-ctp-text text-center">Définir votre code secret</h2>
-
+        @template.components.Card(
+        title = "Définir votre code secret",
+        extraClasses = "w-full max-w-md shadow-lg",
+        content = @`
             @if (error != null)
-                <div class="mb-4 p-3 bg-ctp-surface0 border border-ctp-red rounded-lg text-ctp-red text-sm flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 01-1-1v-4a1 1 0 112 0v4a1 1 0 01-1 1z" clip-rule="evenodd" />
-                    </svg>
-                    ${error}
-                </div>
+                @template.components.Alert(
+                type = "error",
+                body = @`${error}`
+                )
             @endif
 
-            <div class="mb-4 p-3 bg-ctp-surface0 border border-ctp-blue rounded-lg text-ctp-blue text-sm flex items-center">
-                <i class="h-5 w-5 mr-4 text-ctp-blue" data-feather="user"></i>
-                Utilisateur : ${username}
-            </div>
+            @template.components.Alert(
+            type = "info",
+            body = @`Utilisateur : <b>${username}</b>`
+            )
 
-            <div class="mb-6 p-3 bg-ctp-surface0 border border-ctp-yellow rounded-lg text-ctp-text text-sm">
-                <div class="flex items-center">
-                    <i class="h-5 w-5 mr-4 text-ctp-yellow" data-feather="info"></i>
-                    <span>C'est votre première connexion. Veuillez définir un code secret à 6 chiffres.</span>
-                </div>
-            </div>
+            @template.components.Alert(
+            type = "warning",
+            body = @`C'est votre première connexion. Veuillez définir un code secret à 6 chiffres.`
+            )
 
             <form action="/user-auth/initialize-code" method="post" class="space-y-6">
                 <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}">
 
-                <div class="space-y-2">
-                    <label for="secretCode" class="block text-sm font-medium text-ctp-text">Code secret (6 chiffres)</label>
-                    <input type="password" class="w-full px-3 py-2 bg-ctp-surface0 border border-ctp-surface1 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:border-ctp-blue text-ctp-text"
-                           id="secretCode" name="secretCode" pattern="[0-9]{6}" maxlength="6" inputmode="numeric" required>
-                    <p class="text-xs text-ctp-subtext0 mt-1">Votre code doit être composé de 6 chiffres uniquement.</p>
-                </div>
+                @template.components.FormField(
+                type = "password",
+                id = "secretCode",
+                name = "secretCode",
+                label = "Code secret (6 chiffres)",
+                pattern = "[0-9]{6}",
+                maxlength = "6",
+                inputmode = "numeric",
+                required = true,
+                helpText = "Votre code doit être composé de 6 chiffres uniquement."
+                )
 
                 <div class="pt-2">
-                    <button type="submit"
-                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-ctp-base bg-ctp-blue hover:bg-ctp-blue/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ctp-blue transition duration-150 ease-in-out">
-                        Définir mon code
-                    </button>
+                    @template.components.Button(
+                    type = "submit",
+                    variant = "primary",
+                    extraClasses = "w-full",
+                    content = @`Définir mon code`
+                    )
                 </div>
             </form>
 
             <div class="mt-4 text-center">
-                <a href="/user-auth/select" class="text-ctp-blue hover:text-ctp-blue/80 text-sm">
-                    Retour à la sélection d'utilisateur
-                </a>
+                @template.components.Button(
+                href = "/user-auth/select",
+                variant = "link",
+                size = "sm",
+                content = @`Retour à la sélection d'utilisateur`
+                )
             </div>
-        </div>
+        `
+        )
     </div>
 `)

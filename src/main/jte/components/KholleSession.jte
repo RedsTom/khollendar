@@ -8,7 +8,8 @@
 
 !{boolean isEnded = session.calculateDateRange().map(DateRange::end).map(date -> date.isBefore(LocalDateTime.now())).orElse(false);}
 
-<a href="/kholles/${session.id()}" class="block bg-ctp-surface1 p-4 rounded-lg hover:bg-ctp-surface2 transition-colors duration-200 ease-in-out">
+<a href="/kholles/${session.id()}"
+   class="block bg-ctp-surface1 p-4 rounded-lg hover:bg-ctp-surface2 transition-colors duration-200 ease-in-out">
     <h3 class="text-lg font-medium @if(isEnded) line-through text-ctp-subtext1 @endif">
         ${session.subject()}
     </h3>

@@ -22,12 +22,11 @@ title = "Confirmation de mes préférences",
 _csrf = _csrf,
 content = @`
     <div class="container mx-auto p-4">
-        <div class="mb-4 p-3 bg-ctp-surface0 border border-ctp-blue rounded-lg text-ctp-blue text-sm flex items-center">
-            <i class="h-5 w-5 mr-4 text-ctp-blue" data-feather="user"></i>
-            <span>
-                Vous êtes actuellement connectés en tant que <b>${currentUser.username()}</b>
-            </span>
-        </div>
+        <!-- Indicateur d'utilisateur connecté -->
+        @template.components.Alert(
+        type = "info",
+        body = @`Vous êtes actuellement connecté en tant que <b>${currentUser.username()}</b>`
+        )
 
         <div class="rounded-lg mb-4">
             <h1 class="text-3xl font-bold mb-4">
@@ -41,16 +40,13 @@ content = @`
         <form id="confirmForm" action="/kholles/${session.id()}/preferences/save" method="post">
             <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}">
 
-            <div class="bg-ctp-surface0 rounded-lg p-6">
+            @template.components.Card(
+            title = "Étape 3 : Confirmation",
+            content = @`
                 <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <h2 class="text-2xl font-semibold mb-2">
-                            Étape 3 : Confirmation
-                        </h2>
-                        <p class="text-xl mb-4">
-                            Vérifiez le récapitulatif de vos choix avant la validation finale.
-                        </p>
-                    </div>
+                    <p class="text-xl mb-0">
+                        Vérifiez le récapitulatif de vos choix avant la validation finale.
+                    </p>
                     <div class="hidden md:block">
                         <div class="flex items-center gap-2 text-sm text-ctp-subtext0">
                             <span class="text-ctp-subtext0">Étape 1</span>
@@ -62,12 +58,13 @@ content = @`
                     </div>
                 </div>
 
-                <div class="mb-6 p-3 bg-ctp-red/20 border border-ctp-red rounded-lg text-ctp-red text-sm flex items-center">
-                    <i class="h-5 w-5 mr-4 text-ctp-red" data-feather="alert-triangle"></i>
-                    <p>
-                        <b>Attention :</b> L'envoi de vos préférences est définitif. Après validation, vous ne pourrez plus modifier vos choix pour cette khôlle.
-                    </p>
-                </div>
+                @template.components.Alert(
+                type = "warning",
+                body = @`
+                    <b>Attention
+                        :</b> L'envoi de vos préférences est définitif. Après validation, vous ne pourrez plus modifier vos choix pour cette khôlle.
+                `
+                )
 
                 <!-- Résumé des créneaux -->
                 <div class="mb-6">
@@ -76,58 +73,66 @@ content = @`
                     <div class="overflow-hidden rounded-lg border border-ctp-surface2 mb-6">
                         <table class="w-full">
                             <thead class="bg-ctp-surface1 border-b border-ctp-surface2">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-sm font-medium">Créneau</th>
-                                    <th class="px-4 py-3 text-left text-sm font-medium">Statut</th>
-                                </tr>
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-medium">Créneau</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium">Statut</th>
+                            </tr>
                             </thead>
                             <tbody class="divide-y divide-ctp-surface2">
-                                @for(KholleSlot slot : allSlots)
-                                    <tr class="bg-ctp-base">
-                                        <td class="px-4 py-3">
-                                            ${slot.dateTime().format(formatter)}
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            @if(unavailableSlots.contains(slot))
-                                                <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-ctp-red/20 text-ctp-red">
-                                                    <i class="h-3 w-3 mr-1" data-feather="x-circle"></i>
-                                                    Indisponible
-                                                </div>
-                                            @else
-                                                !{
-                                                    int rank = rankedSlots.indexOf(slot) + 1;
-                                                    String rankDisplay = rank > 0 ? "Choix n°" + rank : "Non classé";
-                                                    String bgColor = rank > 0 ? "bg-ctp-green/20" : "bg-ctp-yellow/20";
-                                                    String textColor = rank > 0 ? "text-ctp-green" : "text-ctp-yellow";
-                                                    String icon = rank > 0 ? "check-circle" : "alert-circle";
-                                                }
-                                                <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}">
-                                                    <i class="h-3 w-3 mr-1" data-feather="${icon}"></i>
-                                                    ${rankDisplay}
-                                                </div>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endfor
+                            @for(KholleSlot slot : allSlots)
+                                <tr class="bg-ctp-base">
+                                    <td class="px-4 py-3">
+                                        ${slot.dateTime().format(formatter)}
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        @if(unavailableSlots.contains(slot))
+                                            <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-ctp-red/20 text-ctp-red">
+                                                <i class="h-3 w-3 mr-1" data-feather="x-circle"></i>
+                                                Indisponible
+                                            </div>
+                                        @else
+                                            !{
+                                                        int rank = rankedSlots.indexOf(slot) + 1;
+                                                        String rankDisplay = rank > 0 ? "Choix n°" + rank : "Non classé";
+                                                        String bgColor = rank > 0 ? "bg-ctp-green/20" : "bg-ctp-yellow/20";
+                                                        String textColor = rank > 0 ? "text-ctp-green" : "text-ctp-yellow";
+                                                        String icon = rank > 0 ? "check-circle" : "alert-circle";
+                                                    }
+                                            <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}">
+                                                <i class="h-3 w-3 mr-1" data-feather="${icon}"></i>
+                                                ${rankDisplay}
+                                            </div>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endfor
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- Boutons d'action -->
-                <div class="mt-6 flex justify-between">
-                    <a href="/kholles/${session.id()}/preferences?step=2"
-                       class="px-4 py-2 border border-ctp-blue text-ctp-blue font-medium rounded-lg hover:bg-ctp-blue/10 transition-colors flex items-center gap-2">
-                        <i data-feather="arrow-left" class="h-4 w-4"></i>
+                <div class="mt-6 flex flex-col sm:flex-row justify-between gap-4">
+                    @template.components.Button(
+                    href = "/kholles/" + session.id() + "/preferences?step=2",
+                    variant = "secondary",
+                    content = @`
+                        <i data-feather="arrow-left" class="h-4 w-4 mr-2"></i>
                         Retour
-                    </a>
-                    <button type="submit"
-                            class="px-4 py-2 bg-ctp-green text-ctp-base font-medium rounded-lg hover:bg-ctp-green/80 transition-colors flex items-center gap-2">
+                    `
+                    )
+
+                    @template.components.Button(
+                    type = "submit",
+                    variant = "primary",
+                    content = @`
                         Confirmer mes choix
-                        <i data-feather="check" class="h-4 w-4"></i>
-                    </button>
+                        <i data-feather="check" class="h-4 w-4 ml-2"></i>
+                    `
+                    )
                 </div>
-            </div>
+            `
+            )
         </form>
     </div>
 `
