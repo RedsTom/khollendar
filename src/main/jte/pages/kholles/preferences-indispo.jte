@@ -72,7 +72,7 @@ content = @`
                     </ul>
                     <p>
                         En revanche, n'indiquez pas comme indisponible un créneau où vous préférez ne pas avoir de
-                        khôlle mais où vous pourriez en avoir une si nécessaire. Pour cela, classez ce créneau en bas
+                        khôlle, mais où vous pourriez en avoir une si nécessaire. Pour cela, classez ce créneau en bas
                         de votre liste de préférences à l'étape suivante.
                     </p>
                 `)
