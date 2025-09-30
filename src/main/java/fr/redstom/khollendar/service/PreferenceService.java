@@ -2,6 +2,8 @@ package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.entity.KholleSlot;
+import fr.redstom.khollendar.entity.User;
+import fr.redstom.khollendar.repository.UserPreferenceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -19,6 +21,7 @@ public class PreferenceService {
 
     private final KholleService kholleService;
     private final UserService userService;
+    private final UserPreferenceRepository userPreferenceRepository;
 
     /**
      * Prépare les données pour le formulaire d'indisponibilités (étape 1)
@@ -134,5 +137,24 @@ public class PreferenceService {
         kholleService.savePreferences(userId, kholleId,
             unavailableSlotIds != null ? unavailableSlotIds : new ArrayList<>(),
             rankedSlotIds != null ? rankedSlotIds : new ArrayList<>());
+    }
+
+    /**
+     * Vérifie si l'utilisateur a déjà soumis ses préférences pour une session de khôlle donnée
+     *
+     * @param userId L'ID de l'utilisateur
+     * @param kholleId L'ID de la session de khôlle
+     * @return true si l'utilisateur a déjà soumis ses préférences, false sinon
+     */
+    public boolean hasSubmittedPreferences(Long userId, Long kholleId) {
+        User user = userService.getUserById(userId).orElse(null);
+        KholleSession session = kholleService.getKholleSessionById(kholleId).orElse(null);
+
+        if (user == null || session == null) {
+            return false;
+        }
+
+        // Vérifie si des préférences existent pour cet utilisateur et cette session
+        return userPreferenceRepository.existsByUserAndSession(user, session);
     }
 }

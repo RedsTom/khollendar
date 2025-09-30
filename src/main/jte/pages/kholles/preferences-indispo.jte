@@ -24,7 +24,7 @@ content = @`
         <!-- Indicateur d'utilisateur connecté -->
         @template.components.Alert(
         type = "info",
-        message = "Vous êtes actuellement connecté en tant que <b>${currentUser.username()}</b>"
+        body = @`Vous êtes actuellement connecté en tant que <b>${currentUser.username()}</b>`
         )
 
         <!-- En-tête -->

@@ -2,10 +2,7 @@ package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import fr.redstom.khollendar.dto.KholleSessionCreationDto;import fr.redstom.khollendar.entity.*;
-import fr.redstom.khollendar.service.KholleService;
-import fr.redstom.khollendar.service.KholleSlotService;
-import fr.redstom.khollendar.service.PreferenceService;
-import fr.redstom.khollendar.service.SessionService;
+import fr.redstom.khollendar.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +28,7 @@ public class KholleSessionController {
     private final PreferenceService preferenceService;
     private final SessionService sessionService;
     private final KholleSlotService kholleSlotService;
+    private final UserService userService;
 
     /**
      * Liste toutes les sessions de khôlles
@@ -122,12 +120,12 @@ public class KholleSessionController {
      * Utilise un paramètre d'étape pour naviguer entre les différentes vues
      */
     @GetMapping("/{id}/preferences")
-    public String preferences(
+    public String showPreferences(
             @PathVariable Long id,
             @RequestParam(value = "step", defaultValue = "1") int step,
-            HttpSession session,
+            @ModelAttribute("_csrf") CsrfToken csrf,
             HttpServletRequest request,
-            CsrfToken csrf,
+            HttpSession session,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
@@ -140,6 +138,21 @@ public class KholleSessionController {
         Long userId = sessionService.getCurrentUserId(session);
 
         try {
+            // Vérifier si l'utilisateur a déjà soumis ses préférences
+            if (preferenceService.hasSubmittedPreferences(userId, id)) {
+                // Si oui, rediriger vers la page des préférences verrouillées
+                KholleSession kholleSession = kholleService.getKholleSessionById(id).orElseThrow(() ->
+                    new IllegalArgumentException("Session de khôlle non trouvée"));
+                User user = userService.getUserById(userId).orElseThrow(() ->
+                    new IllegalArgumentException("Utilisateur non trouvé"));
+
+                model.addAttribute("session", kholleSession);
+                model.addAttribute("currentUser", user);
+                model.addAttribute("_csrf", csrf);
+
+                return "pages/kholles/preferences-locked";
+            }
+
             // Récupérer ou créer les préférences dans la session
             KhollePreferencesDto preferences = sessionService.getPreferences(session, id);
 
@@ -199,6 +212,14 @@ public class KholleSessionController {
             return "redirect:/user-auth/select";
         }
 
+        Long userId = sessionService.getCurrentUserId(session);
+
+        // Vérifier si l'utilisateur a déjà soumis ses préférences
+        if (preferenceService.hasSubmittedPreferences(userId, id)) {
+            redirectAttributes.addFlashAttribute("error", "Vous avez déjà soumis vos préférences pour cette khôlle. Elles ne peuvent plus être modifiées.");
+            return "redirect:/kholles/" + id;
+        }
+
         // Récupérer et mettre à jour les préférences
         KhollePreferencesDto preferences = sessionService.getPreferences(session, id);
         preferences = preferences.withUnavailableSlots(unavailableSlots).nextStep();
@@ -220,6 +241,14 @@ public class KholleSessionController {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
             return "redirect:/user-auth/select";
+        }
+
+        Long userId = sessionService.getCurrentUserId(session);
+
+        // Vérifier si l'utilisateur a déjà soumis ses préférences
+        if (preferenceService.hasSubmittedPreferences(userId, id)) {
+            redirectAttributes.addFlashAttribute("error", "Vous avez déjà soumis vos préférences pour cette khôlle. Elles ne peuvent plus être modifiées.");
+            return "redirect:/kholles/" + id;
         }
 
         // Récupérer et mettre à jour les préférences
@@ -245,6 +274,12 @@ public class KholleSessionController {
         }
 
         Long userId = sessionService.getCurrentUserId(session);
+
+        // Vérifier si l'utilisateur a déjà soumis ses préférences
+        if (preferenceService.hasSubmittedPreferences(userId, id)) {
+            redirectAttributes.addFlashAttribute("error", "Vous avez déjà soumis vos préférences pour cette khôlle. Elles ne peuvent plus être modifiées.");
+            return "redirect:/kholles/" + id;
+        }
 
         // Récupérer les préférences stockées
         KhollePreferencesDto preferences = sessionService.getPreferences(session, id);
