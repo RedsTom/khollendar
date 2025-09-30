@@ -157,7 +157,7 @@ public class KholleSessionController {
                 case 1:
                     preferenceService.prepareUnavailabilityForm(id, userId, model, preferences.unavailableSlotIds());
                     model.addAttribute("_csrf", csrf);
-                    return "pages/kholles/preferences";
+                    return "pages/kholles/preferences-indispo";
 
                 case 2:
                     preferenceService.prepareRankingForm(id, userId,

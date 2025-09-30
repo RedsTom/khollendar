@@ -11,6 +11,9 @@ importers:
       '@tailwindcss/cli':
         specifier: ^4.1.13
         version: 4.1.13
+      pnpm:
+        specifier: ^10.17.1
+        version: 10.17.1
       tailwindcss:
         specifier: ^4.1.13
         version: 4.1.13
@@ -353,6 +356,11 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
+  pnpm@10.17.1:
+    resolution: {integrity: sha512-F8Vg/KSGeulHOjiZrYSogzSRTzeb5G1FXL+S5c9LOdNJhdRS0lg7rxmWf6dstcF7yeJFUp0LmHRXIapyAOyveg==}
+    engines: {node: '>=18.12'}
+    hasBin: true
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -635,6 +643,8 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
+
+  pnpm@10.17.1: {}
 
   source-map-js@1.2.1: {}
 

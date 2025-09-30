@@ -1,5 +1,7 @@
 @param String type = "info"
-@param String message
+@param String message = null
+@param gg.jte.Content body = null
+
 @param boolean dismissible = false
 
 <%-- Définition des styles selon le type d'alerte --%>
@@ -24,11 +26,17 @@
         <i data-feather="info" class="flex-shrink-0 w-5 h-5 mr-3 mt-0.5"></i>
     @endif
     <div class="flex-1">
-        <p class="text-sm font-medium">${message}</p>
+        @if(body != null)
+            ${body}
+        @endif
+        @if(message != null && !message.isEmpty())
+            <p class="text-sm font-medium">${message}</p>
+        @endif
     </div>
 
     @if(dismissible)
-        <button type="button" class="flex-shrink-0 ml-3 -mr-1 -mt-1 p-1 rounded-md hover:bg-black/5" onclick="this.parentElement.remove()">
+        <button type="button" class="flex-shrink-0 ml-3 -mr-1 -mt-1 p-1 rounded-md hover:bg-black/5"
+                onclick="this.parentElement.remove()">
             <i data-feather="x" class="w-4 h-4"></i>
         </button>
     @endif
