@@ -1,0 +1,14 @@
+gg.jte.development-mode=true
+spring.application.name=kholle-n-dar
+
+spring.datasource.url=${DATABASE_URL:jdbc:postgresql://localhost:5432/kholles_manager}
+spring.datasource.username=${DATABASE_USERNAME:user}
+spring.datasource.password=${DATABASE_PASSWORD:password}
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=update
+
+# Configuration de sécurité
+admin.password=${ADMIN_PASSWORD:changeme}
+# Désactivation de la page de login par défaut de Spring Security
+spring.security.basic.enabled=false
+
