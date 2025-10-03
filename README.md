@@ -32,6 +32,38 @@ Khôlle'n'dar est une application web dédiée à la gestion et l'organisation d
   - Tailwind CSS
   - JavaScript
 
+## 🚀 Installation et Configuration
+
+### Prérequis
+- Java 17 ou supérieur
+- PostgreSQL
+- Gradle
+
+### Configuration de la base de données
+
+1. Copiez le fichier de configuration exemple :
+   ```bash
+   cp src/main/resources/application.properties.example src/main/resources/application.properties
+   ```
+
+2. Modifiez `src/main/resources/application.properties` avec vos propres valeurs :
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/votre_base
+   spring.datasource.username=votre_utilisateur
+   spring.datasource.password=votre_mot_de_passe
+   admin.password=votre_mot_de_passe_admin
+   ```
+
+   **⚠️ Important** : Ne commitez JAMAIS le fichier `application.properties` avec vos credentials réels. Ce fichier est ignoré par Git.
+
+### Lancement de l'application
+
+```bash
+./gradlew bootRun
+```
+
+L'application sera accessible sur `http://localhost:8080`
+
 ## 📝 Licence
 
 Ce projet est sous licence [GNU GPL v3](LICENSE).
