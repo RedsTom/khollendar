@@ -32,17 +32,11 @@ content = @`
             <form action="/user-auth/initialize-code" method="post" class="space-y-6">
                 <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}">
 
-                @template.components.FormField(
-                type = "password",
-                id = "secretCode",
-                name = "secretCode",
-                label = "Code secret (6 chiffres)",
-                pattern = "[0-9]{6}",
-                maxlength = "6",
-                inputmode = "numeric",
-                required = true,
-                helpText = "Votre code doit être composé de 6 chiffres uniquement."
-                )
+                <div class="form-field">
+                    <label for="secretCode">Code secret (6 chiffres)</label>
+                    <input type="password" id="secretCode" name="secretCode" pattern="[0-9]{6}" maxlength="6" inputmode="numeric" required>
+                    <p class="help-text">Votre code doit être composé de 6 chiffres uniquement.</p>
+                </div>
 
                 <div class="pt-2">
                     @template.components.Button(

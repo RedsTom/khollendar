@@ -22,21 +22,15 @@ content = @`
                 <form action="/login" method="post" class="space-y-6">
                     <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
 
-                    @template.components.FormField(
-                    type = "text",
-                    id = "username",
-                    name = "username",
-                    label = "Nom d'utilisateur",
-                    required = true
-                    )
+                    <div class="form-field">
+                        <label for="username">Nom d'utilisateur</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
 
-                    @template.components.FormField(
-                    type = "password",
-                    id = "password",
-                    name = "password",
-                    label = "Mot de passe",
-                    required = true
-                    )
+                    <div class="form-field">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
 
                     <div class="pt-2">
                         @template.components.Button(

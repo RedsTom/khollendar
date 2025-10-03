@@ -22,14 +22,10 @@ content = @`
 
                 <div class="flex flex-col md:flex-row gap-4">
                     <div class="flex-grow">
-                        @template.components.FormField(
-                        type = "text",
-                        id = "username",
-                        name = "username",
-                        label = "Nom d'utilisateur",
-                        placeholder = "Ex: Jean Dupont",
-                        required = true
-                        )
+                        <div class="form-field">
+                            <label for="username">Nom d'utilisateur</label>
+                            <input type="text" id="username" name="username" placeholder="Ex: Jean Dupont" required>
+                        </div>
                     </div>
 
                     <div class="flex items-end">

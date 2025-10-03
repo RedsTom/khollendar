@@ -8,3 +8,28 @@
 * {
     @apply transition;
 }
+
+/* Styles pour les formulaires */
+label {
+    @apply block text-sm font-medium mb-2 text-ctp-text;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+select {
+    @apply w-full p-2 bg-ctp-base border border-ctp-surface1 rounded-md text-ctp-text;
+    @apply focus:outline-none focus:border-ctp-blue;
+}
+
+.help-text {
+    @apply mt-1 text-sm text-ctp-subtext0;
+}
+
+.form-field {
+    @apply mb-4;
+}

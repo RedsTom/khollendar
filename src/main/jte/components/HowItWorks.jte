@@ -1,6 +1,7 @@
-<div class="bg-ctp-surface0 rounded-lg p-4 mt-4">
-    <h2 class="text-lg font-semibold mb-3">Comment ça marche ?</h2>
-
+@template.components.Card(
+title = "Comment ça marche ?",
+extraClasses = "mt-4",
+content = @`
     <div class="relative flex flex-col gap-6">
         <div class="absolute h-[calc(100%-2rem)] w-0.5 bg-ctp-blue left-6 top-4"></div>
 
@@ -55,4 +56,5 @@
             </div>
         </div>
     </div>
-</div>
+`
+)

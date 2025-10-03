@@ -25,19 +25,15 @@ content = @`
                 <form action="/user-auth/select" method="post" class="space-y-6">
                     <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}">
 
-                    @template.components.FormField(
-                    type = "select",
-                    id = "userId",
-                    name = "userId",
-                    label = "Sélectionner votre nom d'utilisateur",
-                    required = true,
-                    options = @`
-                        <option value="">-- Sélectionner un utilisateur --</option>
-                        @for(fr.redstom.khollendar.entity.User user : users)
-                            <option value="${user.id()}">${user.username()}</option>
-                        @endfor
-                    `
-                    )
+                    <div class="form-field">
+                        <label for="userId">Sélectionner votre nom d'utilisateur</label>
+                        <select id="userId" name="userId" required>
+                            <option value="">-- Sélectionner un utilisateur --</option>
+                            @for(fr.redstom.khollendar.entity.User user : users)
+                                <option value="${user.id()}">${user.username()}</option>
+                            @endfor
+                        </select>
+                    </div>
 
                     <div class="pt-2">
                         @template.components.Button(

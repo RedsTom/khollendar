@@ -17,28 +17,18 @@ content = @`
         @template.components.Card(
         content = @`
             <form action="/kholles/create" method="post" class="max-w-3xl">
-                @template.components.FormField(
-                id = "subject",
-                name = "subject",
-                label = "Matière / Sujet",
-                placeholder = "Ex: Mathématiques - Intégrales",
-                required = true
-                )
+                <div class="form-field">
+                    <label for="subject">Matière / Sujet</label>
+                    <input type="text" id="subject" name="subject" placeholder="Ex: Mathématiques - Intégrales" required>
+                </div>
 
                 <div class="mb-6">
                     <h3 class="text-lg font-medium mb-4">Créneaux horaires</h3>
                     <div id="slots-container" class="space-y-4">
-                        <div class="slot-input flex flex-col sm:flex-row gap-4">
-                            <div class="flex-1">
-                                @template.components.FormField(
-                                type = "datetime-local",
-                                id = "slot-0-time",
-                                name = "slots[0].time",
-                                label = "Date et heure",
-                                required = true
-                                )
-                            </div>
-                            <div class="flex items-end">
+                        <div class="slot-input">
+                            <label for="slot-0-time">Date et heure</label>
+                            <div class="flex gap-4">
+                                <input type="datetime-local" id="slot-0-time" name="slots[0].time" required class="flex-1">
                                 @template.components.Button(
                                 type = "button",
                                 variant = "danger",
@@ -85,22 +75,24 @@ content = @`
         function addSlot() {
             const container   = document.getElementById('slots-container');
             const newSlot     = document.createElement('div');
-            newSlot.className = 'slot-input flex flex-col sm:flex-row gap-4';
+            newSlot.className = 'slot-input';
 
             newSlot.innerHTML = `
-                <div class="flex-1">
-                    @template.components.FormField(
-                        type = "datetime-local",
-                        id = "slot-${slotCount}-time",
-                        name = "slots[${slotCount}].time",
-                        label = "Date et heure",
-                        required = true
-                    )
-                </div>
-                <div class="flex items-end">
-                    <button type="button" class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-3 py-1.5 text-sm delete-slot" onclick="deleteSlot(this)">
-                        <i data-feather="trash-2"></i>
-                    </button>
+                <div class="slot-input">
+                    <label for="slot-0-time">Date et heure</label>
+                    <div class="flex gap-4">
+                        <input type="datetime-local" id="slot-0-time" name="slots[0].time" required class="flex-1">
+                            @endraw
+                            @template.components.Button(
+                                type = "button",
+                                variant = "danger",
+                                size = "sm",
+                                onclick = "deleteSlot(this)",
+                                extraClasses = "delete-slot",
+                                content = @`<i data-feather="trash-2"></i>`
+                            )
+                            @raw
+                    </div>
                 </div>
             `;
 

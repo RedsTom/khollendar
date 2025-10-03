@@ -8,17 +8,22 @@
 
 !{boolean isEnded = session.calculateDateRange().map(DateRange::end).map(date -> date.isBefore(LocalDateTime.now())).orElse(false);}
 
-<a href="/kholles/${session.id()}"
-   class="block bg-ctp-surface1 p-4 rounded-lg hover:bg-ctp-surface2 transition-colors duration-200 ease-in-out">
-    <h3 class="text-lg font-medium @if(isEnded) line-through text-ctp-subtext1 @endif">
-        ${session.subject()}
-    </h3>
-    <div class="text-sm text-ctp-subtext0 mt-2">
-        @if(session.calculateDateRange().isPresent())
-            <p>
-                Du ${session.calculateDateRange().get().start().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}
-                au ${session.calculateDateRange().get().end().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}</p>
-        @endif
-        <p class="mt-1">${session.kholleSlots().size()} ${WordUtils.plural("créneau", "x", session.kholleSlots())} ${WordUtils.plural("programmé", "s", session.kholleSlots())}</p>
-    </div>
+<a href="/kholles/${session.id()}" class="block hover:opacity-90 transition-opacity">
+    @template.components.Card(
+    extraClasses = "hover:border-ctp-blue",
+    content = @`
+        <h3 class="text-lg font-medium @if(isEnded) line-through text-ctp-subtext1 @else text-ctp-text @endif">
+            ${session.subject()}
+        </h3>
+        <div class="text-sm text-ctp-subtext0 mt-2">
+            @if(session.calculateDateRange().isPresent())
+                <p>
+                    Du ${session.calculateDateRange().get().start().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}
+                    au ${session.calculateDateRange().get().end().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}
+                </p>
+            @endif
+            <p class="mt-1">${session.kholleSlots().size()} ${WordUtils.plural("créneau", "x", session.kholleSlots())} ${WordUtils.plural("programmé", "s", session.kholleSlots())}</p>
+        </div>
+    `
+    )
 </a>
