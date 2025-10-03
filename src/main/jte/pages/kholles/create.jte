@@ -81,9 +81,16 @@ content = @`
                 <label for="slot-${slotCount}-time">Date et heure</label>
                 <div class="flex gap-4">
                     <input type="datetime-local" id="slot-${slotCount}-time" name="slots[${slotCount}].time" required class="flex-1">
-                    <button type="button" class="btn btn-danger btn-sm delete-slot" onclick="deleteSlot(this)">
-                        <i data-feather="trash-2"></i>
-                    </button>
+                    @endraw
+                    @template.components.Button(
+                        type = "button",
+                        variant = "danger",
+                        size = "sm",
+                        onclick = "deleteSlot(this)",
+                        extraClasses = "delete-slot",
+                        content = @`<i data-feather="trash-2"></i>`
+                    )
+                    @raw
                 </div>
             `;
 

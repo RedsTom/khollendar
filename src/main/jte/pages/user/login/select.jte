@@ -6,7 +6,7 @@
 title = "Connexion utilisateur",
 _csrf = _csrf,
 content = @`
-    <div class="flex justify-center items-center min-h-[80vh]">
+    <div class="flex justify-center items-center min-h-[80vh] px-4">
         @template.components.Card(
         title = "Connexion utilisateur",
         extraClasses = "w-full max-w-md shadow-lg",

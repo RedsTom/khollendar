@@ -7,7 +7,7 @@
 title = "Entrer votre code secret",
 _csrf = _csrf,
 content = @`
-    <div class="flex justify-center items-center min-h-[80vh]">
+    <div class="flex justify-center items-center min-h-[80vh] px-4">
         @template.components.UserCodeForm(
         username = username,
         error = error,

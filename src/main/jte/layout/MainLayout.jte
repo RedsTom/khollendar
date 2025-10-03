@@ -40,17 +40,6 @@
                     fill="currentColor"/>
             </svg>
         </span>
-
-        @if(fr.redstom.khollendar.utils.AuthUtils.authenticated())
-            <form action="/logout" method="post" class="ml-2">
-                <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
-                <button type="submit"
-                        class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-3 py-2 rounded-md flex items-center gap-1">
-                    <i data-feather="log-out" class="w-4 h-4"></i>
-                    <span>Déconnexion</span>
-                </button>
-            </form>
-        @endif
     </div>
 </header>
 <main class="h-full relative">
@@ -62,11 +51,22 @@
     </p>
 
     <div id="buttons" class="flex gap-4">
-        <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
-           href="/login">
-            <i data-feather="log-in" class="w-5 h-5"></i>
-            Administrateur
-        </a>
+        @if(fr.redstom.khollendar.utils.AuthUtils.authenticated())
+            <form action="/logout" method="post">
+                <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
+                <button type="submit"
+                        class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-4 py-2 rounded-lg flex gap-2 items-center justify-center">
+                    <i data-feather="log-out" class="w-5 h-5"></i>
+                    Déconnexion
+                </button>
+            </form>
+        @else
+            <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
+               href="/login">
+                <i data-feather="log-in" class="w-5 h-5"></i>
+                Administrateur
+            </a>
+        @endif
 
         <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
            href="https://etulab.univ-amu.fr/b24013559/khollendar" target="_blank">

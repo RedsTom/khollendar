@@ -6,7 +6,7 @@
 title = title,
 _csrf = _csrf,
 content = @`
-    <div class="flex justify-center items-center min-h-[80vh]">
+    <div class="flex justify-center items-center min-h-[80vh] px-4">
         <div class="w-full max-w-md">
             @template.components.Card(
             title = "Connexion administrateur",
