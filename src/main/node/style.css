@@ -4,6 +4,10 @@
 @source "../jte/**";
 
 @source inline("line-through text-slate-600");
+@source inline("bg-ctp-blue/10 border-ctp-blue text-ctp-blue");
+@source inline("bg-ctp-green/10 border-ctp-green text-ctp-green");
+@source inline("bg-ctp-yellow/10 border-ctp-yellow text-ctp-yellow");
+@source inline("bg-ctp-red/10 border-ctp-red text-ctp-red");
 
 * {
     @apply transition;

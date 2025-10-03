@@ -35,7 +35,7 @@ public class DummyDataInitializer {
      * Génère et insère des données de test dans la base de données
      */
     @Bean
-    @Profile("!prod") // N'exécute pas en production
+    @Profile("!prod && false") // N'exécute pas en production
     public CommandLineRunner initData() {
         return args -> {
             // Vérifier si des données existent déjà
