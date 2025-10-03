@@ -26,6 +26,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/kholles/create", "/kholles/create/**").hasRole("ADMIN")
+                .requestMatchers("/kholles/*/delete").hasRole("ADMIN")
                 .requestMatchers("/user-auth/**").permitAll()
                 .requestMatchers("/**").permitAll()
             )

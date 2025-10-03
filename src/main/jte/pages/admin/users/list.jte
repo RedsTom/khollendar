@@ -20,15 +20,10 @@ content = @`
             <form action="/admin/users" method="post">
                 <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}">
 
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="flex-grow">
-                        <div class="form-field">
-                            <label for="username">Nom d'utilisateur</label>
-                            <input type="text" id="username" name="username" placeholder="Ex: Jean Dupont" required>
-                        </div>
-                    </div>
-
-                    <div class="flex items-end">
+                <div class="form-field">
+                    <label for="username">Nom d'utilisateur</label>
+                    <div class="flex gap-4">
+                        <input type="text" id="username" name="username" placeholder="Ex: Jean Dupont" required autofocus class="flex-1">
                         @template.components.Button(
                         type = "submit",
                         variant = "primary",

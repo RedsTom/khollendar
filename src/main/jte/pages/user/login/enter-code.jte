@@ -8,49 +8,14 @@ title = "Entrer votre code secret",
 _csrf = _csrf,
 content = @`
     <div class="flex justify-center items-center min-h-[80vh]">
-        @template.components.Card(
-        title = "Connexion utilisateur",
-        extraClasses = "w-full max-w-md shadow-lg",
-        content = @`
-            @if (error != null)
-                @template.components.Alert(
-                type = "error",
-                body = @`${error}`
-                )
-            @endif
-
-            @template.components.Alert(
-            type = "info",
-            body = @`Utilisateur : <b>${username}</b>`
-            )
-
-            <form action="/user-auth/enter-code" method="post" class="space-y-6">
-                <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}">
-
-                <div class="form-field">
-                    <label for="secretCode">Code secret à 6 chiffres</label>
-                    <input type="password" id="secretCode" name="secretCode" pattern="[0-9]{6}" maxlength="6" inputmode="numeric" required>
-                </div>
-
-                <div class="pt-2">
-                    @template.components.Button(
-                    type = "submit",
-                    variant = "primary",
-                    extraClasses = "w-full",
-                    content = @`Se connecter`
-                    )
-                </div>
-            </form>
-
-            <div class="mt-4 text-center">
-                @template.components.Button(
-                href = "/user-auth/select",
-                variant = "link",
-                size = "sm",
-                content = @`Retour à la sélection d'utilisateur`
-                )
-            </div>
-        `
+        @template.components.UserCodeForm(
+        username = username,
+        error = error,
+        cardTitle = "Connexion utilisateur",
+        formAction = "/user-auth/enter-code",
+        inputLabel = "Code secret à 6 chiffres",
+        submitButtonText = "Se connecter",
+        _csrf = _csrf
         )
     </div>
 `)

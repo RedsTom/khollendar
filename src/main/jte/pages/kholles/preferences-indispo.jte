@@ -83,21 +83,29 @@ content = @`
                         !{var isUnavailable = unavailableSlotIds != null && unavailableSlotIds.contains(slot.id());}
 
                         <div class="time-slot-container select-none">
-                            <input type="checkbox"
-                                   id="slot-${slotId}"
-                                   name="unavailable-slots"
-                                   value="${slotId}"
-                                   disabled="${isUnavailable}"
-                                   class="hidden slot-checkbox">
+                            @if(isUnavailable)
+                                <input type="checkbox"
+                                       id="slot-${slotId}"
+                                       name="unavailable-slots"
+                                       value="${slotId}"
+                                       disabled
+                                       class="hidden slot-checkbox">
+                            @else
+                                <input type="checkbox"
+                                       id="slot-${slotId}"
+                                       name="unavailable-slots"
+                                       value="${slotId}"
+                                       class="hidden slot-checkbox">
+                            @endif
 
                             <label for="slot-${slotId}"
-                                   class="time-slot flex items-center p-4 rounded-lg border border-ctp-surface2 cursor-pointer transition-all duration-200 hover:bg-ctp-surface1 bg-ctp-base">
+                                   class="time-slot !flex items-center p-4 rounded-lg border border-ctp-surface2 cursor-pointer transition-all duration-200 hover:bg-ctp-surface1 bg-ctp-base !mb-0">
                                 <div class="checkbox-custom mr-3 w-5 h-5 rounded-md border border-ctp-overlay0 flex items-center justify-center flex-shrink-0">
                                     <i class="check-icon text-white w-3 h-3" data-feather="x"></i>
                                 </div>
                                 <span class="slot-text text-sm font-medium leading-tight break-words text-ctp-text">
-                                        ${WordUtils.capitalizeFirst(slot.dateTime().format(formatter))}
-                                    </span>
+                                    ${WordUtils.capitalizeFirst(slot.dateTime().format(formatter))}
+                                </span>
                             </label>
                         </div>
                     @endfor

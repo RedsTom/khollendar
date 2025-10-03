@@ -83,7 +83,7 @@ public class KholleSessionController {
      * Affiche les détails d'une session de khôlle
      */
     @GetMapping("/{id}")
-    public String show(@PathVariable Long id, CsrfToken csrf, Model model, RedirectAttributes redirectAttributes) {
+    public String show(@PathVariable Long id, CsrfToken csrf, Model model, RedirectAttributes redirectAttributes, java.security.Principal principal) {
         Optional<KholleSession> session = kholleService.getKholleSessionById(id);
 
         if (session.isEmpty()) {
@@ -106,13 +106,31 @@ public class KholleSessionController {
         // Récupérer le nombre d'utilisateurs ayant enregistré leurs préférences
         long registeredUsersCount = kholleService.getRegisteredUsersCount(id);
 
+        // Vérifier si l'utilisateur est admin
+        boolean isAdmin = principal != null && principal.getName().equals("admin");
+
         model.addAttribute("title", "Détails de la session de khôlle");
         model.addAttribute("session", kholleSession);
         model.addAttribute("userPreferences", userPreferences);
         model.addAttribute("userUnavailableSlots", userUnavailableSlots);
         model.addAttribute("registeredUsersCount", registeredUsersCount);
+        model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("_csrf", csrf);
         return "pages/kholles/show";
+    }
+
+    /**
+     * Suppression d'une session de khôlle (admin uniquement)
+     */
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            kholleService.deleteKholleSession(id);
+            redirectAttributes.addFlashAttribute("success", "La session de khôlles a été supprimée avec succès");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de la suppression de la session : " + e.getMessage());
+        }
+        return "redirect:/kholles";
     }
 
     /**
@@ -123,7 +141,7 @@ public class KholleSessionController {
     public String showPreferences(
             @PathVariable Long id,
             @RequestParam(value = "step", defaultValue = "1") int step,
-            @ModelAttribute("_csrf") CsrfToken csrf,
+            CsrfToken csrf,
             HttpServletRequest request,
             HttpSession session,
             Model model,

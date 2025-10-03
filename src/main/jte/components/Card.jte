@@ -2,7 +2,7 @@
 @param String extraClasses = ""
 @param gg.jte.Content content
 
-!{var cardClasses = "bg-ctp-surface0 rounded-lg border border-ctp-surface1 overflow-hidden " + extraClasses;}
+!{var cardClasses = "bg-ctp-surface0 rounded-lg border border-ctp-surface1 overflow-hidden mb-4 " + extraClasses;}
 
 <div class="${cardClasses}">
     @if(!title.isEmpty())

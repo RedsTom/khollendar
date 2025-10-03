@@ -16,6 +16,7 @@
 @param long registeredUsersCount
 @param org.springframework.security.web.csrf.CsrfToken _csrf
 @param HttpSession httpSession = null
+@param boolean isAdmin = false
 
 !{boolean userAuthenticated = httpSession != null && httpSession.getAttribute("selectedUserId") != null;}
 !{DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);}
@@ -39,7 +40,7 @@ content = @`
                     @endif
                 </div>
 
-                <div class="flex-shrink-0">
+                <div class="flex gap-2 flex-wrap">
                     @if(userAuthenticated)
                         @template.components.Button(
                         href = "/kholles/" + session.id() + "/preferences",
@@ -52,6 +53,20 @@ content = @`
                         variant = "primary",
                         content = @`Indiquer mes disponibilités`
                         )
+                    @endif
+
+                    @if(isAdmin)
+                        <form action="/kholles/${session.id()}/delete" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette session de khôlles ? Cette action est irréversible.');" class="inline">
+                            <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
+                            @template.components.Button(
+                            type = "submit",
+                            variant = "danger",
+                            content = @`
+                                <i data-feather="trash-2" class="mr-2"></i>
+                                Supprimer la session
+                            `
+                            )
+                        </form>
                     @endif
                 </div>
             </div>

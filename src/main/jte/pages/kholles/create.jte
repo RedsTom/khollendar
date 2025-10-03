@@ -78,21 +78,12 @@ content = @`
             newSlot.className = 'slot-input';
 
             newSlot.innerHTML = `
-                <div class="slot-input">
-                    <label for="slot-0-time">Date et heure</label>
-                    <div class="flex gap-4">
-                        <input type="datetime-local" id="slot-0-time" name="slots[0].time" required class="flex-1">
-                            @endraw
-                            @template.components.Button(
-                                type = "button",
-                                variant = "danger",
-                                size = "sm",
-                                onclick = "deleteSlot(this)",
-                                extraClasses = "delete-slot",
-                                content = @`<i data-feather="trash-2"></i>`
-                            )
-                            @raw
-                    </div>
+                <label for="slot-${slotCount}-time">Date et heure</label>
+                <div class="flex gap-4">
+                    <input type="datetime-local" id="slot-${slotCount}-time" name="slots[${slotCount}].time" required class="flex-1">
+                    <button type="button" class="btn btn-danger btn-sm delete-slot" onclick="deleteSlot(this)">
+                        <i data-feather="trash-2"></i>
+                    </button>
                 </div>
             `;
 
@@ -116,6 +107,11 @@ content = @`
             slots.forEach((slot, index) => {
                 const input = slot.querySelector('input[type="datetime-local"]');
                 input.name  = `slots[${index}].time`;
+                input.id    = `slot-${index}-time`;
+                const label = slot.querySelector('label');
+                if (label) {
+                    label.setAttribute('for', `slot-${index}-time`);
+                }
             });
             slotCount = slots.length;
         }

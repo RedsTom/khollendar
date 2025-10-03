@@ -253,4 +253,18 @@ public class KholleService {
             .sorted(Comparator.comparing(KholleSlot::dateTime))
             .toList();
     }
+
+    /**
+     * Supprime une session de khôlle et toutes ses données associées
+     *
+     * @param sessionId L'ID de la session à supprimer
+     */
+    @Transactional
+    public void deleteKholleSession(Long sessionId) {
+        KholleSession session = getKholleSessionById(sessionId).orElseThrow(() ->
+            new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
+
+        // Les préférences et les slots seront supprimés en cascade grâce aux relations JPA
+        kholleSessionRepository.delete(session);
+    }
 }
