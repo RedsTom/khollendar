@@ -37,3 +37,19 @@ select {
 .form-field {
     @apply mb-4;
 }
+
+/* ================= Classement des créneaux / préférences ================= */
+@layer components {
+    /* Animation déclenchée sur le numéro quand le rang change */
+    .rank-number.rank-changed {
+        animation: rankPulse 850ms cubic-bezier(.33,1,.68,1);
+    }
+}
+
+/* Keyframes (ne peuvent pas utiliser @apply, uniquement propriétés CSS standards) */
+@keyframes rankPulse {
+    0%   { transform: scale(1.35); }
+    35%  { transform: scale(1.18); }
+    60%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}

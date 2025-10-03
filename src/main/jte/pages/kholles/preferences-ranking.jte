@@ -140,71 +140,104 @@ content = @`
         )
     </div>
 
+    @raw
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof feather !== 'undefined') {
                 feather.replace();
             }
-
-            // Initialiser le système de classement
             initializeSlotRanking();
         });
+
+        let isAnimating = false;
 
         function initializeSlotRanking() {
             const slotRanking = document.getElementById('slot-ranking');
             if (!slotRanking) return;
-
-            // Ajouter les gestionnaires d'événements
             attachEventListeners();
-
-            // Mettre à jour l'état initial des boutons
             updateButtonStates();
         }
 
         function attachEventListeners() {
             const slotRanking = document.getElementById('slot-ranking');
-
-            // Utiliser la délégation d'événements pour gérer les clics
             slotRanking.addEventListener('click', function (event) {
                 const button = event.target.closest('button');
                 if (!button) return;
-
-                // Ne rien faire si le bouton est désactivé
                 if (button.classList.contains('disabled')) return;
+                if (isAnimating) return; // bloquer pendant l'anim principale
 
                 if (button.classList.contains('move-up')) {
-                    moveSlotUp(button);
+                    const slotItem = button.closest('.slot-item');
+                    const prevItem = slotItem?.previousElementSibling;
+                    if (!prevItem) return;
+                    animateReorder(() => {
+                        slotRanking.insertBefore(slotItem, prevItem);
+                    });
                 } else if (button.classList.contains('move-down')) {
-                    moveSlotDown(button);
+                    const slotItem = button.closest('.slot-item');
+                    const nextItem = slotItem?.nextElementSibling;
+                    if (!nextItem) return;
+                    animateReorder(() => {
+                        slotRanking.insertBefore(nextItem, slotItem);
+                    });
                 }
             });
         }
 
-        function moveSlotUp(button) {
-            const listItem = button.closest('li');
-            const prevItem = listItem.previousElementSibling;
+        function animateReorder(doReorder) {
+            const slotRanking = document.getElementById('slot-ranking');
+            if (!slotRanking) return;
+            if (isAnimating) return;
+            isAnimating = true;
+            slotRanking.style.pointerEvents = 'none';
 
-            if (prevItem) {
-                const slotRanking = document.getElementById('slot-ranking');
-                slotRanking.insertBefore(listItem, prevItem);
+            const itemsBefore = Array.from(slotRanking.children);
+            const oldRanks = new Map(itemsBefore.map((item, idx) => [item, idx + 1]));
+            const firstRects = new Map(itemsBefore.map(item => [item, item.getBoundingClientRect()]));
 
-                // Mettre à jour l'interface après le déplacement
-                updateAfterMove();
-            }
+            // Appliquer la modification (DOM)
+            doReorder();
+            updateAfterMove();
+
+            const itemsAfter = Array.from(slotRanking.children);
+
+            // FLIP animation
+            itemsAfter.forEach(item => {
+                const first = firstRects.get(item);
+                if (!first) return;
+                const last = item.getBoundingClientRect();
+                const deltaY = first.top - last.top;
+                if (deltaY !== 0) {
+                    item.style.transform = `translateY(${deltaY}px)`;
+                    item.style.transition = 'transform 0s';
+                    requestAnimationFrame(() => {
+                        item.style.transition = 'transform 380ms cubic-bezier(.33,1,.68,1)';
+                        item.style.transform = '';
+                    });
+                }
+            });
+
+            // Marquer les rangs modifiés
+            itemsAfter.forEach((item, idx) => {
+                const oldRank = oldRanks.get(item);
+                const newRank = idx + 1;
+                if (oldRank !== undefined && oldRank !== newRank) {
+                    const rankEl = item.querySelector('.rank-number');
+                    if (rankEl) {
+                        rankEl.classList.remove('rank-changed');
+                        void rankEl.offsetWidth;
+                        rankEl.classList.add('rank-changed');
+                        // Suppression: pastille & outline retirés
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                isAnimating = false;
+                slotRanking.style.pointerEvents = '';
+            }, 420);
         }
 
-        function moveSlotDown(button) {
-            const listItem = button.closest('li');
-            const nextItem = listItem.nextElementSibling;
-
-            if (nextItem) {
-                const slotRanking = document.getElementById('slot-ranking');
-                slotRanking.insertBefore(nextItem, listItem);
-
-                // Mettre à jour l'interface après le déplacement
-                updateAfterMove();
-            }
-        }
 
         function updateAfterMove() {
             updateRankNumbers();
@@ -212,85 +245,52 @@ content = @`
             updateButtonStates();
         }
 
-        // Mettre à jour les numéros de rang affichés
         function updateRankNumbers() {
-            const listItems = document.querySelectorAll('#slot-ranking .slot-item');
-
-            listItems.forEach((item, index) => {
-                const rankNumber = item.querySelector('.rank-number');
-                if (rankNumber) {
-                    rankNumber.textContent = index + 1;
-                }
+            const slotItems = document.querySelectorAll('#slot-ranking .slot-item');
+            slotItems.forEach((item, idx) => {
+                const rankEl = item.querySelector('.rank-number');
+                if (rankEl) rankEl.textContent = idx + 1;
             });
         }
 
-        // Mettre à jour l'ordre des inputs cachés pour la soumission du formulaire
         function updateInputOrder() {
-            const form = document.getElementById('rankingForm');
-            if (!form) return;
-
-            // Supprimer tous les anciens inputs de classement
-            const oldInputs = form.querySelectorAll('input[name="ranked-slots"]');
-            oldInputs.forEach(input => input.remove());
-
-            // Ajouter les nouveaux inputs dans le nouvel ordre
-            const listItems = document.querySelectorAll('#slot-ranking .slot-item');
-            listItems.forEach(item => {
-                const slotId = item.getAttribute('data-slot-id');
-                if (slotId) {
-                    const input = document.createElement('input');
-                    input.type  = 'hidden';
-                    input.name  = 'ranked-slots';
-                    input.value = slotId;
-                    form.appendChild(input);
-                }
-            });
+            // Pas nécessaire : l'ordre des <li> reflète l'ordre soumis
         }
 
-        // Mettre à jour l'état des boutons (actif/désactivé)
         function updateButtonStates() {
-            const listItems  = document.querySelectorAll('#slot-ranking .slot-item');
-            const totalItems = listItems.length;
-
-            listItems.forEach((item, index) => {
-                const upButton   = item.querySelector('.move-up');
-                const downButton = item.querySelector('.move-down');
-                const upIcon     = upButton.querySelector('i');
-                const downIcon   = downButton.querySelector('i');
-
-                // Réinitialiser tous les styles
-                resetButtonStyles(upButton, upIcon);
-                resetButtonStyles(downButton, downIcon);
-
-                // Premier élément - désactiver le bouton "monter"
-                if (index === 0) {
-                    disableButton(upButton, upIcon);
-                }
-
-                // Dernier élément - désactiver le bouton "descendre"
-                if (index === totalItems - 1) {
-                    disableButton(downButton, downIcon);
-                }
+            const items = document.querySelectorAll('#slot-ranking .slot-item');
+            const total = items.length;
+            items.forEach((item, idx) => {
+                const upBtn = item.querySelector('.move-up');
+                const downBtn = item.querySelector('.move-down');
+                styleButton(upBtn, false);
+                styleButton(downBtn, false);
+                if (idx === 0) styleButton(upBtn, true);
+                if (idx === total - 1) styleButton(downBtn, true);
             });
         }
 
-        function resetButtonStyles(button, icon) {
-            button.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
-            button.classList.add('hover:bg-ctp-surface2');
-            if (icon) {
-                icon.classList.remove('text-ctp-overlay0');
-                icon.classList.add('text-ctp-text');
+        function styleButton(btn, disabled) {
+            if (!btn) return;
+            btn.classList.toggle('disabled', disabled);
+            btn.classList.toggle('opacity-50', disabled);
+            btn.classList.toggle('cursor-not-allowed', disabled);
+            if (disabled) {
+                btn.classList.remove('hover:bg-ctp-surface2');
+                btn.setAttribute('tabindex', '-1');
+                btn.setAttribute('aria-disabled', 'true');
+            } else {
+                btn.classList.add('hover:bg-ctp-surface2');
+                btn.removeAttribute('tabindex');
+                btn.removeAttribute('aria-disabled');
             }
-        }
-
-        function disableButton(button, icon) {
-            button.classList.add('disabled', 'opacity-50', 'cursor-not-allowed');
-            button.classList.remove('hover:bg-ctp-surface2');
+            const icon = btn.querySelector('i');
             if (icon) {
-                icon.classList.remove('text-ctp-text');
-                icon.classList.add('text-ctp-overlay0');
+                icon.classList.toggle('text-ctp-overlay0', disabled);
+                icon.classList.toggle('text-ctp-text', !disabled);
             }
         }
     </script>
+    @endraw
 `
 )
