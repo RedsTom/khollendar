@@ -45,7 +45,8 @@
 <!-- Distribution par rang de préférence -->
 @if(!rankDistribution.isEmpty())
     <div class="mt-6 pt-6 border-t border-ctp-surface2">
-        <h3 class="text-lg font-semibold mb-3 text-ctp-text">
+        <h3 class="text-lg font-semibold mb-3 text-ctp-blue flex items-center gap-2">
+            <i data-feather="pie-chart" class="w-5 h-5"></i>
             Distribution par rang de préférence
         </h3>
         <div class="space-y-2">

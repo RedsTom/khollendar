@@ -11,7 +11,10 @@
         <i data-feather="calendar"
            class="w-5 h-5 mt-0.5 flex-shrink-0 @if(assignment.obtainedPreferenceRank() != null && assignment.obtainedPreferenceRank() == 1) text-ctp-green @else text-ctp-blue @endif"></i>
         <div class="flex-1">
-            <h3 class="font-semibold text-lg mb-1">Votre créneau affecté</h3>
+            <h3 class="font-semibold text-lg mb-1 text-ctp-blue flex items-center gap-2">
+                <i data-feather="check-circle" class="w-5 h-5"></i>
+                Votre créneau affecté
+            </h3>
             <p class="text-base mb-2">
                 <strong>${assignment.slot().dateTime().format(formatter)}</strong>
             </p>
@@ -33,4 +36,3 @@
         </div>
     </div>
 </div>
-

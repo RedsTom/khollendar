@@ -50,7 +50,10 @@
                         <div class="mx-auto mb-6 p-4 rounded-full bg-ctp-overlay0 inline-flex">
                             <i data-feather="lock" class="w-12 h-12 text-ctp-text"></i>
                         </div>
-                        <h2 class="text-xl font-bold mb-4">Vos préférences sont déjà enregistrées</h2>
+                        <h2 class="text-xl font-bold mb-4 text-ctp-blue flex items-center justify-center gap-2">
+                            <i data-feather="check-circle" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                            Vos préférences sont déjà enregistrées
+                        </h2>
                         <p class="text-ctp-subtext0 mb-6">
                             Vous avez déjà soumis vos préférences pour cette séance de khôlle.
                             Une fois validées, les préférences ne peuvent plus être modifiées.

@@ -79,7 +79,10 @@
 
                         <!-- Résumé des créneaux -->
                         <div class="mb-6">
-                            <h3 class="text-lg font-semibold mb-3">Récapitulatif de vos choix :</h3>
+                            <h3 class="text-lg font-semibold mb-3 text-ctp-blue flex items-center gap-2">
+                                <i data-feather="list" class="w-5 h-5"></i>
+                                Récapitulatif de vos choix :
+                            </h3>
 
                             <div class="overflow-hidden rounded-lg border border-ctp-surface2 mb-6">
                                 <table class="w-full">

@@ -47,7 +47,10 @@
                         </div>
 
                         <div class="mb-6">
-                            <h3 class="text-lg font-medium mb-4">Créneaux horaires</h3>
+                            <h3 class="text-lg font-medium mb-4 text-ctp-blue flex items-center gap-2">
+                                <i data-feather="clock" class="w-5 h-5"></i>
+                                Créneaux horaires
+                            </h3>
                             <div id="slots-container" class="space-y-4">
                             </div>
 

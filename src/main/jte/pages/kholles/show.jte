@@ -112,7 +112,10 @@
                     @if(isAdmin)
                         <div class="mb-8">
                             <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
-                                <h2 class="text-xl sm:text-2xl font-semibold">Préférences des utilisateurs</h2>
+                                <h2 class="text-xl sm:text-2xl font-semibold text-ctp-blue flex items-center gap-2">
+                                    <i data-feather="users" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                                    Préférences des utilisateurs
+                                </h2>
                                 <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
                                     ${registeredUsersCount} utilisateur${registeredUsersCount > 1 ? "s ont" : " a"}
                                     enregistré ${registeredUsersCount > 1 ? "leurs" : "ses"} préférences
