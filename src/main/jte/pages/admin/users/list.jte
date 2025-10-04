@@ -7,6 +7,19 @@
     _csrf = _csrf,
     content = @`
         <div class="container mx-auto p-4 max-w-6xl">
+            <!-- Breadcrumb -->
+            <div class="mb-6">
+                @template.components.Breadcrumb(
+                    content = @`
+                        <a href="/" class="hover:text-ctp-blue transition-colors">
+                            Accueil
+                        </a>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <span class="text-ctp-text">Gestion des utilisateurs</span>
+                    `
+                )
+            </div>
+
             <!-- En-tête -->
             <div class="mb-6">
                 <h1 class="text-2xl font-bold">Gestion des utilisateurs</h1>

@@ -37,6 +37,23 @@
     _csrf = _csrf,
     content = @`
         <div class="container mx-auto p-4 max-w-7xl">
+            <!-- Breadcrumb -->
+            <div class="mb-6">
+                @template.components.Breadcrumb(
+                    content = @`
+                        <a href="/" class="hover:text-ctp-blue transition-colors">
+                            Accueil
+                        </a>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <a href="/kholles" class="hover:text-ctp-blue transition-colors">
+                            Sessions de khôlles
+                        </a>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <span class="text-ctp-text">${session.subject()}</span>
+                    `
+                )
+            </div>
+
             @template.components.Card(
                 content = @`
                     <!-- En-tête de la session -->

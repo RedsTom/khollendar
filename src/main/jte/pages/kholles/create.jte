@@ -8,6 +8,23 @@
     _csrf = _csrf,
     content = @`
         <div class="container mx-auto p-4">
+            <!-- Breadcrumb -->
+            <div class="mb-6">
+                @template.components.Breadcrumb(
+                    content = @`
+                        <a href="/" class="hover:text-ctp-blue transition-colors">
+                            Accueil
+                        </a>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <a href="/kholles" class="hover:text-ctp-blue transition-colors">
+                            Sessions de khôlles
+                        </a>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <span class="text-ctp-text">Créer une session</span>
+                    `
+                )
+            </div>
+
             <!-- En-tête -->
             <div class="mb-6">
                 <h1 class="text-2xl font-bold">${title}</h1>

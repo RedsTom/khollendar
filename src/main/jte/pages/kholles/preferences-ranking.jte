@@ -19,6 +19,27 @@
     _csrf = _csrf,
     content = @`
         <div class="container mx-auto p-4 max-w-6xl">
+            <!-- Breadcrumb -->
+            <div class="mb-4">
+                @template.components.Breadcrumb(
+                    content = @`
+                        <a href="/" class="hover:text-ctp-blue transition-colors">
+                            Accueil
+                        </a>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <a href="/kholles" class="hover:text-ctp-blue transition-colors">
+                            Sessions de khôlles
+                        </a>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
+                            ${session.subject()}
+                        </a>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <span class="text-ctp-text">Classement des préférences</span>
+                    `
+                )
+            </div>
+
             <!-- Indicateur d'utilisateur connecté -->
             @template.components.UserHeader(username = currentUser.username())
 
