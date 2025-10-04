@@ -8,6 +8,8 @@
 @param long withoutPreferences
 @param Map<Integer, Long> rankDistribution
 
+!{int assignmentsWithPreferences = totalAssignments - (int) withoutPreferences;}
+
 <h2 class="text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
     <i data-feather="bar-chart-2" class="w-6 h-6"></i>
     Statistiques d'affectation
@@ -50,7 +52,7 @@
             @for(Map.Entry<Integer, Long> entry : rankDistribution.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList())
                 !{int rank = entry.getKey();}
                 !{long count = entry.getValue();}
-                !{double percentage = (double) count / totalAssignments * 100;}
+                !{double percentage = assignmentsWithPreferences > 0 ? (double) count / assignmentsWithPreferences * 100 : 0;}
                 <div>
                     <div class="flex justify-between text-sm mb-1">
                         <span class="text-ctp-text">Choix n°${rank}</span>

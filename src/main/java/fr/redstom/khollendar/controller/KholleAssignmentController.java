@@ -95,7 +95,8 @@ public class KholleAssignmentController {
                 .count();
 
         long firstChoice = rankDistribution.getOrDefault(1, 0L);
-        double satisfactionRate = assignments.isEmpty() ? 0 : (double) firstChoice / assignments.size() * 100;
+        long assignmentsWithPreferences = assignments.size() - withoutPreferences;
+        double satisfactionRate = assignmentsWithPreferences == 0 ? 0 : (double) firstChoice / assignmentsWithPreferences * 100;
 
         model.addAttribute("title", "Affectations - " + session.subject());
         model.addAttribute("session", session);
