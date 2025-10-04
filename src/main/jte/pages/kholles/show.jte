@@ -29,7 +29,7 @@ content = @`
         @template.components.Card(
         content = @`
             <!-- En-tête de la session -->
-            <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
+            <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-start mb-6">
                 <div class="flex-1 min-w-0">
                     <h1 class="text-2xl sm:text-3xl font-bold break-words">${session.subject()}</h1>
                     @if(session.calculateDateRange().isPresent())
@@ -45,22 +45,33 @@ content = @`
                         @template.components.Button(
                         href = "/kholles/" + session.id() + "/preferences",
                         variant = "primary",
+                        extraClasses = "w-full md:w-auto",
                         content = @`Indiquer mes disponibilités`
                         )
                     @else
                         @template.components.Button(
                         href = "/user-auth/select?redirectTo=/kholles/" + session.id() + "/preferences",
                         variant = "primary",
+                        extraClasses = "w-full md:w-auto",
                         content = @`Indiquer mes disponibilités`
                         )
                     @endif
 
                     @if(isAdmin)
-                        <form action="/kholles/${session.id()}/delete" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette session de khôlles ? Cette action est irréversible.');" class="inline">
+                        <button type="button" id="renameBtn"
+                                class="w-full md:w-auto inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
+                            <i data-feather="edit-2" class="mr-2"></i>
+                            Renommer
+                        </button>
+
+                        <form action="/kholles/${session.id()}/delete" method="post"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette session de khôlles ? Cette action est irréversible.');"
+                              class="inline w-full md:w-auto">
                             <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
                             @template.components.Button(
                             type = "submit",
                             variant = "danger",
+                            extraClasses = "w-full md:w-auto",
                             content = @`
                                 <i data-feather="trash-2" class="mr-2"></i>
                                 Supprimer la session
@@ -70,6 +81,81 @@ content = @`
                     @endif
                 </div>
             </div>
+
+            <!-- Modal de renommage -->
+            @if(isAdmin)
+                <style>
+                    #renameModal {
+                        margin: auto;
+                    }
+                    #renameModal::backdrop {
+                        background-color: rgba(0, 0, 0, 0.3);
+                    }
+                </style>
+                <dialog id="renameModal" class="rounded-lg shadow-xl max-w-md w-[calc(100%-1rem)] sm:w-full p-0 bg-transparent border-0">
+                    <div class="bg-ctp-base rounded-lg p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-ctp-text">Renommer la session</h2>
+                        </div>
+                        <form action="/kholles/${session.id()}/rename" method="post">
+                            <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
+                            <div class="mb-4">
+                                <label for="newSubject" class="block text-sm font-medium text-ctp-text mb-2">
+                                    Nouveau nom de la session
+                                </label>
+                                <input
+                                    type="text"
+                                    id="newSubject"
+                                    name="newSubject"
+                                    value="${session.subject()}"
+                                    required
+                                    class="w-full px-3 py-2 bg-ctp-surface0 border border-ctp-surface2 rounded-lg text-ctp-text focus:outline-none focus:ring-2 focus:ring-ctp-blue"
+                                />
+                            </div>
+                            <div class="flex gap-2 justify-end">
+                                <button
+                                    type="button"
+                                    id="cancelRenameBtn"
+                                    class="px-4 py-2 bg-ctp-surface0 text-ctp-text rounded-lg hover:bg-ctp-surface1 transition-colors">
+                                    Annuler
+                                </button>
+                                <button
+                                    type="submit"
+                                    class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-lg hover:bg-ctp-sapphire transition-colors">
+                                    Renommer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </dialog>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const renameBtn = document.getElementById('renameBtn');
+                        const renameModal = document.getElementById('renameModal');
+                        const closeBtn = document.getElementById('closeRenameModal');
+                        const cancelBtn = document.getElementById('cancelRenameBtn');
+
+                        if (renameBtn && renameModal) {
+                            renameBtn.addEventListener('click', function() {
+                                renameModal.showModal();
+                            });
+                        }
+
+                        if (closeBtn && renameModal) {
+                            closeBtn.addEventListener('click', function() {
+                                renameModal.close();
+                            });
+                        }
+
+                        if (cancelBtn && renameModal) {
+                            cancelBtn.addEventListener('click', function() {
+                                renameModal.close();
+                            });
+                        }
+                    });
+                </script>
+            @endif
 
             <!-- Section des horaires disponibles -->
             <div class="mb-8">

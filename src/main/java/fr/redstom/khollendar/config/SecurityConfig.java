@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/kholles/create", "/kholles/create/**").hasRole("ADMIN")
                 .requestMatchers("/kholles/*/delete").hasRole("ADMIN")
+                .requestMatchers("/kholles/*/rename").hasRole("ADMIN")
                 .requestMatchers("/user-auth/**").permitAll()
                 .requestMatchers("/**").permitAll()
             )

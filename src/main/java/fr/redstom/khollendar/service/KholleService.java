@@ -267,4 +267,28 @@ public class KholleService {
         // Les préférences et les slots seront supprimés en cascade grâce aux relations JPA
         kholleSessionRepository.delete(session);
     }
+
+    /**
+     * Renomme une session de khôlle
+     *
+     * @param sessionId L'ID de la session à renommer
+     * @param newSubject Le nouveau nom de la session
+     * @return La session mise à jour
+     */
+    @Transactional
+    public KholleSession renameKholleSession(Long sessionId, String newSubject) {
+        KholleSession session = getKholleSessionById(sessionId).orElseThrow(() ->
+            new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
+
+        if (newSubject == null || newSubject.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nouveau nom de la session ne peut pas être vide");
+        }
+
+        // Créer une nouvelle session avec le nouveau nom
+        KholleSession updatedSession = session.toBuilder()
+                .subject(newSubject.trim())
+                .build();
+
+        return kholleSessionRepository.save(updatedSession);
+    }
 }

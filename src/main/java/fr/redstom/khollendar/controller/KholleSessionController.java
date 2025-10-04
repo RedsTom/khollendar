@@ -134,6 +134,24 @@ public class KholleSessionController {
     }
 
     /**
+     * Renommage d'une session de khôlle (admin uniquement)
+     */
+    @PostMapping("/{id}/rename")
+    public String rename(
+            @PathVariable Long id,
+            @RequestParam("newSubject") String newSubject,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            kholleService.renameKholleSession(id, newSubject);
+            redirectAttributes.addFlashAttribute("success", "La session de khôlles a été renommée avec succès");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors du renommage de la session : " + e.getMessage());
+        }
+        return "redirect:/kholles/" + id;
+    }
+
+    /**
      * Formulaire de gestion des préférences pour une khôlle (entrée principale)
      * Utilise un paramètre d'étape pour naviguer entre les différentes vues
      */
