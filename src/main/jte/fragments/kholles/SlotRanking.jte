@@ -32,7 +32,7 @@
                     <input type="hidden" name="slotId" value="${slotId}">
                     <input type="hidden" name="direction" value="up">
 
-                    @template.components.Button(
+                    @template.components.ui.Button(
                     type = "submit",
                     variant = "minimal",
                     extraClasses = "p-1 rounded hover:bg-ctp-surface2 transition-colors",
@@ -47,7 +47,7 @@
                     <input type="hidden" name="slotId" value="${slotId}">
                     <input type="hidden" name="direction" value="down">
 
-                    @template.components.Button(
+                    @template.components.ui.Button(
                     type = "submit",
                     variant = "minimal",
                     extraClasses = "p-1 rounded hover:bg-ctp-surface2 transition-colors",

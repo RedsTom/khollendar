@@ -23,7 +23,7 @@
         <div class="container mx-auto p-4 max-w-6xl">
             <!-- Breadcrumb -->
             <div class="mb-4">
-                @template.components.Breadcrumb(
+                @template.components.navigation.Breadcrumb(
                     content = @`
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
@@ -43,19 +43,15 @@
             </div>
 
             <!-- Indicateur d'utilisateur connecté -->
-            @template.components.UserHeader(username = currentUser.username())
+            @template.fragments.common.UserIndicator(username = currentUser.username())
 
             <!-- En-tête -->
-            <div class="mb-6">
-                <h1 class="text-2xl sm:text-3xl font-bold mb-4 break-words">
-                    Khôlle ${WordUtils.definiteArticle(session.subject(), "de", "d'")}<b>${session.subject()}</b>
-                </h1>
-                <p class="text-base sm:text-xl text-ctp-subtext0 leading-relaxed">
-                    Indiquez vos disponibilités afin de vous affecter à la séance de khôlle qui vous convient le mieux.
-                </p>
-            </div>
+            @template.fragments.kholles.PreferencesPageHeader(
+                subject = @`Khôlle ${WordUtils.definiteArticle(session.subject(), "de", "d'")}<b>${session.subject()}</b>`,
+                step = "Indiquez vos disponibilités afin de vous affecter à la séance de khôlle qui vous convient le mieux."
+            )
 
-            @template.components.Card(
+            @template.components.ui.Card(
                 title = "Étape 1 : Mes indisponibilités",
                 content = @`
                     <form id="unavailabilityForm"
@@ -66,7 +62,7 @@
                                value="${_csrf.getToken()}">
 
                         <!-- Barre de progression -->
-                        @template.components.ProgressBar(currentStep = 1, totalSteps = 3)
+                        @template.components.layout.ProgressBar(currentStep = 1, totalSteps = 3)
 
                         <!-- Instructions -->
                         <p class="text-ctp-text mb-6 text-sm sm:text-base">
@@ -75,7 +71,7 @@
                             Les créneaux non cochés seront considérés comme disponibles pour la suite.
                         </p>
 
-                        @template.components.Alert(
+                        @template.components.ui.Alert(
                             type = "warning",
                             body = @`
                                 <p>
@@ -108,7 +104,7 @@
                                            name="unavailable-slots"
                                            value="${slotId}"
                                            class="hidden slot-checkbox"
-                                           disabled="${isUnavailable}">
+                                           checked="${isUnavailable}">
 
                                     <label for="slot-${slotId}"
                                            class="time-slot !flex items-center p-4 rounded-lg border border-ctp-surface2 cursor-pointer transition-all duration-200 hover:bg-ctp-surface1 bg-ctp-base !mb-0">
@@ -125,7 +121,7 @@
 
                         <!-- Boutons de navigation -->
                         <div class="flex flex-col sm:flex-row justify-between gap-4">
-                            @template.components.Button(
+                            @template.components.ui.Button(
                                 href = "/kholles",
                                 variant = "secondary",
                                 content = @`
@@ -134,7 +130,7 @@
                                 `
                             )
 
-                            @template.components.Button(
+                            @template.components.ui.Button(
                                 type = "submit",
                                 variant = "primary",
                                 content = @`
@@ -149,14 +145,23 @@
         </div>
 
         <style>
+            .slot-checkbox:checked + .time-slot {
+                background-color: rgb(var(--ctp-red) / 0.1);
+                border-color: rgb(var(--ctp-red) / 0.5);
+            }
+
+            .slot-checkbox:checked + .time-slot .checkbox-custom {
+                background-color: var(--ctp-red);
+                border-color: var(--ctp-red);
+            }
+
+            .slot-checkbox:not(:checked) + .time-slot .check-icon {
+                display: none;
+            }
         </style>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                if (typeof feather !== 'undefined') {
-                    feather.replace();
-                }
-            });
+            feather.replace();
         </script>
     `
 )

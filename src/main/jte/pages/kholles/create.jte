@@ -10,7 +10,7 @@
         <div class="container mx-auto p-4">
             <!-- Breadcrumb -->
             <div class="mb-6">
-                @template.components.Breadcrumb(
+                @template.components.navigation.Breadcrumb(
                     content = @`
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
@@ -33,7 +33,7 @@
                 </p>
             </div>
 
-            @template.components.Card(
+            @template.components.ui.Card(
                 content = @`
                     <form action="/kholles/create" method="post" class="max-w-3xl">
                         <div class="form-field">
@@ -51,7 +51,7 @@
                             <div id="slots-container" class="space-y-4">
                             </div>
 
-                            @template.components.Button(
+                            @template.components.ui.Button(
                                 type = "button",
                                 variant = "success",
                                 extraClasses = "mt-4",
@@ -68,7 +68,7 @@
                                value="${_csrf.getToken()}"/>
 
                         <div class="flex justify-end">
-                            @template.components.Button(
+                            @template.components.ui.Button(
                                 type = "submit",
                                 variant = "primary",
                                 size = "lg",

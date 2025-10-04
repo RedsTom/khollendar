@@ -9,7 +9,7 @@
         <div class="container mx-auto p-4 max-w-6xl">
             <!-- Breadcrumb -->
             <div class="mb-6">
-                @template.components.Breadcrumb(
+                @template.components.navigation.Breadcrumb(
                     content = @`
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
@@ -21,50 +21,25 @@
             </div>
 
             <!-- En-tête -->
-            <div class="mb-6">
-                <h1 class="text-2xl font-bold">Gestion des utilisateurs</h1>
-                <p class="text-ctp-subtext0">
-                    Créez et gérez les utilisateurs de l'application.
-                </p>
-            </div>
+            @template.fragments.common.PageHeader(
+                title = "Gestion des utilisateurs",
+                subtitle = "Créez et gérez les utilisateurs de l'application."
+            )
 
             <!-- Formulaire d'ajout d'utilisateur -->
-            @template.components.Card(
+            @template.components.ui.Card(
                 title = "Ajouter un utilisateur",
                 content = @`
-                    <form action="/admin/users" method="post">
-                        <input type="hidden"
-                               name="${_csrf.getParameterName()}"
-                               value="${_csrf.getToken()}">
-
-                        <div class="form-field">
-                            <label for="username">Nom d'utilisateur</label>
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <input type="text"
-                                       id="username"
-                                       name="username"
-                                       placeholder="Ex: Jean Dupont"
-                                       required
-                                       autofocus
-                                       class="flex-1">
-                                @template.components.Button(
-                                    type = "submit",
-                                    variant = "primary",
-                                    extraClasses = "w-full sm:w-auto",
-                                    content = @`Ajouter`
-                                )
-                            </div>
-                        </div>
-                    </form>
+                    @template.fragments.admin.UserManagementForm(_csrf = _csrf)
                 `
             )
 
             <!-- Liste des utilisateurs -->
-            @template.components.Card(
+            @template.components.ui.Card(
                 title = "Liste des utilisateurs",
                 content = @`
                     @if(users.isEmpty())
-                        @template.components.Alert(
+                        @template.components.ui.Alert(
                             type = "info",
                             body = @`Aucun utilisateur disponible.`
                         )
@@ -90,61 +65,10 @@
                                 </thead>
                                 <tbody class="divide-y divide-ctp-surface1">
                                     @for(fr.redstom.khollendar.entity.User user : users.getContent())
-                                        <tr class="hover:bg-ctp-mantle/50">
-                                            <td class="py-2 px-4 text-sm">${user.id()}</td>
-                                            <td class="py-2 px-4 text-sm">${user.username()}</td>
-                                            <td class="py-2 px-4 text-sm">
-                                                @if(user.codeInitialized())
-                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ctp-green/20 text-ctp-green">
-                                                        Oui
-                                                    </span>
-                                                @else
-                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ctp-yellow/20 text-ctp-yellow">
-                                                        Non
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td class="py-2 px-4 text-sm">
-                                                <div class="flex gap-2">
-                                                    @if(user.codeInitialized())
-                                                        <form action="/admin/users/${user.id()}/reset-code"
-                                                              method="post">
-                                                            <input type="hidden"
-                                                                   name="${_csrf.getParameterName()}"
-                                                                   value="${_csrf.getToken()}"/>
-                                                            @template.components.Button(
-                                                                type = "submit",
-                                                                variant = "warning",
-                                                                size = "xs",
-                                                                extraClasses = "flex items-center gap-1",
-                                                                onclick = "return confirm('Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?')",
-                                                                content = @`
-                                                                    <i data-feather="key" class="w-3 h-3"></i>
-                                                                    Réinitialiser code
-                                                                `
-                                                            )
-                                                        </form>
-                                                    @endif
-                                                    <form action="/admin/users/${user.id()}" method="post">
-                                                        <input type="hidden" name="_method" value="DELETE"/>
-                                                        <input type="hidden"
-                                                               name="${_csrf.getParameterName()}"
-                                                               value="${_csrf.getToken()}"/>
-                                                        @template.components.Button(
-                                                            type = "submit",
-                                                            variant = "danger",
-                                                            size = "xs",
-                                                            extraClasses = "flex items-center gap-1",
-                                                            onclick = "return confirm('Êtes-vous sûr de vouloir supprimer l\\'utilisateur ${user.username()} ?')",
-                                                            content = @`
-                                                                <i data-feather="trash-2" class="w-3 h-3"></i>
-                                                                Supprimer
-                                                            `
-                                                        )
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        @template.fragments.admin.UserTableRow(
+                                            user = user,
+                                            _csrf = _csrf
+                                        )
                                     @endfor
                                 </tbody>
                             </table>
@@ -153,81 +77,80 @@
                         <!-- Vue en cartes pour mobile -->
                         <div class="md:hidden space-y-4">
                             @for(fr.redstom.khollendar.entity.User user : users.getContent())
-                                <div class="bg-ctp-mantle rounded-lg p-4 space-y-3">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex-1">
-                                            <p class="text-xs text-ctp-subtext0">ID: ${user.id()}</p>
-                                            <h3 class="font-semibold text-ctp-text">${user.username()}</h3>
-                                            <div class="flex items-center gap-2 mt-2">
-                                                <span class="text-xs text-ctp-subtext0">Code initialisé:</span>
+                                <div class="bg-ctp-surface0 rounded-lg p-4 border border-ctp-surface1">
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="text-xs text-ctp-subtext0">ID</p>
+                                                <p class="font-medium">${user.id()}</p>
+                                            </div>
+                                            <div>
                                                 @if(user.codeInitialized())
                                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ctp-green/20 text-ctp-green">
-                                                        Oui
+                                                        Code initialisé
                                                     </span>
                                                 @else
                                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ctp-yellow/20 text-ctp-yellow">
-                                                        Non
+                                                        Code non initialisé
                                                     </span>
                                                 @endif
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="flex flex-col gap-2 pt-2 border-t border-ctp-surface1">
-                                        @if(user.codeInitialized())
-                                            <form action="/admin/users/${user.id()}/reset-code"
-                                                  method="post"
-                                                  class="w-full">
+                                        <div>
+                                            <p class="text-xs text-ctp-subtext0">Nom d'utilisateur</p>
+                                            <p class="font-medium">${user.username()}</p>
+                                        </div>
+                                        <div class="flex gap-2 pt-2">
+                                            @if(user.codeInitialized())
+                                                <form action="/admin/users/${user.id()}/reset-code"
+                                                      method="post"
+                                                      class="flex-1">
+                                                    <input type="hidden"
+                                                           name="${_csrf.getParameterName()}"
+                                                           value="${_csrf.getToken()}"/>
+                                                    @template.components.ui.Button(
+                                                        type = "submit",
+                                                        variant = "warning",
+                                                        size = "xs",
+                                                        extraClasses = "flex items-center gap-1 w-full justify-center",
+                                                        onclick = "return confirm('Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?')",
+                                                        content = @`
+                                                            <i data-feather="key" class="w-3 h-3"></i>
+                                                            Réinitialiser
+                                                        `
+                                                    )
+                                                </form>
+                                            @endif
+                                            <form action="/admin/users/${user.id()}" method="post" class="flex-1">
+                                                <input type="hidden" name="_method" value="DELETE"/>
                                                 <input type="hidden"
                                                        name="${_csrf.getParameterName()}"
                                                        value="${_csrf.getToken()}"/>
-                                                @template.components.Button(
+                                                @template.components.ui.Button(
                                                     type = "submit",
-                                                    variant = "warning",
-                                                    size = "sm",
-                                                    extraClasses = "w-full flex items-center justify-center gap-2",
-                                                    onclick = "return confirm('Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?')",
+                                                    variant = "danger",
+                                                    size = "xs",
+                                                    extraClasses = "flex items-center gap-1 w-full justify-center",
+                                                    onclick = "return confirm('Êtes-vous sûr de vouloir supprimer l\\'utilisateur ${user.username()} ?')",
                                                     content = @`
-                                                        <i data-feather="key" class="w-4 h-4"></i>
-                                                        Réinitialiser le code
+                                                        <i data-feather="trash-2" class="w-3 h-3"></i>
+                                                        Supprimer
                                                     `
                                                 )
                                             </form>
-                                        @endif
-                                        <form action="/admin/users/${user.id()}"
-                                              method="post"
-                                              class="w-full">
-                                            <input type="hidden" name="_method" value="DELETE"/>
-                                            <input type="hidden"
-                                                   name="${_csrf.getParameterName()}"
-                                                   value="${_csrf.getToken()}"/>
-                                            @template.components.Button(
-                                                type = "submit",
-                                                variant = "danger",
-                                                size = "sm",
-                                                extraClasses = "w-full flex items-center justify-center gap-2",
-                                                onclick = "return confirm('Êtes-vous sûr de vouloir supprimer l\\'utilisateur ${user.username()} ?')",
-                                                content = @`
-                                                    <i data-feather="trash-2" class="w-4 h-4"></i>
-                                                    Supprimer l'utilisateur
-                                                `
-                                            )
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             @endfor
                         </div>
 
-                        <!-- Pagination -->
                         @if(users.getTotalPages() > 1)
-                            <div class="mt-6">
-                                @template.components.PaginatedView(
-                                    page = users,
-                                    paramName = "page",
-                                    currentPage = currentPage,
-                                    urlMaker = (page) -> "/admin/users?page=" + page
-                                )
-                            </div>
+                            @template.components.navigation.PaginatedView(
+                                page = users,
+                                currentPage = currentPage,
+                                urlMaker = (newPage) -> "?page=" + newPage,
+                                paramName = "page"
+                            )
                         @endif
                     @endif
                 `

@@ -24,7 +24,7 @@
         <div class="container mx-auto p-4">
             <!-- Breadcrumb -->
             <div class="mb-4">
-                @template.components.Breadcrumb(
+                @template.components.navigation.Breadcrumb(
                     content = @`
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
@@ -44,7 +44,7 @@
             </div>
 
             <!-- Indicateur d'utilisateur connecté -->
-            @template.components.UserHeader(username = currentUser.username())
+            @template.components.layout.UserHeader(username = currentUser.username())
 
             <!-- En-tête -->
             <div class="rounded-lg mb-4">
@@ -63,13 +63,13 @@
                        name="${_csrf.getParameterName()}"
                        value="${_csrf.getToken()}">
 
-                @template.components.Card(
+                @template.components.ui.Card(
                     title = "Étape 3 : Confirmation",
                     content = @`
                         <!-- Barre de progression -->
-                        @template.components.ProgressBar(currentStep = 3, totalSteps = 3)
+                        @template.components.layout.ProgressBar(currentStep = 3, totalSteps = 3)
 
-                        @template.components.Alert(
+                        @template.components.ui.Alert(
                             type = "warning",
                             body = @`
                                 <b>Attention :</b> L'envoi de vos préférences est définitif.
@@ -124,7 +124,7 @@
 
                         <!-- Boutons d'action -->
                         <div class="mt-6 flex flex-col sm:flex-row justify-between gap-4">
-                            @template.components.Button(
+                            @template.components.ui.Button(
                                 href = "/kholles/" + session.id() + "/preferences?step=2",
                                 variant = "secondary",
                                 content = @`
@@ -133,7 +133,7 @@
                                 `
                             )
 
-                            @template.components.Button(
+                            @template.components.ui.Button(
                                 type = "submit",
                                 variant = "primary",
                                 content = @`

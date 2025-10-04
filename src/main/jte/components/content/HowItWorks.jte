@@ -1,4 +1,4 @@
-@template.components.Card(
+@template.components.ui.Card(
 title = "Comment ça marche ?",
 extraClasses = "mt-4",
 content = @`

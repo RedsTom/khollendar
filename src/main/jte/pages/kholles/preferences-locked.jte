@@ -14,7 +14,7 @@
         <div class="container mx-auto p-4 max-w-6xl">
             <!-- Breadcrumb -->
             <div class="mb-4">
-                @template.components.Breadcrumb(
+                @template.components.navigation.Breadcrumb(
                     content = @`
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
@@ -34,7 +34,7 @@
             </div>
 
             <!-- Indicateur d'utilisateur connecté -->
-            @template.components.UserHeader(username = currentUser.username())
+            @template.components.layout.UserHeader(username = currentUser.username())
 
             <!-- En-tête -->
             <div class="mb-6">
@@ -43,7 +43,7 @@
                 </h1>
             </div>
 
-            @template.components.Card(
+            @template.components.ui.Card(
                 title = "Préférences déjà soumises",
                 content = @`
                     <div class="mb-6 text-center">
@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-                        @template.components.Button(
+                        @template.components.ui.Button(
                             href = "/kholles",
                             variant = "primary",
                             content = @`

@@ -8,19 +8,19 @@
 @param String warningMessage = null
 @param org.springframework.security.web.csrf.CsrfToken _csrf
 
-@template.components.Card(
+@template.components.ui.Card(
 title = cardTitle,
 extraClasses = "w-full max-w-md shadow-lg",
 content = @`
     @if (error != null)
-        @template.components.Alert(
+        @template.components.ui.Alert(
         type = "error",
         body = @`${error}`
         )
     @endif
 
     @if(warningMessage != null)
-        @template.components.Alert(
+        @template.components.ui.Alert(
         type = "warning",
         body = @`${warningMessage}`
         )
@@ -46,7 +46,7 @@ content = @`
         </div>
 
         <div class="pt-2">
-            @template.components.Button(
+            @template.components.ui.Button(
             type = "submit",
             variant = "primary",
             extraClasses = "w-full",

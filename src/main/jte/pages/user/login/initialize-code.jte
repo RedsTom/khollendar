@@ -9,7 +9,7 @@
         <div class="container mx-auto p-4">
             <!-- Breadcrumb -->
             <div class="mb-6">
-                @template.components.Breadcrumb(
+                @template.components.navigation.Breadcrumb(
                     content = @`
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
@@ -25,7 +25,7 @@
             </div>
 
             <div class="flex justify-center items-center min-h-[70vh] px-4">
-                @template.components.UserCodeForm(
+                @template.components.forms.UserCodeForm(
                     username = username,
                     error = error,
                     cardTitle = "Définir votre code secret",

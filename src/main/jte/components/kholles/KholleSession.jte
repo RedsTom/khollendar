@@ -9,7 +9,7 @@
 !{boolean isEnded = session.calculateDateRange().map(DateRange::end).map(date -> date.isBefore(LocalDateTime.now())).orElse(false);}
 
 <a href="/kholles/${session.id()}" class="block hover:opacity-90 transition-opacity">
-    @template.components.Card(
+    @template.components.ui.Card(
     extraClasses = "hover:border-ctp-blue",
     content = @`
         <div class="flex justify-between items-start gap-3 mb-2">
