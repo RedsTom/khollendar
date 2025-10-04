@@ -2,6 +2,7 @@
 @import fr.redstom.khollendar.entity.KholleSlot
 @import fr.redstom.khollendar.entity.User
 @import fr.redstom.khollendar.entity.UserPreference
+@import fr.redstom.khollendar.entity.KholleAssignment
 @import java.time.format.DateTimeFormatter
 @import java.util.Locale
 @import java.util.List
@@ -17,9 +18,18 @@
 @param org.springframework.security.web.csrf.CsrfToken _csrf
 @param HttpSession httpSession = null
 @param boolean isAdmin = false
+@param List<KholleAssignment> assignments = null
+@param Map<Long, List<KholleAssignment>> assignmentsBySlot = null
+@param KholleAssignment userAssignment = null
 
 !{boolean userAuthenticated = httpSession != null && httpSession.getAttribute("selectedUserId") != null;}
+!{boolean hasAssignments = assignments != null && !assignments.isEmpty();}
 !{DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);}
+
+!{
+    List<KholleSlot> sortedSlots = new ArrayList<>(session.kholleSlots());
+    sortedSlots.sort(Comparator.comparing(KholleSlot::dateTime));
+}
 
 @template.layout.MainLayout(
 title = "Détails de la session",
@@ -96,11 +106,24 @@ content = @`
                         Actions administrateur
                     </h2>
                     <div class="flex gap-2 flex-wrap">
-                        <button type="button" id="statusBtn"
-                                class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
-                            <i data-feather="toggle-right" class="mr-2"></i>
-                            Changer le statut
-                        </button>
+                        <!-- Bouton pour déclencher l'affectation manuellement -->
+                        <form action="/kholles/${session.id()}/assignments/trigger" method="post" class="inline"
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir déclencher l\'affectation pour cette session ? Les affectations existantes seront écrasées.');">
+                            <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
+                            <button type="submit"
+                                    class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-green focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-green hover:bg-ctp-green/80 text-ctp-base border-0">
+                                <i data-feather="zap" class="mr-2"></i>
+                                Déclencher l'affectation
+                            </button>
+                        </form>
+
+                        @if(session.status() != fr.redstom.khollendar.entity.KholleSessionStatus.RESULTS_AVAILABLE)
+                            <button type="button" id="statusBtn"
+                                    class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
+                                <i data-feather="toggle-right" class="mr-2"></i>
+                                Changer le statut
+                            </button>
+                        @endif
 
                         <button type="button" id="renameBtn"
                                 class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
@@ -307,10 +330,6 @@ content = @`
                 @if(session.kholleSlots().isEmpty())
                     <p class="text-ctp-subtext0">Aucun horaire disponible pour cette session.</p>
                 @else
-                    !{
-                                List<KholleSlot> sortedSlots = new ArrayList<>(session.kholleSlots());
-                                sortedSlots.sort(Comparator.comparing(KholleSlot::dateTime));
-                            }
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                         @for(KholleSlot slot : sortedSlots)
                             <div class="bg-ctp-surface1 p-3 sm:p-4 rounded-lg">
@@ -322,6 +341,93 @@ content = @`
                     </div>
                 @endif
             </div>
+
+            <!-- Section des affectations par créneau -->
+            @if(hasAssignments)
+                <div class="mb-8">
+                    <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
+                        <i data-feather="check-circle" class="w-6 h-6"></i>
+                        Affectations par créneau
+                    </h2>
+
+                    <!-- Alerte pour l'utilisateur connecté -->
+                    @if(userAuthenticated && userAssignment != null)
+                        <div class="mb-4 p-4 rounded-lg border-2 @if(userAssignment.obtainedPreferenceRank() != null && userAssignment.obtainedPreferenceRank() == 1) border-ctp-green bg-ctp-green/10 @else border-ctp-blue bg-ctp-blue/10 @endif">
+                            <div class="flex items-start gap-3">
+                                <i data-feather="calendar" class="w-5 h-5 mt-0.5 flex-shrink-0 @if(userAssignment.obtainedPreferenceRank() != null && userAssignment.obtainedPreferenceRank() == 1) text-ctp-green @else text-ctp-blue @endif"></i>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-lg mb-1">Votre créneau affecté</h3>
+                                    <p class="text-base mb-2">
+                                        <strong>${userAssignment.slot().dateTime().format(DateTimeFormatter.ofPattern("EEEE d MMMM yyyy 'à' HH'h'mm", Locale.FRENCH))}</strong>
+                                    </p>
+                                    @if(userAssignment.obtainedPreferenceRank() != null)
+                                        @if(userAssignment.obtainedPreferenceRank() == 1)
+                                            <p class="text-sm text-ctp-green">🎉 Vous avez obtenu votre <strong>premier choix</strong> !</p>
+                                        @else
+                                            <p class="text-sm">Vous avez obtenu votre <strong>choix n°${userAssignment.obtainedPreferenceRank()}</strong></p>
+                                        @endif
+                                    @else
+                                        <p class="text-sm text-ctp-subtext0">Affectation aléatoire (aucune préférence renseignée ou satisfaite)</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="space-y-4">
+                        @for(KholleSlot slot : sortedSlots)
+                            !{List<KholleAssignment> slotAssignments = assignmentsBySlot.getOrDefault(slot.id(), List.of());}
+                            @if(!slotAssignments.isEmpty())
+                                <div class="bg-ctp-surface0/50 rounded-lg p-4 border border-ctp-surface2">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3 pb-3 border-b border-ctp-surface2">
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-ctp-text flex items-center gap-2">
+                                                <i data-feather="clock" class="w-5 h-5"></i>
+                                                ${slot.dateTime().format(DateTimeFormatter.ofPattern("EEEE d MMMM yyyy 'à' HH'h'mm", Locale.FRENCH))}
+                                            </h3>
+                                            <p class="text-sm text-ctp-subtext0 mt-1">
+                                                ${slotAssignments.size()} étudiant${slotAssignments.size() > 1 ? "s" : ""} affecté${slotAssignments.size() > 1 ? "s" : ""}
+                                            </p>
+                                        </div>
+                                        @if(userAssignment != null && userAssignment.slot().id().equals(slot.id()))
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-ctp-green/20 text-ctp-green border border-ctp-green/30">
+                                                <i data-feather="check-circle" class="w-4 h-4 mr-1"></i>
+                                                Votre créneau
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                                        @for(KholleAssignment assignment : slotAssignments.stream().sorted((a, b) -> a.user().username().compareTo(b.user().username())).toList())
+                                            <div class="bg-ctp-base rounded-lg p-3 border border-ctp-surface1 flex items-center justify-between gap-2">
+                                                <div class="flex items-center gap-2 min-w-0 flex-1">
+                                                    <i data-feather="user" class="w-4 h-4 text-ctp-blue flex-shrink-0"></i>
+                                                    <span class="font-medium text-ctp-text truncate">${assignment.user().username()}</span>
+                                                </div>
+                                                @if(assignment.obtainedPreferenceRank() != null)
+                                                    <span class="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                                        @if(assignment.obtainedPreferenceRank() == 1) bg-ctp-green/20 text-ctp-green
+                                                        @elseif(assignment.obtainedPreferenceRank() == 2) bg-ctp-blue/20 text-ctp-blue
+                                                        @elseif(assignment.obtainedPreferenceRank() == 3) bg-ctp-yellow/20 text-ctp-yellow
+                                                        @else bg-ctp-overlay0/20 text-ctp-overlay2
+                                                        @endif
+                                                    ">
+                                                        Choix ${assignment.obtainedPreferenceRank()}
+                                                    </span>
+                                                @else
+                                                    <span class="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ctp-overlay0/20 text-ctp-overlay2">
+                                                        Aléatoire
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        @endfor
+                                    </div>
+                                </div>
+                            @endif
+                        @endfor
+                    </div>
+                </div>
+            @endif
 
             <!-- Section des préférences des utilisateurs -->
             <div>

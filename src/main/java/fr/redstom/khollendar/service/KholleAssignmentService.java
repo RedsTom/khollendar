@@ -106,6 +106,12 @@ public class KholleAssignmentService {
 
         assignmentRepository.saveAll(assignmentEntities);
 
+        // Changer le statut de la session vers RESULTS_AVAILABLE après affectation
+        KholleSession updatedSession = session.toBuilder()
+                .status(KholleSessionStatus.RESULTS_AVAILABLE)
+                .build();
+        sessionRepository.save(updatedSession);
+
         log.info("Affectation terminée pour la session {}. {} affectations créées.", sessionId, assignments.size());
         logAssignmentStatistics(assignmentEntities);
 

@@ -1,12 +1,13 @@
 package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.KhollePreferencesDto;
-import fr.redstom.khollendar.dto.KholleSessionCreationDto;import fr.redstom.khollendar.entity.*;
+import fr.redstom.khollendar.dto.KholleSessionCreationDto;
+import fr.redstom.khollendar.entity.*;
 import fr.redstom.khollendar.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.data.domain.Page;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.*;
+import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Contrôleur pour la gestion des sessions de khôlles
@@ -29,6 +35,7 @@ public class KholleSessionController {
     private final SessionService sessionService;
     private final KholleSlotService kholleSlotService;
     private final UserService userService;
+    private final KholleAssignmentService assignmentService;
 
     /**
      * Liste toutes les sessions de khôlles
@@ -83,7 +90,7 @@ public class KholleSessionController {
      * Affiche les détails d'une session de khôlle
      */
     @GetMapping("/{id}")
-    public String show(@PathVariable Long id, CsrfToken csrf, Model model, RedirectAttributes redirectAttributes, java.security.Principal principal) {
+    public String show(@PathVariable Long id, CsrfToken csrf, Model model, RedirectAttributes redirectAttributes, Principal principal, HttpSession httpSession) {
         Optional<KholleSession> session = kholleService.getKholleSessionById(id);
 
         if (session.isEmpty()) {
@@ -109,12 +116,36 @@ public class KholleSessionController {
         // Vérifier si l'utilisateur est admin
         boolean isAdmin = principal != null && principal.getName().equals("admin");
 
+        // Récupérer les affectations si elles existent
+        List<KholleAssignment> assignments = assignmentService.getSessionAssignments(id);
+        Map<Long, List<KholleAssignment>> assignmentsBySlot = new LinkedHashMap<>();
+        KholleAssignment userAssignment = null;
+
+        if (!assignments.isEmpty()) {
+            // Grouper par créneau
+            assignmentsBySlot = assignments.stream()
+                .collect(Collectors.groupingBy(a -> a.slot().id()));
+
+            // Chercher l'affectation de l'utilisateur connecté
+            if (sessionService.isUserAuthenticated(httpSession)) {
+                Long userId = sessionService.getCurrentUserId(httpSession);
+                userAssignment = assignments.stream()
+                    .filter(a -> a.user().id().equals(userId))
+                    .findFirst()
+                    .orElse(null);
+            }
+        }
+
         model.addAttribute("title", "Détails de la session de khôlle");
         model.addAttribute("session", kholleSession);
         model.addAttribute("userPreferences", userPreferences);
         model.addAttribute("userUnavailableSlots", userUnavailableSlots);
         model.addAttribute("registeredUsersCount", registeredUsersCount);
         model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("httpSession", httpSession);
+        model.addAttribute("assignments", assignments);
+        model.addAttribute("assignmentsBySlot", assignmentsBySlot);
+        model.addAttribute("userAssignment", userAssignment);
         model.addAttribute("_csrf", csrf);
         return "pages/kholles/show";
     }
@@ -161,6 +192,21 @@ public class KholleSessionController {
             RedirectAttributes redirectAttributes
     ) {
         try {
+            // Vérifier que la session existe
+            Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
+            if (sessionOpt.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Session de khôlle non trouvée");
+                return "redirect:/kholles";
+            }
+
+            KholleSession session = sessionOpt.get();
+
+            // Empêcher le changement de statut si les résultats sont disponibles
+            if (session.status() == KholleSessionStatus.RESULTS_AVAILABLE) {
+                redirectAttributes.addFlashAttribute("error", "Impossible de changer le statut : les résultats sont déjà disponibles");
+                return "redirect:/kholles/" + id;
+            }
+
             KholleSessionStatus status = KholleSessionStatus.valueOf(statusStr);
             kholleService.updateSessionStatus(id, status);
             redirectAttributes.addFlashAttribute("success", "Le statut de la session a été modifié avec succès");
