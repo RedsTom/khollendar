@@ -28,10 +28,12 @@ public class CustomErrorController implements ErrorController {
                 errorDescription = "La page que vous recherchez n'existe pas ou a été déplacée.";
             } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
                 errorMessage = "Accès interdit";
-                errorDescription = "Vous n'avez pas les permissions nécessaires pour accéder à cette page.";
+                errorDescription =
+                        "Vous n'avez pas les permissions nécessaires pour accéder à cette page.";
             } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                 errorMessage = "Erreur serveur";
-                errorDescription = "Une erreur interne s'est produite. Veuillez réessayer plus tard.";
+                errorDescription =
+                        "Une erreur interne s'est produite. Veuillez réessayer plus tard.";
             } else if (statusCode == HttpStatus.BAD_REQUEST.value()) {
                 errorMessage = "Requête invalide";
                 errorDescription = "La requête envoyée n'est pas valide.";
@@ -50,4 +52,3 @@ public class CustomErrorController implements ErrorController {
         return "pages/error";
     }
 }
-
