@@ -60,4 +60,13 @@ public class SessionService {
     public void clearPreferences(HttpSession session) {
         session.removeAttribute(SESSION_PREFERENCES);
     }
+
+    /**
+     * Réinitialise complètement la session utilisateur
+     */
+    public void clearUserSession(HttpSession session) {
+        session.removeAttribute(SESSION_USER_ID);
+        session.removeAttribute(SESSION_PREFERENCES);
+        session.removeAttribute(REDIRECT_AFTER_LOGIN);
+    }
 }

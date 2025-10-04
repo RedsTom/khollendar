@@ -35,8 +35,14 @@ public class KholleSession {
     @Builder.Default
     private KholleSessionStatus status = KholleSessionStatus.REGISTRATIONS_OPEN;
 
-    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<KholleSlot> kholleSlots;
+
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserPreference> userPreferences;
+
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<KholleAssignment> assignments;
 
     /**
      * Calcule la plage de dates couverte par tous les KholleSlot de cette session.

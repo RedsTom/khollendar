@@ -1,6 +1,11 @@
 @param java.util.List<fr.redstom.khollendar.entity.User> users
-
 @param org.springframework.security.web.csrf.CsrfToken _csrf
+
+!{
+java.util.List<fr.redstom.khollendar.entity.User> sortedUsers = users.stream()
+    .sorted((u1, u2) -> u1.username().compareToIgnoreCase(u2.username()))
+    .toList();
+}
 
 @template.layout.MainLayout(
 title = "Connexion utilisateur",
@@ -29,7 +34,7 @@ content = @`
                         <label for="userId">Sélectionner votre nom d'utilisateur</label>
                         <select id="userId" name="userId" required>
                             <option value="">-- Sélectionner un utilisateur --</option>
-                            @for(fr.redstom.khollendar.entity.User user : users)
+                            @for(fr.redstom.khollendar.entity.User user : sortedUsers)
                                 <option value="${user.id()}">${user.username()}</option>
                             @endfor
                         </select>

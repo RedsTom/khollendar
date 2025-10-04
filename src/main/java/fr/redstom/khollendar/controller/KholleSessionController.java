@@ -393,8 +393,8 @@ public class KholleSessionController {
                 preferences.unavailableSlotIds(),
                 preferences.rankedSlotIds());
 
-            // Nettoyer la session
-            sessionService.clearPreferences(session);
+            // Réinitialiser complètement la session utilisateur
+            sessionService.clearUserSession(session);
 
             redirectAttributes.addFlashAttribute("success", "Vos préférences ont été enregistrées avec succès!");
         } catch (Exception e) {

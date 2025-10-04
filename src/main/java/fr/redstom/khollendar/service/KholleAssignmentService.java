@@ -61,20 +61,23 @@ public class KholleAssignmentService {
         Map<User, List<UserPreference>> preferencesByUser = allPreferences.stream()
                 .collect(Collectors.groupingBy(UserPreference::user));
 
-        // Récupération de tous les utilisateurs ayant des préférences
-        Set<User> usersWithPreferences = preferencesByUser.keySet();
+        // Récupération de TOUS les utilisateurs de l'application
+        List<User> allUsers = userRepository.findAll();
+        Set<User> allUsersSet = new HashSet<>(allUsers);
 
-        // Calcul de la capacité moyenne par créneau
-        int totalStudents = usersWithPreferences.size();
+        // Calcul de la capacité moyenne par créneau basée sur TOUS les utilisateurs
+        int totalStudents = allUsersSet.size();
         int numberOfSlots = slots.size();
         int averageCapacity = (int) Math.ceil((double) totalStudents / numberOfSlots);
 
         log.info("Session {}: {} étudiants à affecter sur {} créneaux (capacité moyenne: {})",
                 sessionId, totalStudents, numberOfSlots, averageCapacity);
+        log.info("  - {} étudiants avec préférences", preferencesByUser.size());
+        log.info("  - {} étudiants sans préférences", totalStudents - preferencesByUser.size());
 
         // Application de l'algorithme d'affectation
         Map<User, KholleSlot> assignments = performMaxMinFairnessAssignment(
-                usersWithPreferences, preferencesByUser, slots, averageCapacity);
+                allUsersSet, preferencesByUser, slots, averageCapacity);
 
         // Sauvegarde des affectations en base
         LocalDateTime now = LocalDateTime.now();
@@ -134,7 +137,7 @@ public class KholleAssignmentService {
 
         // Initialisation des capacités (moyenne ± 1)
         for (KholleSlot slot : slots) {
-            slotCapacities.put(slot, averageCapacity + 1);
+            slotCapacities.put(slot, averageCapacity);
         }
 
         Set<User> unassignedUsers = new HashSet<>(users);
@@ -244,7 +247,7 @@ public class KholleAssignmentService {
         // Calcul du taux de satisfaction
         long firstChoice = rankDistribution.getOrDefault(1, 0L);
         double satisfactionRate = (double) firstChoice / assignments.size() * 100;
-        log.info("Taux de satisfaction (1er choix): {:.1f}%", satisfactionRate);
+        log.info("Taux de satisfaction (1er choix): {}%", String.format("%.1f", satisfactionRate));
     }
 
     /**

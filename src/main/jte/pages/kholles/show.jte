@@ -65,6 +65,17 @@ content = @`
                 </div>
 
                 <div class="flex gap-2 flex-wrap">
+                    @if(hasAssignments)
+                        @template.components.Button(
+                        href = "/kholles/" + session.id() + "/assignments",
+                        variant = "primary",
+                        content = @`
+                            <i data-feather="check-circle" class="mr-2"></i>
+                            Voir les détails des affectations
+                        `
+                        )
+                    @endif
+
                     @if(userAuthenticated)
                         @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
                             @template.components.Button(
@@ -135,14 +146,11 @@ content = @`
                               onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette session de khôlles ? Cette action est irréversible.');"
                               class="inline">
                             <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
-                            @template.components.Button(
-                            type = "submit",
-                            variant = "danger",
-                            content = @`
+                            <button type="submit"
+                                    class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-red focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-red hover:bg-ctp-red/80 text-ctp-base border-0">
                                 <i data-feather="trash-2" class="mr-2"></i>
                                 Supprimer la session
-                            `
-                            )
+                            </button>
                         </form>
                     </div>
                 </div>
