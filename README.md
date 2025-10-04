@@ -26,6 +26,7 @@ Khôlle'n'dar est une application web dédiée à la gestion et l'organisation d
   - Spring Boot 3.x
   - JPA / Hibernate
   - PostgreSQL
+  - Flyway (migrations de base de données)
 
 - **Frontend**
   - JTE (Java Template Engine)
@@ -55,6 +56,33 @@ Khôlle'n'dar est une application web dédiée à la gestion et l'organisation d
    ```
 
    **⚠️ Important** : Ne commitez JAMAIS le fichier `application.properties` avec vos credentials réels. Ce fichier est ignoré par Git.
+
+### Migrations de base de données
+
+L'application utilise **Flyway** pour gérer les migrations de base de données de manière versionnée et contrôlée.
+
+- Les migrations sont situées dans `src/main/resources/db/migration/`
+- Au premier démarrage, Flyway créera automatiquement le schéma de base de données
+- Pour plus d'informations sur la création de nouvelles migrations, consultez `src/main/resources/db/migration/README.md`
+
+**Note** : Si vous avez déjà une base de données existante, Flyway utilisera `baseline-on-migrate=true` pour marquer le schéma actuel comme version de base sans le modifier.
+
+#### Commandes Flyway via Gradle
+
+Vous pouvez gérer les migrations directement avec Gradle :
+
+```bash
+# Voir l'état des migrations
+./gradlew flywayInfo
+
+# Appliquer les migrations en attente
+./gradlew flywayMigrate
+
+# Valider les migrations
+./gradlew flywayValidate
+```
+
+Pour plus de détails, consultez [FLYWAY_COMMANDS.md](FLYWAY_COMMANDS.md).
 
 ### Lancement de l'application
 
