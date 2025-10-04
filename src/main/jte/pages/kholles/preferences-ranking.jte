@@ -111,6 +111,7 @@
             )
         </div>
 
+        <script src="/js/slot-ranking.js"></script>
         <script>
             feather.replace();
         </script>
