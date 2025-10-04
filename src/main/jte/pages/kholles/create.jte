@@ -42,30 +42,13 @@
                                    id="subject"
                                    name="subject"
                                    placeholder="Ex: Mathématiques - Intégrales"
-                                   required>
+                                   required
+                                   autofocus>
                         </div>
 
                         <div class="mb-6">
                             <h3 class="text-lg font-medium mb-4">Créneaux horaires</h3>
                             <div id="slots-container" class="space-y-4">
-                                <div class="slot-input">
-                                    <label for="slot-0-time">Date et heure</label>
-                                    <div class="flex gap-4">
-                                        <input type="datetime-local"
-                                               id="slot-0-time"
-                                               name="slots[0].time"
-                                               required
-                                               class="flex-1">
-                                        @template.components.Button(
-                                            type = "button",
-                                            variant = "danger",
-                                            size = "sm",
-                                            onclick = "deleteSlot(this)",
-                                            extraClasses = "delete-slot",
-                                            content = @`<i data-feather="trash-2"></i>`
-                                        )
-                                    </div>
-                                </div>
                             </div>
 
                             @template.components.Button(
