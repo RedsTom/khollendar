@@ -53,3 +53,26 @@ select {
     60%  { transform: scale(1.08); }
     100% { transform: scale(1); }
 }
+
+/* Styles pour les créneaux horaires */
+.time-slot-container .checkbox-custom .check-icon {
+    opacity: 0;
+}
+
+.time-slot-container .slot-checkbox:checked + .time-slot {
+    background-color: rgba(243, 139, 168, 0.15);
+    border-color: rgb(243, 139, 168);
+}
+
+.time-slot-container .slot-checkbox:checked + .time-slot .checkbox-custom {
+    background-color: rgb(243, 139, 168);
+    border-color: rgb(243, 139, 168);
+}
+
+.time-slot-container .slot-checkbox:checked + .time-slot .check-icon {
+    opacity: 1;
+}
+
+.time-slot-container .slot-checkbox:checked + .time-slot .slot-text {
+    color: rgb(243, 139, 168);
+}
