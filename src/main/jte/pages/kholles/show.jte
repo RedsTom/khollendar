@@ -9,20 +9,16 @@
 @import java.util.ArrayList
 @import java.util.Comparator
 @import java.util.Map
-@import jakarta.servlet.http.HttpSession
 
 @param KholleSession session
 @param Map<User, List<UserPreference>> userPreferences
 @param Map<User, List<KholleSlot>> userUnavailableSlots
 @param long registeredUsersCount
 @param org.springframework.security.web.csrf.CsrfToken _csrf
-@param HttpSession httpSession = null
 @param boolean isAdmin = false
 @param List<KholleAssignment> assignments = null
 @param Map<Long, List<KholleAssignment>> assignmentsBySlot = null
-@param KholleAssignment userAssignment = null
 
-!{boolean userAuthenticated = httpSession != null && httpSession.getAttribute("selectedUserId") != null;}
 !{boolean hasAssignments = assignments != null && !assignments.isEmpty();}
 
 !{
@@ -60,7 +56,6 @@
                         actionButtons = @`
                             @template.fragments.kholles.SessionActionButtons(
                                 session = session,
-                                userAuthenticated = userAuthenticated,
                                 hasAssignments = hasAssignments
                             )
                         `
@@ -86,13 +81,6 @@
                                 <i data-feather="check-circle" class="w-6 h-6"></i>
                                 Affectations par créneau
                             </h2>
-
-                            <!-- Alerte pour l'utilisateur connecté -->
-                            @if(userAuthenticated && userAssignment != null)
-                                @template.fragments.kholles.UserAssignmentAlert(
-                                    assignment = userAssignment
-                                )
-                            @endif
 
                             <div class="space-y-4">
                                 @for(KholleSlot slot : sortedSlots)

@@ -84,8 +84,7 @@ public class KholleSessionController {
             CsrfToken csrf,
             Model model,
             RedirectAttributes redirectAttributes,
-            Principal principal,
-            HttpSession httpSession) {
+            Principal principal) {
         Optional<KholleSession> session = kholleService.getKholleSessionById(id);
 
         if (session.isEmpty()) {
@@ -115,22 +114,11 @@ public class KholleSessionController {
         // Récupérer les affectations si elles existent
         List<KholleAssignment> assignments = assignmentService.getSessionAssignments(id);
         Map<Long, List<KholleAssignment>> assignmentsBySlot = new LinkedHashMap<>();
-        KholleAssignment userAssignment = null;
 
         if (!assignments.isEmpty()) {
             // Grouper par créneau
             assignmentsBySlot =
                     assignments.stream().collect(Collectors.groupingBy(a -> a.slot().id()));
-
-            // Chercher l'affectation de l'utilisateur connecté
-            if (sessionService.isUserAuthenticated(httpSession)) {
-                Long userId = sessionService.getCurrentUserId(httpSession);
-                userAssignment =
-                        assignments.stream()
-                                .filter(a -> a.user().id().equals(userId))
-                                .findFirst()
-                                .orElse(null);
-            }
         }
 
         model.addAttribute("title", "Détails de la session de khôlle");
@@ -139,10 +127,8 @@ public class KholleSessionController {
         model.addAttribute("userUnavailableSlots", userUnavailableSlots);
         model.addAttribute("registeredUsersCount", registeredUsersCount);
         model.addAttribute("isAdmin", isAdmin);
-        model.addAttribute("httpSession", httpSession);
         model.addAttribute("assignments", assignments);
         model.addAttribute("assignmentsBySlot", assignmentsBySlot);
-        model.addAttribute("userAssignment", userAssignment);
         model.addAttribute("_csrf", csrf);
         return "pages/kholles/show";
     }

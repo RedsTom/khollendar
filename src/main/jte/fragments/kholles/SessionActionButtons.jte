@@ -2,7 +2,6 @@
 @import fr.redstom.khollendar.entity.KholleAssignment
 
 @param KholleSession session
-@param boolean userAuthenticated
 @param boolean hasAssignments
 
 <!-- Boutons d'action -->
@@ -18,34 +17,18 @@
         )
     @endif
 
-    @if(userAuthenticated)
-        @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
-            @template.components.ui.Button(
-                href = "/kholles/" + session.id() + "/preferences",
-                variant = "primary",
-                content = @`Indiquer mes disponibilités`
-            )
-        @else
-            @template.components.ui.Button(
-                variant = "secondary",
-                disabled = true,
-                content = @`Inscriptions fermées`
-            )
-        @endif
+    @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
+        @template.components.ui.Button(
+            href = "/user-auth/select?redirectTo=/kholles/" + session.id() + "/preferences",
+            variant = "primary",
+            content = @`Indiquer mes disponibilités`
+        )
     @else
-        @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
-            @template.components.ui.Button(
-                href = "/user-auth/select?redirectTo=/kholles/" + session.id() + "/preferences",
-                variant = "primary",
-                content = @`Indiquer mes disponibilités`
-            )
-        @else
-            @template.components.ui.Button(
-                variant = "secondary",
-                disabled = true,
-                content = @`Inscriptions fermées`
-            )
-        @endif
+        @template.components.ui.Button(
+            variant = "secondary",
+            disabled = true,
+            content = @`Inscriptions fermées`
+        )
     @endif
 </div>
 
