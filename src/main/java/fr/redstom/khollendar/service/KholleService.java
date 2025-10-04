@@ -130,6 +130,24 @@ public class KholleService {
         // Supprimer toutes les préférences existantes pour cet utilisateur et cette session
         userPreferenceRepository.deleteByUserAndSession(user, session);
 
+        // Sauvegarder les indisponibilités (avec isUnavailable = true)
+        for (Long slotId : unavailableSlots) {
+            KholleSlot slot = session.kholleSlots().stream()
+                .filter(s -> s.id().equals(slotId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Créneau avec l'ID " + slotId + " non trouvé dans la session " + sessionId));
+
+            UserPreference unavailability = UserPreference.builder()
+                .user(user)
+                .session(session)
+                .slot(slot)
+                .preferenceRank(-1) // Les indisponibilités ont un rang négatif
+                .isUnavailable(true)
+                .build();
+
+            userPreferenceRepository.save(unavailability);
+        }
+
         // Sauvegarder les nouvelles préférences uniquement pour les créneaux disponibles (rankedSlots)
         for (int i = 0; i < rankedSlots.size(); i++) {
             Long slotId = rankedSlots.get(i);
@@ -146,6 +164,7 @@ public class KholleService {
                 .session(session)
                 .slot(slot)
                 .preferenceRank(i + 1) // Le rang commence à 1 (premier choix = rang 1)
+                .isUnavailable(false)
                 .build();
 
             userPreferenceRepository.save(preference);
@@ -223,7 +242,7 @@ public class KholleService {
 
     /**
      * Récupère les créneaux indisponibles pour un utilisateur et une session
-     * (tous les créneaux de la session moins ceux pour lesquels il a exprimé une préférence)
+     * (créneaux marqués explicitement comme indisponibles avec isUnavailable = true)
      *
      * @param userId L'ID de l'utilisateur
      * @param sessionId L'ID de la session de khôlle
@@ -239,14 +258,10 @@ public class KholleService {
         // Récupérer les préférences de l'utilisateur
         List<UserPreference> userPreferences = userPreferenceRepository.findByUserAndSessionOrderByPreferenceRankAsc(user, session);
 
-        // Extraire les IDs des créneaux pour lesquels l'utilisateur a exprimé une préférence
-        List<Long> preferredSlotIds = userPreferences.stream()
-            .map(pref -> pref.slot().id())
-            .toList();
-
-        // Retourner tous les créneaux de la session qui ne sont pas dans les préférences
-        return session.kholleSlots().stream()
-            .filter(slot -> !preferredSlotIds.contains(slot.id()))
+        // Retourner uniquement les créneaux marqués comme indisponibles
+        return userPreferences.stream()
+            .filter(UserPreference::isUnavailable)
+            .map(UserPreference::slot)
             .sorted(Comparator.comparing(KholleSlot::dateTime))
             .toList();
     }

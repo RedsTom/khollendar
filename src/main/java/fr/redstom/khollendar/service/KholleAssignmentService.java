@@ -125,6 +125,7 @@ public class KholleAssignmentService {
      * Algorithme d'affectation basé sur max-min fairness.
      * À chaque tour, on affecte les étudiants selon leur meilleur choix disponible,
      * en respectant les contraintes de capacité.
+     * IMPORTANT: Ne doit JAMAIS affecter un étudiant à un créneau marqué comme indisponible.
      */
     private Map<User, KholleSlot> performMaxMinFairnessAssignment(
             Set<User> users,
@@ -140,10 +141,26 @@ public class KholleAssignmentService {
             slotCapacities.put(slot, averageCapacity);
         }
 
+        // Construction d'une map des indisponibilités pour un accès rapide
+        Map<User, Set<Long>> unavailableSlotsByUser = new HashMap<>();
+        for (Map.Entry<User, List<UserPreference>> entry : preferencesByUser.entrySet()) {
+            Set<Long> unavailableSlots = entry.getValue().stream()
+                    .filter(UserPreference::isUnavailable)
+                    .map(pref -> pref.slot().id())
+                    .collect(Collectors.toSet());
+            if (!unavailableSlots.isEmpty()) {
+                unavailableSlotsByUser.put(entry.getKey(), unavailableSlots);
+            }
+        }
+
         Set<User> unassignedUsers = new HashSet<>(users);
         int currentPreferenceRank = 1;
+
+        // Calculer le nombre maximum de préférences (en excluant les indisponibilités)
         int maxPreferenceRank = preferencesByUser.values().stream()
-                .mapToInt(List::size)
+                .mapToInt(prefs -> (int) prefs.stream()
+                        .filter(pref -> !pref.isUnavailable())
+                        .count())
                 .max()
                 .orElse(0);
 
@@ -156,13 +173,20 @@ public class KholleAssignmentService {
 
             for (User user : unassignedUsers) {
                 List<UserPreference> prefs = preferencesByUser.get(user);
-                if (prefs != null && prefs.size() >= currentRank) {
-                    UserPreference preference = prefs.get(currentRank - 1);
-                    KholleSlot desiredSlot = preference.slot();
+                if (prefs != null) {
+                    // Filtrer uniquement les préférences positives (non indisponibilités)
+                    List<UserPreference> availablePrefs = prefs.stream()
+                            .filter(pref -> !pref.isUnavailable())
+                            .collect(Collectors.toList());
 
-                    // Vérifier que le créneau a encore de la capacité
-                    if (slotCapacities.getOrDefault(desiredSlot, 0) > 0) {
-                        candidatesBySlot.computeIfAbsent(desiredSlot, k -> new ArrayList<>()).add(user);
+                    if (availablePrefs.size() >= currentRank) {
+                        UserPreference preference = availablePrefs.get(currentRank - 1);
+                        KholleSlot desiredSlot = preference.slot();
+
+                        // Vérifier que le créneau a encore de la capacité
+                        if (slotCapacities.getOrDefault(desiredSlot, 0) > 0) {
+                            candidatesBySlot.computeIfAbsent(desiredSlot, k -> new ArrayList<>()).add(user);
+                        }
                     }
                 }
             }
@@ -197,19 +221,32 @@ public class KholleAssignmentService {
         }
 
         // Affectation aléatoire des étudiants restants (sans préférences satisfaites)
+        // IMPORTANT: On doit respecter les indisponibilités même ici
         if (!unassignedUsers.isEmpty()) {
             List<User> remainingUsers = new ArrayList<>(unassignedUsers);
             Collections.shuffle(remainingUsers, random);
 
             for (User user : remainingUsers) {
-                // Trouver un créneau avec de la capacité
+                Set<Long> unavailableSlots = unavailableSlotsByUser.getOrDefault(user, Collections.emptySet());
+
+                // Trouver un créneau disponible (avec capacité) qui n'est pas marqué comme indisponible
                 KholleSlot availableSlot = slotCapacities.entrySet().stream()
                         .filter(e -> e.getValue() > 0)
+                        .filter(e -> !unavailableSlots.contains(e.getKey().id()))
                         .max(Comparator.comparingInt(Map.Entry::getValue))
                         .map(Map.Entry::getKey)
                         .orElseGet(() -> {
-                            // Si tous les créneaux sont pleins, choisir celui avec le moins d'étudiants
-                            return slots.get(random.nextInt(slots.size()));
+                            // Si tous les créneaux avec capacité sont indisponibles,
+                            // chercher parmi tous les créneaux disponibles (même ceux à capacité 0)
+                            return slots.stream()
+                                    .filter(slot -> !unavailableSlots.contains(slot.id()))
+                                    .min(Comparator.comparingInt(slot ->
+                                            (int) assignments.values().stream()
+                                                    .filter(s -> s.id().equals(slot.id()))
+                                                    .count()))
+                                    .orElseThrow(() -> new IllegalStateException(
+                                            "Impossible de trouver un créneau disponible pour l'utilisateur " +
+                                                    user.username() + ". Tous les créneaux sont marqués comme indisponibles."));
                         });
 
                 assignments.put(user, availableSlot);

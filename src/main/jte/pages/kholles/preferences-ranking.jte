@@ -56,8 +56,8 @@
             @template.components.Card(
                 title = "Étape 2 : Classement par préférence",
                 content = @`
-                    <!-- Indicateur d'étapes -->
-                    @template.components.StepIndicator(currentStep = 2)
+                    <!-- Barre de progression -->
+                    @template.components.ProgressBar(currentStep = 2, totalSteps = 3)
 
                     <!-- Instructions -->
                     @template.components.Alert(

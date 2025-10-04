@@ -66,12 +66,8 @@
                 @template.components.Card(
                     title = "Étape 3 : Confirmation",
                     content = @`
-                        <div class="flex items-center justify-between mb-4">
-                            <p class="text-xl mb-0">
-                                Vérifiez le récapitulatif de vos choix avant la validation finale.
-                            </p>
-                            @template.components.StepIndicator(currentStep = 3)
-                        </div>
+                        <!-- Barre de progression -->
+                        @template.components.ProgressBar(currentStep = 3, totalSteps = 3)
 
                         @template.components.Alert(
                             type = "warning",

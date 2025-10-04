@@ -25,7 +25,7 @@
 
             <!-- Cartes d'action admin -->
             @if(AuthUtils.admin())
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @template.components.Card(
                         title = "Créer une nouvelle session",
                         content = @`

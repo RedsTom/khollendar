@@ -407,7 +407,11 @@
                                 @for(var userEntry : userPreferences.entrySet())
                                     !{
                                         User user = userEntry.getKey();
-                                        List<UserPreference> preferences = userEntry.getValue();
+                                        List<UserPreference> allUserPreferences = userEntry.getValue();
+                                        // Filtrer pour ne garder que les préférences positives (pas les indisponibilités)
+                                        List<UserPreference> preferences = allUserPreferences.stream()
+                                            .filter(pref -> !pref.isUnavailable())
+                                            .toList();
                                         List<KholleSlot> unavailableSlots = userUnavailableSlots.get(user);
                                     }
                                     <div class="bg-ctp-surface1 rounded-lg p-3 sm:p-4 break-inside-avoid">
