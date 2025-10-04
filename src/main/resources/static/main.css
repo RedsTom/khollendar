@@ -611,14 +611,32 @@
   .border-ctp-blue {
     border-color: var(--catppuccin-color-blue);
   }
+  .border-ctp-blue\/30 {
+    border-color: var(--catppuccin-color-blue);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--catppuccin-color-blue) 30%, transparent);
+    }
+  }
   .border-ctp-green {
     border-color: var(--catppuccin-color-green);
+  }
+  .border-ctp-green\/30 {
+    border-color: var(--catppuccin-color-green);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--catppuccin-color-green) 30%, transparent);
+    }
   }
   .border-ctp-overlay0 {
     border-color: var(--catppuccin-color-overlay0);
   }
   .border-ctp-red {
     border-color: var(--catppuccin-color-red);
+  }
+  .border-ctp-red\/30 {
+    border-color: var(--catppuccin-color-red);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--catppuccin-color-red) 30%, transparent);
+    }
   }
   .border-ctp-surface1 {
     border-color: var(--catppuccin-color-surface1);
@@ -642,6 +660,12 @@
     background-color: var(--catppuccin-color-blue);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--catppuccin-color-blue) 10%, transparent);
+    }
+  }
+  .bg-ctp-blue\/20 {
+    background-color: var(--catppuccin-color-blue);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--catppuccin-color-blue) 20%, transparent);
     }
   }
   .bg-ctp-crust {
@@ -688,6 +712,12 @@
   }
   .bg-ctp-surface0 {
     background-color: var(--catppuccin-color-surface0);
+  }
+  .bg-ctp-surface0\/50 {
+    background-color: var(--catppuccin-color-surface0);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--catppuccin-color-surface0) 50%, transparent);
+    }
   }
   .bg-ctp-surface1 {
     background-color: var(--catppuccin-color-surface1);
@@ -1073,6 +1103,16 @@
   .focus\:ring-ctp-blue {
     &:focus {
       --tw-ring-color: var(--catppuccin-color-blue);
+    }
+  }
+  .focus\:ring-ctp-green {
+    &:focus {
+      --tw-ring-color: var(--catppuccin-color-green);
+    }
+  }
+  .focus\:ring-ctp-red {
+    &:focus {
+      --tw-ring-color: var(--catppuccin-color-red);
     }
   }
   .focus\:ring-offset-2 {

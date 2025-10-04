@@ -2,10 +2,7 @@ package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.dto.KholleCreationDto;
 import fr.redstom.khollendar.dto.KholleSessionCreationDto;
-import fr.redstom.khollendar.entity.KholleSession;
-import fr.redstom.khollendar.entity.KholleSlot;
-import fr.redstom.khollendar.entity.User;
-import fr.redstom.khollendar.entity.UserPreference;
+import fr.redstom.khollendar.entity.*;
 import fr.redstom.khollendar.repository.KholleSessionRepository;
 import fr.redstom.khollendar.repository.UserPreferenceRepository;
 import jakarta.transaction.Transactional;
@@ -287,6 +284,29 @@ public class KholleService {
         // Créer une nouvelle session avec le nouveau nom
         KholleSession updatedSession = session.toBuilder()
                 .subject(newSubject.trim())
+                .build();
+
+        return kholleSessionRepository.save(updatedSession);
+    }
+
+    /**
+     * Change le statut d'une session de khôlle
+     *
+     * @param sessionId L'ID de la session
+     * @param status Le nouveau statut
+     * @return La session mise à jour
+     */
+    @Transactional
+    public KholleSession updateSessionStatus(Long sessionId, KholleSessionStatus status) {
+        KholleSession session = getKholleSessionById(sessionId).orElseThrow(() ->
+            new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
+
+        if (status == null) {
+            throw new IllegalArgumentException("Le statut ne peut pas être null");
+        }
+
+        KholleSession updatedSession = session.toBuilder()
+                .status(status)
                 .build();
 
         return kholleSessionRepository.save(updatedSession);

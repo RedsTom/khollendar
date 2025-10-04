@@ -29,9 +29,23 @@ content = @`
         @template.components.Card(
         content = @`
             <!-- En-tête de la session -->
-            <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-start mb-6">
+            <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-6">
                 <div class="flex-1 min-w-0">
-                    <h1 class="text-2xl sm:text-3xl font-bold break-words">${session.subject()}</h1>
+                    <div class="flex flex-wrap items-center gap-3 mb-2">
+                        <h1 class="text-2xl sm:text-3xl font-bold break-words">${session.subject()}</h1>
+                        <!-- Badge de statut -->
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-medium
+                            @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
+                                bg-ctp-green/20 text-ctp-green border border-ctp-green/30
+                            @elseif(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_CLOSED)
+                                bg-ctp-red/20 text-ctp-red border border-ctp-red/30
+                            @else
+                                bg-ctp-blue/20 text-ctp-blue border border-ctp-blue/30
+                            @endif
+                        ">
+                            ${session.status().getLabel()}
+                        </span>
+                    </div>
                     @if(session.calculateDateRange().isPresent())
                         <p class="text-sm sm:text-base text-ctp-subtext0 mt-1">
                             Du ${session.calculateDateRange().get().start().format(formatter)}
@@ -42,119 +56,249 @@ content = @`
 
                 <div class="flex gap-2 flex-wrap">
                     @if(userAuthenticated)
-                        @template.components.Button(
-                        href = "/kholles/" + session.id() + "/preferences",
-                        variant = "primary",
-                        extraClasses = "w-full md:w-auto",
-                        content = @`Indiquer mes disponibilités`
-                        )
+                        @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
+                            @template.components.Button(
+                            href = "/kholles/" + session.id() + "/preferences",
+                            variant = "primary",
+                            content = @`Indiquer mes disponibilités`
+                            )
+                        @else
+                            @template.components.Button(
+                            href = "/kholles/" + session.id() + "/preferences",
+                            variant = "secondary",
+                            disabled = true,
+                            content = @`Inscriptions fermées`
+                            )
+                        @endif
                     @else
-                        @template.components.Button(
-                        href = "/user-auth/select?redirectTo=/kholles/" + session.id() + "/preferences",
-                        variant = "primary",
-                        extraClasses = "w-full md:w-auto",
-                        content = @`Indiquer mes disponibilités`
-                        )
+                        @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
+                            @template.components.Button(
+                            href = "/user-auth/select?redirectTo=/kholles/" + session.id() + "/preferences",
+                            variant = "primary",
+                            content = @`Indiquer mes disponibilités`
+                            )
+                        @else
+                            @template.components.Button(
+                            variant = "secondary",
+                            disabled = true,
+                            content = @`Inscriptions fermées`
+                            )
+                        @endif
                     @endif
+                </div>
+            </div>
 
-                    @if(isAdmin)
+            <!-- Section Actions administrateur -->
+            @if(isAdmin)
+                <div class="mb-8 p-4 bg-ctp-surface0/50 rounded-lg border border-ctp-surface2">
+                    <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue">
+                        <i data-feather="settings" class="inline-block w-5 h-5 sm:w-6 sm:h-6 mr-2"></i>
+                        Actions administrateur
+                    </h2>
+                    <div class="flex gap-2 flex-wrap">
+                        <button type="button" id="statusBtn"
+                                class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
+                            <i data-feather="toggle-right" class="mr-2"></i>
+                            Changer le statut
+                        </button>
+
                         <button type="button" id="renameBtn"
-                                class="w-full md:w-auto inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
+                                class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
                             <i data-feather="edit-2" class="mr-2"></i>
                             Renommer
                         </button>
 
                         <form action="/kholles/${session.id()}/delete" method="post"
                               onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette session de khôlles ? Cette action est irréversible.');"
-                              class="inline w-full md:w-auto">
+                              class="inline">
                             <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
                             @template.components.Button(
                             type = "submit",
                             variant = "danger",
-                            extraClasses = "w-full md:w-auto",
                             content = @`
                                 <i data-feather="trash-2" class="mr-2"></i>
                                 Supprimer la session
                             `
                             )
                         </form>
-                    @endif
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <!-- Modal de renommage -->
             @if(isAdmin)
-                <style>
-                    #renameModal {
-                        margin: auto;
-                    }
-                    #renameModal::backdrop {
-                        background-color: rgba(0, 0, 0, 0.3);
-                    }
-                </style>
-                <dialog id="renameModal" class="rounded-lg shadow-xl max-w-md w-[calc(100%-1rem)] sm:w-full p-0 bg-transparent border-0">
-                    <div class="bg-ctp-base rounded-lg p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-xl font-bold text-ctp-text">Renommer la session</h2>
-                        </div>
-                        <form action="/kholles/${session.id()}/rename" method="post">
-                            <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
-                            <div class="mb-4">
-                                <label for="newSubject" class="block text-sm font-medium text-ctp-text mb-2">
-                                    Nouveau nom de la session
-                                </label>
-                                <input
+            <style>
+                #renameModal {
+                    margin: auto;
+                }
+
+                #renameModal::backdrop {
+                    background-color: rgba(0, 0, 0, 0.3);
+                }
+            </style>
+            <dialog id="renameModal"
+                    class="rounded-lg shadow-xl max-w-md w-[calc(100%-1rem)] sm:w-full p-0 bg-transparent border-0">
+                <div class="bg-ctp-base rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-ctp-text">Renommer la session</h2>
+                    </div>
+                    <form action="/kholles/${session.id()}/rename" method="post">
+                        <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
+                        <div class="mb-4">
+                            <label for="newSubject" class="block text-sm font-medium text-ctp-text mb-2">
+                                Nouveau nom de la session
+                            </label>
+                            <input
                                     type="text"
                                     id="newSubject"
                                     name="newSubject"
                                     value="${session.subject()}"
                                     required
                                     class="w-full px-3 py-2 bg-ctp-surface0 border border-ctp-surface2 rounded-lg text-ctp-text focus:outline-none focus:ring-2 focus:ring-ctp-blue"
-                                />
-                            </div>
-                            <div class="flex gap-2 justify-end">
-                                <button
+                            />
+                        </div>
+                        <div class="flex gap-2 justify-end">
+                            <button
                                     type="button"
                                     id="cancelRenameBtn"
                                     class="px-4 py-2 bg-ctp-surface0 text-ctp-text rounded-lg hover:bg-ctp-surface1 transition-colors">
-                                    Annuler
-                                </button>
-                                <button
+                                Annuler
+                            </button>
+                            <button
                                     type="submit"
                                     class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-lg hover:bg-ctp-sapphire transition-colors">
-                                    Renommer
-                                </button>
-                            </div>
-                        </form>
+                                Renommer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </dialog>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const renameBtn   = document.getElementById('renameBtn');
+                    const renameModal = document.getElementById('renameModal');
+                    const closeBtn    = document.getElementById('closeRenameModal');
+                    const cancelBtn   = document.getElementById('cancelRenameBtn');
+
+                    if (renameBtn && renameModal) {
+                        renameBtn.addEventListener('click', function () {
+                            renameModal.showModal();
+                        });
+                    }
+
+                    if (closeBtn && renameModal) {
+                        closeBtn.addEventListener('click', function () {
+                            renameModal.close();
+                        });
+                    }
+
+                    if (cancelBtn && renameModal) {
+                        cancelBtn.addEventListener('click', function () {
+                            renameModal.close();
+                        });
+                    }
+                });
+            </script>
+
+            <!-- Modal de changement de statut -->
+            <style>
+                #statusModal {
+                    margin: auto;
+                }
+
+                #statusModal::backdrop {
+                    background-color: rgba(0, 0, 0, 0.3);
+                }
+            </style>
+            <dialog id="statusModal"
+                    class="rounded-lg shadow-xl max-w-md w-[calc(100%-0.5rem)] sm:w-full p-0 bg-transparent border-0">
+                <div class="bg-ctp-base rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-ctp-text">Changer le statut</h2>
+                        <button id="closeStatusModal"
+                                type="button"
+                                class="text-ctp-subtext0 hover:text-ctp-text">
+                            <i data-feather="x"></i>
+                        </button>
                     </div>
-                </dialog>
+                    <form action="/kholles/${session.id()}/status" method="post">
+                        <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-ctp-text mb-3">
+                                Sélectionnez le nouveau statut
+                            </label>
+                            <div class="space-y-2">
+                                <label class="flex items-center p-3 rounded-lg border border-ctp-surface2 hover:bg-ctp-surface1 cursor-pointer transition-colors">
+                                    <input
+                                            type="radio"
+                                            name="status"
+                                            value="REGISTRATIONS_OPEN"
+                                            checked="${session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN}"
+                                            class="mr-3 text-ctp-green focus:ring-ctp-green flex-shrink-0"
+                                    />
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-ctp-green/20 text-ctp-green border border-ctp-green/30">
+                                        Inscriptions ouvertes
+                                    </span>
+                                </label>
 
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const renameBtn = document.getElementById('renameBtn');
-                        const renameModal = document.getElementById('renameModal');
-                        const closeBtn = document.getElementById('closeRenameModal');
-                        const cancelBtn = document.getElementById('cancelRenameBtn');
+                                <label class="flex items-center p-3 rounded-lg border border-ctp-surface2 hover:bg-ctp-surface1 cursor-pointer transition-colors">
+                                    <input
+                                            type="radio"
+                                            name="status"
+                                            value="REGISTRATIONS_CLOSED"
+                                            checked="${session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_CLOSED}"
+                                            class="mr-3 text-ctp-red focus:ring-ctp-red flex-shrink-0"
+                                    />
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-ctp-red/20 text-ctp-red border border-ctp-red/30">
+                                        Inscriptions fermées
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 justify-end">
+                            <button
+                                    type="button"
+                                    id="cancelStatusBtn"
+                                    class="px-4 py-2 bg-ctp-surface0 text-ctp-text rounded-lg hover:bg-ctp-surface1 transition-colors">
+                                Annuler
+                            </button>
+                            <button
+                                    type="submit"
+                                    class="px-4 py-2 bg-ctp-blue text-ctp-base rounded-lg hover:bg-ctp-sapphire transition-colors">
+                                Modifier
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </dialog>
 
-                        if (renameBtn && renameModal) {
-                            renameBtn.addEventListener('click', function() {
-                                renameModal.showModal();
-                            });
-                        }
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const statusBtn       = document.getElementById('statusBtn');
+                    const statusModal     = document.getElementById('statusModal');
+                    const closeStatusBtn  = document.getElementById('closeStatusModal');
+                    const cancelStatusBtn = document.getElementById('cancelStatusBtn');
 
-                        if (closeBtn && renameModal) {
-                            closeBtn.addEventListener('click', function() {
-                                renameModal.close();
-                            });
-                        }
+                    if (statusBtn && statusModal) {
+                        statusBtn.addEventListener('click', function () {
+                            statusModal.showModal();
+                        });
+                    }
 
-                        if (cancelBtn && renameModal) {
-                            cancelBtn.addEventListener('click', function() {
-                                renameModal.close();
-                            });
-                        }
-                    });
-                </script>
+                    if (closeStatusBtn && statusModal) {
+                        closeStatusBtn.addEventListener('click', function () {
+                            statusModal.close();
+                        });
+                    }
+
+                    if (cancelStatusBtn && statusModal) {
+                        cancelStatusBtn.addEventListener('click', function () {
+                            statusModal.close();
+                        });
+                    }
+                });
+            </script>
             @endif
 
             <!-- Section des horaires disponibles -->

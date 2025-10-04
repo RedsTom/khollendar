@@ -152,6 +152,27 @@ public class KholleSessionController {
     }
 
     /**
+     * Changement du statut d'une session de khôlle (admin uniquement)
+     */
+    @PostMapping("/{id}/status")
+    public String updateStatus(
+            @PathVariable Long id,
+            @RequestParam("status") String statusStr,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            KholleSessionStatus status = KholleSessionStatus.valueOf(statusStr);
+            kholleService.updateSessionStatus(id, status);
+            redirectAttributes.addFlashAttribute("success", "Le statut de la session a été modifié avec succès");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", "Statut invalide");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de la modification du statut : " + e.getMessage());
+        }
+        return "redirect:/kholles/" + id;
+    }
+
+    /**
      * Formulaire de gestion des préférences pour une khôlle (entrée principale)
      * Utilise un paramètre d'étape pour naviguer entre les différentes vues
      */

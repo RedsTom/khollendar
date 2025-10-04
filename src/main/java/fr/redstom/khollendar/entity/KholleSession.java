@@ -30,6 +30,11 @@ public class KholleSession {
     @Column(nullable = false)
     private String subject;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private KholleSessionStatus status = KholleSessionStatus.REGISTRATIONS_OPEN;
+
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<KholleSlot> kholleSlots;
 
