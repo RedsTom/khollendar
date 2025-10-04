@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:15
-    container_name: postgres
+    container_name: kholles-postgres
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -10,6 +10,38 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - kholles-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d kholles_manager"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kholles-manager
+    environment:
+      # Configuration de la base de données
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/kholles_manager
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      # Configuration de l'admin (À MODIFIER !)
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - kholles-network
+    restart: unless-stopped
+
+networks:
+  kholles-network:
+    driver: bridge
 
 volumes:
   pgdata:

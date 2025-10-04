@@ -1,0 +1,55 @@
+# Build outputs
+build/
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+HELP.md
+LICENSE
+
+# Docker
+Dockerfile
+.dockerignore
+compose.yml
+
+# Windows specific files that cause issues
+*.bat
+
+# Node modules (will be installed during build)
+node_modules/
+src/main/node/node_modules/
+
+# Test results
+jte-classes/
+build/test-results/
+build/reports/
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+

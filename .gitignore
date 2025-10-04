@@ -67,9 +67,5 @@ package-lock.json
 .env.*
 !.env.example
 
-### Application Properties with credentials ###
-application.properties
-src/main/resources/application.properties
-
 ### PostgreSQL ###
 *.dump

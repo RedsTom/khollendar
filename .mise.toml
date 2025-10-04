@@ -1,0 +1,9 @@
+[tools]
+java = "21"
+gradle = "8.14.3"
+node = "20"
+pnpm = "latest"
+
+[env]
+JAVA_HOME = "{{env.MISE_DATA_DIR}}/installs/java/21"
+
