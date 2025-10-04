@@ -1,19 +1,18 @@
 package fr.redstom.khollendar.service;
 
+import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.entity.KholleSlot;
-import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import jakarta.servlet.http.HttpSession;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
- * Service de gestion des créneaux de khôlles
- * Gère le réordonnancement des préférences utilisateur pour les créneaux
+ * Service de gestion des créneaux de khôlles Gère le réordonnancement des préférences utilisateur
+ * pour les créneaux
  */
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,8 @@ public class KholleSlotService {
      * @param model Modèle pour la vue (peut être null si utilisé avec redirection)
      * @return true si la réorganisation a réussi, false sinon
      */
-    public boolean reorderSlot(Long sessionId, Long slotId, String direction, HttpSession httpSession, Model model) {
+    public boolean reorderSlot(
+            Long sessionId, Long slotId, String direction, HttpSession httpSession, Model model) {
         if (slotId == null || direction == null) {
             return false;
         }
@@ -50,15 +50,16 @@ public class KholleSlotService {
         boolean moveUp = "up".equalsIgnoreCase(direction);
 
         try {
-            List<KholleSlot> reorderedSlots = doReorderSlots(
-                    sessionId, preferences.unavailableSlotIds(), slotId, moveUp);
+            List<KholleSlot> reorderedSlots =
+                    doReorderSlots(sessionId, preferences.unavailableSlotIds(), slotId, moveUp);
 
             if (model != null) {
                 model.addAttribute("availableSlots", reorderedSlots);
             }
 
             // Mettre à jour les préférences dans la session
-            List<Long> newOrder = reorderedSlots.stream().map(KholleSlot::id).collect(Collectors.toList());
+            List<Long> newOrder =
+                    reorderedSlots.stream().map(KholleSlot::id).collect(Collectors.toList());
             KhollePreferencesDto updatedPrefs = preferences.withRankedSlots(newOrder);
             sessionService.savePreferences(httpSession, updatedPrefs);
 
@@ -77,19 +78,26 @@ public class KholleSlotService {
      * @param moveUp true pour monter, false pour descendre
      * @return Liste des créneaux réordonnés
      */
-    private List<KholleSlot> doReorderSlots(Long kholleId, List<Long> unavailableSlotIds,
-                                          Long slotIdToMove, boolean moveUp) {
-        KholleSession kholleSession = kholleService.getKholleSessionById(kholleId)
-                .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));
+    private List<KholleSlot> doReorderSlots(
+            Long kholleId, List<Long> unavailableSlotIds, Long slotIdToMove, boolean moveUp) {
+        KholleSession kholleSession =
+                kholleService
+                        .getKholleSessionById(kholleId)
+                        .orElseThrow(
+                                () ->
+                                        new IllegalArgumentException(
+                                                "Session de khôlle non trouvée"));
 
         List<KholleSlot> allSlots = new ArrayList<>(kholleSession.kholleSlots());
-        List<Long> finalUnavailableSlots = unavailableSlotIds != null ? unavailableSlotIds : new ArrayList<>();
+        List<Long> finalUnavailableSlots =
+                unavailableSlotIds != null ? unavailableSlotIds : new ArrayList<>();
 
         // Filtrer les créneaux disponibles et les trier par date
-        List<KholleSlot> availableSlots = allSlots.stream()
-                .filter(slot -> !finalUnavailableSlots.contains(slot.id()))
-                .sorted(Comparator.comparing(KholleSlot::dateTime))
-                .collect(Collectors.toList());
+        List<KholleSlot> availableSlots =
+                allSlots.stream()
+                        .filter(slot -> !finalUnavailableSlots.contains(slot.id()))
+                        .sorted(Comparator.comparing(KholleSlot::dateTime))
+                        .collect(Collectors.toList());
 
         // Trouver l'index du créneau à déplacer
         int currentIndex = -1;

@@ -1,12 +1,8 @@
 package fr.redstom.khollendar.entity;
 
-/**
- * Énumération représentant les différents états possibles d'une session de khôlle
- */
+/** Énumération représentant les différents états possibles d'une session de khôlle */
 public enum KholleSessionStatus {
-    /**
-     * Les inscriptions sont ouvertes, les utilisateurs peuvent enregistrer leurs préférences
-     */
+    /** Les inscriptions sont ouvertes, les utilisateurs peuvent enregistrer leurs préférences */
     REGISTRATIONS_OPEN("Inscriptions ouvertes"),
 
     /**
@@ -14,9 +10,7 @@ public enum KholleSessionStatus {
      */
     REGISTRATIONS_CLOSED("Inscriptions fermées"),
 
-    /**
-     * Les résultats sont disponibles, les affectations ont été effectuées
-     */
+    /** Les résultats sont disponibles, les affectations ont été effectuées */
     RESULTS_AVAILABLE("Résultats disponibles");
 
     private final String label;
@@ -29,4 +23,3 @@ public enum KholleSessionStatus {
         return label;
     }
 }
-

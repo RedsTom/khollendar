@@ -1,15 +1,11 @@
 package fr.redstom.khollendar.dto;
 
+import java.time.LocalDateTime;
 import lombok.NonNull;
 
-import java.time.LocalDateTime;
-
-public record KholleCreationDto(
-        LocalDateTime time
-) {
+public record KholleCreationDto(LocalDateTime time) {
     @Override
-    @NonNull
-    public String toString() {
+    @NonNull public String toString() {
         return time.toString();
     }
 }

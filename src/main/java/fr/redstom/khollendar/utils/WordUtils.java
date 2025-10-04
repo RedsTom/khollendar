@@ -18,7 +18,7 @@ public class WordUtils {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    public static String plural(String word, String suffix, List<?> elements){
+    public static String plural(String word, String suffix, List<?> elements) {
         return word + (elements.size() > 1 ? suffix : "");
     }
 

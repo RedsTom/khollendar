@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.5.6"
     id("io.spring.dependency-management") version "1.1.7"
     id("gg.jte.gradle") version "3.1.16"
+    id("com.diffplug.spotless") version "8.0.0"
 }
 
 group = "fr.redstom"
@@ -46,6 +47,26 @@ jte {
     generate()
     binaryStaticContent = true
 }
+
+spotless {
+    format("misc") {
+        target("*.gradle", ".gitattributes", ".gitignore")
+
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+        endWithNewline()
+    }
+
+    java {
+        googleJavaFormat().aosp().reflowLongStrings()
+        formatAnnotations()
+        removeUnusedImports()
+        leadingTabsToSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
 
 tasks.withType<Test> {
     useJUnitPlatform()

@@ -16,7 +16,10 @@ public class UserPreference {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_preference_seq")
-    @SequenceGenerator(name = "user_preference_seq", sequenceName = "user_preference_seq", allocationSize = 1)
+    @SequenceGenerator(
+            name = "user_preference_seq",
+            sequenceName = "user_preference_seq",
+            allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,14 +38,16 @@ public class UserPreference {
     private Integer preferenceRank;
 
     /**
-     * Indique si cette préférence représente une indisponibilité (true) ou une préférence positive (false).
-     * Si isUnavailable = true, le créneau ne doit JAMAIS être attribué à cet utilisateur.
+     * Indique si cette préférence représente une indisponibilité (true) ou une préférence positive
+     * (false). Si isUnavailable = true, le créneau ne doit JAMAIS être attribué à cet utilisateur.
      */
     @Column(nullable = false)
     @Builder.Default
     private Boolean isUnavailable = false;
 
     // Index unique pour éviter les doublons user/session/slot
-    @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "session_id", "slot_id"}))
+    @Table(
+            uniqueConstraints =
+                    @UniqueConstraint(columnNames = {"user_id", "session_id", "slot_id"}))
     public static class UserPreferenceConstraints {}
 }

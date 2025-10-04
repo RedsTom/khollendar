@@ -4,9 +4,7 @@ import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
-/**
- * Service responsable de la gestion des sessions HTTP
- */
+/** Service responsable de la gestion des sessions HTTP */
 @Service
 public class SessionService {
 
@@ -16,54 +14,44 @@ public class SessionService {
 
     /**
      * Récupère l'ID de l'utilisateur connecté depuis la session
+     *
      * @return l'ID de l'utilisateur ou null s'il n'est pas connecté
      */
     public Long getCurrentUserId(HttpSession session) {
         return (Long) session.getAttribute(SESSION_USER_ID);
     }
 
-    /**
-     * Vérifie si l'utilisateur est connecté
-     */
+    /** Vérifie si l'utilisateur est connecté */
     public boolean isUserAuthenticated(HttpSession session) {
         return getCurrentUserId(session) != null;
     }
 
-    /**
-     * Enregistre l'URL de redirection après connexion
-     */
+    /** Enregistre l'URL de redirection après connexion */
     public void setRedirectAfterLogin(HttpSession session, String redirectUrl) {
         session.setAttribute(REDIRECT_AFTER_LOGIN, redirectUrl);
     }
 
-    /**
-     * Enregistre les préférences dans la session
-     */
+    /** Enregistre les préférences dans la session */
     public void savePreferences(HttpSession session, KhollePreferencesDto preferences) {
         session.setAttribute(SESSION_PREFERENCES, preferences);
     }
 
-    /**
-     * Récupère les préférences depuis la session
-     */
+    /** Récupère les préférences depuis la session */
     public KhollePreferencesDto getPreferences(HttpSession session, Long kholleId) {
-        KhollePreferencesDto preferences = (KhollePreferencesDto) session.getAttribute(SESSION_PREFERENCES);
+        KhollePreferencesDto preferences =
+                (KhollePreferencesDto) session.getAttribute(SESSION_PREFERENCES);
         if (preferences == null || !preferences.kholleSessionId().equals(kholleId)) {
             preferences = new KhollePreferencesDto(kholleId);
         }
         return preferences;
     }
 
-    /**
-     * Nettoie les préférences de la session
-     */
+    /** Nettoie les préférences de la session */
     public void clearPreferences(HttpSession session) {
         session.removeAttribute(SESSION_PREFERENCES);
     }
 
-    /**
-     * Réinitialise complètement la session utilisateur
-     */
+    /** Réinitialise complètement la session utilisateur */
     public void clearUserSession(HttpSession session) {
         session.removeAttribute(SESSION_USER_ID);
         session.removeAttribute(SESSION_PREFERENCES);

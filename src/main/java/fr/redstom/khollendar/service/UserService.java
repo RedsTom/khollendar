@@ -2,18 +2,17 @@ package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.entity.User;
 import fr.redstom.khollendar.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
- * Service de gestion des utilisateurs
- * Fournit les opérations CRUD et de gestion des codes secrets pour les utilisateurs
+ * Service de gestion des utilisateurs Fournit les opérations CRUD et de gestion des codes secrets
+ * pour les utilisateurs
  */
 @Service
 @RequiredArgsConstructor
@@ -34,10 +33,7 @@ public class UserService {
             throw new IllegalArgumentException("Un utilisateur avec ce nom existe déjà");
         }
 
-        User newUser = User.builder()
-                .username(username)
-                .codeInitialized(false)
-                .build();
+        User newUser = User.builder().username(username).codeInitialized(false).build();
 
         return userRepository.save(newUser);
     }
@@ -85,7 +81,7 @@ public class UserService {
     /**
      * Vérifie si le code secret fourni correspond à celui de l'utilisateur
      *
-     * @param user      L'utilisateur dont on vérifie le code
+     * @param user L'utilisateur dont on vérifie le code
      * @param secretCode Le code secret à vérifier
      * @return true si le code est valide et l'utilisateur a initialisé son code
      */
@@ -96,7 +92,7 @@ public class UserService {
     /**
      * Définit le code secret d'un utilisateur
      *
-     * @param user      L'utilisateur pour lequel définir le code
+     * @param user L'utilisateur pour lequel définir le code
      * @param secretCode Le code secret (doit être composé de 6 chiffres)
      * @throws IllegalArgumentException si le code ne respecte pas le format attendu
      */
@@ -116,11 +112,14 @@ public class UserService {
      * @param userId L'ID de l'utilisateur dont le code doit être réinitialisé
      */
     public void resetUserCode(Long userId) {
-        userRepository.findById(userId).ifPresent(user -> {
-            user.secretCode(null);
-            user.codeInitialized(false);
-            userRepository.save(user);
-        });
+        userRepository
+                .findById(userId)
+                .ifPresent(
+                        user -> {
+                            user.secretCode(null);
+                            user.codeInitialized(false);
+                            userRepository.save(user);
+                        });
     }
 
     /**

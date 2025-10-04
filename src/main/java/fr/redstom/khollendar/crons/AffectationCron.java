@@ -4,19 +4,17 @@ import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.entity.KholleSlot;
 import fr.redstom.khollendar.repository.KholleSessionRepository;
 import fr.redstom.khollendar.service.KholleAssignmentService;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 /**
- * Service de planification automatique des affectations de khôlles.
- * Exécute un cron quotidien pour affecter les étudiants aux créneaux
- * des sessions commençant dans moins de 48h.
+ * Service de planification automatique des affectations de khôlles. Exécute un cron quotidien pour
+ * affecter les étudiants aux créneaux des sessions commençant dans moins de 48h.
  */
 @Service
 @RequiredArgsConstructor
@@ -27,9 +25,9 @@ public class AffectationCron {
     private final KholleAssignmentService assignmentService;
 
     /**
-     * Tâche planifiée exécutée tous les jours à 2h du matin.
-     * Affecte automatiquement les étudiants aux créneaux des sessions
-     * qui commencent dans moins de 48h et qui n'ont pas encore été affectées.
+     * Tâche planifiée exécutée tous les jours à 2h du matin. Affecte automatiquement les étudiants
+     * aux créneaux des sessions qui commencent dans moins de 48h et qui n'ont pas encore été
+     * affectées.
      */
     @Scheduled(cron = "0 0 2 * * *") // Tous les jours à 2h
     public void assignUpcomingSessions() {
@@ -48,9 +46,10 @@ public class AffectationCron {
         for (KholleSession session : upcomingSessions) {
             try {
                 // Vérifier si la session commence dans moins de 48h
-                Optional<LocalDateTime> firstSlotDate = session.kholleSlots().stream()
-                        .map(KholleSlot::dateTime)
-                        .min(LocalDateTime::compareTo);
+                Optional<LocalDateTime> firstSlotDate =
+                        session.kholleSlots().stream()
+                                .map(KholleSlot::dateTime)
+                                .min(LocalDateTime::compareTo);
 
                 if (firstSlotDate.isEmpty()) {
                     log.warn("Session {} n'a aucun créneau, ignorée", session.id());
@@ -60,8 +59,10 @@ public class AffectationCron {
 
                 if (firstSlotDate.get().isAfter(in48Hours)) {
                     // La session commence dans plus de 48h, on passe
-                    log.debug("Session {} commence le {}, trop loin dans le futur",
-                            session.id(), firstSlotDate.get());
+                    log.debug(
+                            "Session {} commence le {}, trop loin dans le futur",
+                            session.id(),
+                            firstSlotDate.get());
                     continue;
                 }
 
@@ -73,8 +74,11 @@ public class AffectationCron {
                 }
 
                 // Effectuer l'affectation
-                log.info("Affectation de la session {} ({}), premier créneau le {}",
-                        session.id(), session.subject(), firstSlotDate.get());
+                log.info(
+                        "Affectation de la session {} ({}), premier créneau le {}",
+                        session.id(),
+                        session.subject(),
+                        firstSlotDate.get());
 
                 assignmentService.assignStudentsToSlots(session.id());
                 processedCount++;
@@ -83,23 +87,28 @@ public class AffectationCron {
 
             } catch (Exception e) {
                 errorCount++;
-                log.error("Erreur lors de l'affectation de la session {}: {}",
-                        session.id(), e.getMessage(), e);
+                log.error(
+                        "Erreur lors de l'affectation de la session {}: {}",
+                        session.id(),
+                        e.getMessage(),
+                        e);
             }
         }
 
         log.info("=== Fin de la tâche planifiée d'affectation ===");
-        log.info("Sessions traitées: {}, ignorées: {}, erreurs: {}",
-                processedCount, skippedCount, errorCount);
+        log.info(
+                "Sessions traitées: {}, ignorées: {}, erreurs: {}",
+                processedCount,
+                skippedCount,
+                errorCount);
     }
 
     /**
-     * Méthode manuelle pour déclencher l'affectation immédiatement
-     * (utile pour les tests ou l'administration)
+     * Méthode manuelle pour déclencher l'affectation immédiatement (utile pour les tests ou
+     * l'administration)
      */
     public void triggerManualAssignment() {
         log.info("Déclenchement manuel de l'affectation");
         assignUpcomingSessions();
     }
 }
-

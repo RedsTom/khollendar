@@ -21,8 +21,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column
-    private String secretCode;
+    @Column private String secretCode;
 
     @Column(nullable = false)
     @Builder.Default

@@ -16,13 +16,14 @@ public class MainController {
     @GetMapping("/")
     public String index(CsrfToken csrf, Model model) {
         model.addAttribute("title", "Accueil");
-        model.addAttribute("content", "Bienvenue sur Khôlle'n'dar, votre application de gestion de khôlles !");
+        model.addAttribute(
+                "content", "Bienvenue sur Khôlle'n'dar, votre application de gestion de khôlles !");
 
-        model.addAttribute("upcomingSessions", kholleService.getUpcomingKholleSessions(0, 5).getContent());
+        model.addAttribute(
+                "upcomingSessions", kholleService.getUpcomingKholleSessions(0, 5).getContent());
 
         model.addAttribute("_csrf", csrf);
 
         return "pages/index";
     }
-
 }

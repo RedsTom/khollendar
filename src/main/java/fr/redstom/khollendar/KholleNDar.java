@@ -11,5 +11,4 @@ public class KholleNDar {
     public static void main(String[] args) {
         SpringApplication.run(KholleNDar.class, args);
     }
-
 }

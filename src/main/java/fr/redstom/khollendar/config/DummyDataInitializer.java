@@ -3,21 +3,18 @@ package fr.redstom.khollendar.config;
 import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.entity.KholleSlot;
 import fr.redstom.khollendar.repository.KholleSessionRepository;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-/**
- * Classe permettant de générer des données de test pour l'application
- */
+/** Classe permettant de générer des données de test pour l'application */
 @Configuration
 @RequiredArgsConstructor
 public class DummyDataInitializer {
@@ -31,16 +28,15 @@ public class DummyDataInitializer {
         "Espagnol", "Allemand", "Économie", "Droit", "Sciences politiques"
     };
 
-    /**
-     * Génère et insère des données de test dans la base de données
-     */
+    /** Génère et insère des données de test dans la base de données */
     @Bean
     @Profile("!prod && false") // N'exécute pas en production
     public CommandLineRunner initData() {
         return args -> {
             // Vérifier si des données existent déjà
             if (kholleSessionRepository.count() > 0) {
-                System.out.println("Des données existent déjà dans la base - Initialisation ignorée");
+                System.out.println(
+                        "Des données existent déjà dans la base - Initialisation ignorée");
                 return;
             }
 
@@ -52,49 +48,46 @@ public class DummyDataInitializer {
             // Générer des sessions à venir (dans les prochains jours/semaines)
             generateUpcomingSessions(15);
 
-            System.out.println("Initialisation terminée : " + kholleSessionRepository.count() + " sessions créées");
+            System.out.println(
+                    "Initialisation terminée : "
+                            + kholleSessionRepository.count()
+                            + " sessions créées");
         };
     }
 
-    /**
-     * Génère des sessions de khôlles passées
-     */
+    /** Génère des sessions de khôlles passées */
     private void generatePastSessions(int count) {
         for (int i = 0; i < count; i++) {
             // Date de base: entre 1 et 60 jours dans le passé
-            LocalDateTime baseDate = LocalDateTime.now()
-                    .minusDays(random.nextInt(60) + 1)
-                    .truncatedTo(ChronoUnit.HOURS);
+            LocalDateTime baseDate =
+                    LocalDateTime.now()
+                            .minusDays(random.nextInt(60) + 1)
+                            .truncatedTo(ChronoUnit.HOURS);
 
             createKholleSession(baseDate, true);
         }
     }
 
-    /**
-     * Génère des sessions de khôlles à venir
-     */
+    /** Génère des sessions de khôlles à venir */
     private void generateUpcomingSessions(int count) {
         for (int i = 0; i < count; i++) {
             // Date de base: entre 1 et 30 jours dans le futur
-            LocalDateTime baseDate = LocalDateTime.now()
-                    .plusDays(random.nextInt(30) + 1)
-                    .truncatedTo(ChronoUnit.HOURS);
+            LocalDateTime baseDate =
+                    LocalDateTime.now()
+                            .plusDays(random.nextInt(30) + 1)
+                            .truncatedTo(ChronoUnit.HOURS);
 
             createKholleSession(baseDate, false);
         }
     }
 
-    /**
-     * Crée une session de khôlles avec des créneaux
-     */
+    /** Crée une session de khôlles avec des créneaux */
     private void createKholleSession(LocalDateTime baseDate, boolean isPast) {
         String subject = SUBJECTS[random.nextInt(SUBJECTS.length)];
 
         // Créer une session vide d'abord
-        KholleSession session = KholleSession.builder()
-                .subject(subject)
-                .kholleSlots(new ArrayList<>())
-                .build();
+        KholleSession session =
+                KholleSession.builder().subject(subject).kholleSlots(new ArrayList<>()).build();
 
         // Sauvegarder pour obtenir un ID
         session = kholleSessionRepository.save(session);
@@ -116,22 +109,18 @@ public class DummyDataInitializer {
             }
 
             // Ajuster l'heure pour qu'elle soit entre 8h et 18h
-            slotDateTime = slotDateTime
-                    .withHour(8 + random.nextInt(10))
-                    .withMinute(random.nextInt(4) * 15); // minutes: 0, 15, 30, 45
+            slotDateTime =
+                    slotDateTime
+                            .withHour(8 + random.nextInt(10))
+                            .withMinute(random.nextInt(4) * 15); // minutes: 0, 15, 30, 45
 
-            KholleSlot slot = KholleSlot.builder()
-                    .dateTime(slotDateTime)
-                    .session(session)
-                    .build();
+            KholleSlot slot = KholleSlot.builder().dateTime(slotDateTime).session(session).build();
 
             slots.add(slot);
         }
 
         // Mettre à jour la session avec ses créneaux
-        session = session.toBuilder()
-                .kholleSlots(slots)
-                .build();
+        session = session.toBuilder().kholleSlots(slots).build();
 
         kholleSessionRepository.save(session);
     }

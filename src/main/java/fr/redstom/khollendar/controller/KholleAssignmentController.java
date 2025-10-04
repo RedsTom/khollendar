@@ -7,6 +7,10 @@ import fr.redstom.khollendar.service.KholleAssignmentService;
 import fr.redstom.khollendar.service.KholleService;
 import fr.redstom.khollendar.service.SessionService;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,14 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-/**
- * Contrôleur pour la gestion des affectations de khôlles
- */
+/** Contrôleur pour la gestion des affectations de khôlles */
 @Controller
 @RequestMapping("/kholles")
 @RequiredArgsConstructor
@@ -35,9 +32,7 @@ public class KholleAssignmentController {
     private final KholleService kholleService;
     private final SessionService sessionService;
 
-    /**
-     * Affiche les affectations d'une session de khôlle
-     */
+    /** Affiche les affectations d'une session de khôlle */
     @GetMapping("/{id}/assignments")
     public String showAssignments(
             @PathVariable Long id,
@@ -45,8 +40,7 @@ public class KholleAssignmentController {
             HttpSession httpSession,
             Model model,
             RedirectAttributes redirectAttributes,
-            java.security.Principal principal
-    ) {
+            java.security.Principal principal) {
         Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
 
         if (sessionOpt.isEmpty()) {
@@ -58,7 +52,8 @@ public class KholleAssignmentController {
 
         // Vérifier si les affectations existent
         if (!assignmentService.isSessionAssigned(id)) {
-            redirectAttributes.addFlashAttribute("error", "Aucune affectation n'a encore été effectuée pour cette session");
+            redirectAttributes.addFlashAttribute(
+                    "error", "Aucune affectation n'a encore été effectuée pour cette session");
             return "redirect:/kholles/" + id;
         }
 
@@ -66,37 +61,41 @@ public class KholleAssignmentController {
         List<KholleAssignment> assignments = assignmentService.getSessionAssignments(id);
 
         // Grouper les affectations par créneau
-        Map<Long, List<KholleAssignment>> assignmentsBySlot = assignments.stream()
-                .collect(Collectors.groupingBy(a -> a.slot().id()));
+        Map<Long, List<KholleAssignment>> assignmentsBySlot =
+                assignments.stream().collect(Collectors.groupingBy(a -> a.slot().id()));
 
         // Vérifier si l'utilisateur actuel a une affectation
         KholleAssignment userAssignment = null;
         if (sessionService.isUserAuthenticated(httpSession)) {
             Long userId = sessionService.getCurrentUserId(httpSession);
-            userAssignment = assignments.stream()
-                    .filter(a -> a.user().id().equals(userId))
-                    .findFirst()
-                    .orElse(null);
+            userAssignment =
+                    assignments.stream()
+                            .filter(a -> a.user().id().equals(userId))
+                            .findFirst()
+                            .orElse(null);
         }
 
         // Vérifier si l'utilisateur est admin
         boolean isAdmin = principal != null && principal.getName().equals("admin");
 
         // Calculer les statistiques
-        Map<Integer, Long> rankDistribution = assignments.stream()
-                .filter(a -> a.obtainedPreferenceRank() != null)
-                .collect(Collectors.groupingBy(
-                        KholleAssignment::obtainedPreferenceRank,
-                        Collectors.counting()
-                ));
+        Map<Integer, Long> rankDistribution =
+                assignments.stream()
+                        .filter(a -> a.obtainedPreferenceRank() != null)
+                        .collect(
+                                Collectors.groupingBy(
+                                        KholleAssignment::obtainedPreferenceRank,
+                                        Collectors.counting()));
 
-        long withoutPreferences = assignments.stream()
-                .filter(a -> a.obtainedPreferenceRank() == null)
-                .count();
+        long withoutPreferences =
+                assignments.stream().filter(a -> a.obtainedPreferenceRank() == null).count();
 
         long firstChoice = rankDistribution.getOrDefault(1, 0L);
         long assignmentsWithPreferences = assignments.size() - withoutPreferences;
-        double satisfactionRate = assignmentsWithPreferences == 0 ? 0 : (double) firstChoice / assignmentsWithPreferences * 100;
+        double satisfactionRate =
+                assignmentsWithPreferences == 0
+                        ? 0
+                        : (double) firstChoice / assignmentsWithPreferences * 100;
 
         model.addAttribute("title", "Affectations - " + session.subject());
         model.addAttribute("session", session);
@@ -113,15 +112,10 @@ public class KholleAssignmentController {
         return "pages/kholles/assignments";
     }
 
-    /**
-     * Déclenche manuellement l'affectation d'une session (admin uniquement)
-     */
+    /** Déclenche manuellement l'affectation d'une session (admin uniquement) */
     @PostMapping("/{id}/assignments/trigger")
     @PreAuthorize("hasRole('ADMIN')")
-    public String triggerAssignment(
-            @PathVariable Long id,
-            RedirectAttributes redirectAttributes
-    ) {
+    public String triggerAssignment(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             log.info("Déclenchement manuel de l'affectation pour la session {}", id);
 
@@ -139,12 +133,16 @@ public class KholleAssignmentController {
             return "redirect:/kholles/" + id + "/assignments";
 
         } catch (IllegalStateException e) {
-            log.error("Erreur lors de l'affectation manuelle de la session {}: {}", id, e.getMessage());
+            log.error(
+                    "Erreur lors de l'affectation manuelle de la session {}: {}",
+                    id,
+                    e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Erreur : " + e.getMessage());
             return "redirect:/kholles/" + id;
         } catch (Exception e) {
             log.error("Erreur inattendue lors de l'affectation manuelle de la session {}", id, e);
-            redirectAttributes.addFlashAttribute("error", "Erreur inattendue lors de l'affectation");
+            redirectAttributes.addFlashAttribute(
+                    "error", "Erreur inattendue lors de l'affectation");
             return "redirect:/kholles/" + id;
         }
     }
@@ -158,10 +156,13 @@ public class KholleAssignmentController {
         try {
             log.info("Déclenchement manuel de l'affectation pour toutes les sessions éligibles");
             schedulerService.triggerManualAssignment();
-            redirectAttributes.addFlashAttribute("success", "Affectations déclenchées avec succès pour toutes les sessions éligibles");
+            redirectAttributes.addFlashAttribute(
+                    "success",
+                    "Affectations déclenchées avec succès pour toutes les sessions éligibles");
         } catch (Exception e) {
             log.error("Erreur lors du déclenchement manuel de toutes les affectations", e);
-            redirectAttributes.addFlashAttribute("error", "Erreur lors du déclenchement des affectations");
+            redirectAttributes.addFlashAttribute(
+                    "error", "Erreur lors du déclenchement des affectations");
         }
         return "redirect:/kholles";
     }

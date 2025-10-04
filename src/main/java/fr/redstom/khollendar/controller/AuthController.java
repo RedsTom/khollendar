@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthController {
 
     @GetMapping("/login")
-    public String loginPage(@RequestParam(required = false) String error,
-                           @RequestParam(required = false) String logout,
-                           CsrfToken csrf,
-                           Model model) {
+    public String loginPage(
+            @RequestParam(required = false) String error,
+            @RequestParam(required = false) String logout,
+            CsrfToken csrf,
+            Model model) {
         model.addAttribute("title", "Connexion administrateur");
         model.addAttribute("error", error);
         model.addAttribute("logout", logout);

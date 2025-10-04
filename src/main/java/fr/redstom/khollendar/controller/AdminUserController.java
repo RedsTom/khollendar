@@ -24,10 +24,7 @@ public class AdminUserController {
 
     @GetMapping
     public String listUsers(
-            @RequestParam(defaultValue = "0") int page,
-            CsrfToken csrf,
-            Model model
-    ) {
+            @RequestParam(defaultValue = "0") int page, CsrfToken csrf, Model model) {
         Page<User> users = userService.getPaginatedUsers(page, 10);
 
         model.addAttribute("title", "Gestion des utilisateurs");
@@ -44,8 +41,7 @@ public class AdminUserController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Model model,
-            CsrfToken csrf
-    ) {
+            CsrfToken csrf) {
         if (bindingResult.hasErrors()) {
             Page<User> users = userService.getPaginatedUsers(0, 10);
 
@@ -59,7 +55,8 @@ public class AdminUserController {
 
         try {
             User user = userService.createUser(userDto.username());
-            redirectAttributes.addFlashAttribute("success", "Utilisateur " + user.username() + " créé avec succès");
+            redirectAttributes.addFlashAttribute(
+                    "success", "Utilisateur " + user.username() + " créé avec succès");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -68,40 +65,48 @@ public class AdminUserController {
     }
 
     @PostMapping("/{userId}/reset-code")
-    public String resetUserCode(
-            @PathVariable Long userId,
-            RedirectAttributes redirectAttributes
-    ) {
+    public String resetUserCode(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
         try {
-            userService.getUserById(userId).ifPresentOrElse(
-                    user -> {
-                        userService.resetUserCode(userId);
-                        redirectAttributes.addFlashAttribute("success", "Code de l'utilisateur " + user.username() + " réinitialisé avec succès");
-                    },
-                    () -> redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé")
-            );
+            userService
+                    .getUserById(userId)
+                    .ifPresentOrElse(
+                            user -> {
+                                userService.resetUserCode(userId);
+                                redirectAttributes.addFlashAttribute(
+                                        "success",
+                                        "Code de l'utilisateur "
+                                                + user.username()
+                                                + " réinitialisé avec succès");
+                            },
+                            () ->
+                                    redirectAttributes.addFlashAttribute(
+                                            "error", "Utilisateur non trouvé"));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de la réinitialisation du code : " + e.getMessage());
+            redirectAttributes.addFlashAttribute(
+                    "error", "Erreur lors de la réinitialisation du code : " + e.getMessage());
         }
 
         return "redirect:/admin/users";
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(
-            @PathVariable Long userId,
-            RedirectAttributes redirectAttributes
-    ) {
+    public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
         try {
-            userService.getUserById(userId).ifPresentOrElse(
-                    user -> {
-                        userService.deleteUser(userId);
-                        redirectAttributes.addFlashAttribute("success", "Utilisateur " + user.username() + " supprimé avec succès");
-                    },
-                    () -> redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé")
-            );
+            userService
+                    .getUserById(userId)
+                    .ifPresentOrElse(
+                            user -> {
+                                userService.deleteUser(userId);
+                                redirectAttributes.addFlashAttribute(
+                                        "success",
+                                        "Utilisateur " + user.username() + " supprimé avec succès");
+                            },
+                            () ->
+                                    redirectAttributes.addFlashAttribute(
+                                            "error", "Utilisateur non trouvé"));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors de la suppression : " + e.getMessage());
+            redirectAttributes.addFlashAttribute(
+                    "error", "Erreur lors de la suppression : " + e.getMessage());
         }
 
         return "redirect:/admin/users";
@@ -111,8 +116,7 @@ public class AdminUserController {
     public String handleDeleteUser(
             @PathVariable Long userId,
             @RequestParam(name = "_method", required = false) String method,
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
         if ("DELETE".equalsIgnoreCase(method)) {
             return deleteUser(userId, redirectAttributes);
         }
