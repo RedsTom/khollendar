@@ -1,5 +1,5 @@
 @param String title
-@param String error
+@param boolean error
 @param org.springframework.security.web.csrf.CsrfToken _csrf
 
 @template.layout.MainLayout(
