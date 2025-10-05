@@ -3,3 +3,4 @@ java = "21"
 gradle = "8.14.3"
 node = "20"
 pnpm = "latest"
+
