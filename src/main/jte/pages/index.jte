@@ -3,7 +3,6 @@
 @import java.util.List
 
 @param String title
-@param String content
 @param List<KholleSession> upcomingSessions
 @param org.springframework.security.web.csrf.CsrfToken _csrf
 
