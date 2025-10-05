@@ -6,7 +6,6 @@ import fr.redstom.khollendar.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,14 +22,12 @@ public class AdminUserController {
     private final UserService userService;
 
     @GetMapping
-    public String listUsers(
-            @RequestParam(defaultValue = "0") int page, CsrfToken csrf, Model model) {
+    public String listUsers(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<User> users = userService.getPaginatedUsers(page, 10);
 
         model.addAttribute("title", "Gestion des utilisateurs");
         model.addAttribute("users", users);
         model.addAttribute("currentPage", page);
-        model.addAttribute("_csrf", csrf);
 
         return "pages/admin/users/list";
     }
@@ -40,15 +37,13 @@ public class AdminUserController {
             @Validated @ModelAttribute("newUser") UserCreationDto userDto,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
-            Model model,
-            CsrfToken csrf) {
+            Model model) {
         if (bindingResult.hasErrors()) {
             Page<User> users = userService.getPaginatedUsers(0, 10);
 
             model.addAttribute("title", "Gestion des utilisateurs");
             model.addAttribute("users", users);
             model.addAttribute("currentPage", 0);
-            model.addAttribute("_csrf", csrf);
 
             return "pages/admin/users/list";
         }

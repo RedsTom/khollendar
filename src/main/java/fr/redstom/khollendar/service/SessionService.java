@@ -46,11 +46,6 @@ public class SessionService {
         return preferences;
     }
 
-    /** Nettoie les préférences de la session */
-    public void clearPreferences(HttpSession session) {
-        session.removeAttribute(SESSION_PREFERENCES);
-    }
-
     /** Réinitialise complètement la session utilisateur */
     public void clearUserSession(HttpSession session) {
         session.removeAttribute(SESSION_USER_ID);

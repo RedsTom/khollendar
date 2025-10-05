@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +35,6 @@ public class KholleAssignmentController {
     @GetMapping("/{id}/assignments")
     public String showAssignments(
             @PathVariable Long id,
-            CsrfToken csrf,
             HttpSession httpSession,
             Model model,
             RedirectAttributes redirectAttributes,
@@ -106,7 +104,6 @@ public class KholleAssignmentController {
         model.addAttribute("rankDistribution", rankDistribution);
         model.addAttribute("withoutPreferences", withoutPreferences);
         model.addAttribute("satisfactionRate", satisfactionRate);
-        model.addAttribute("_csrf", csrf);
         model.addAttribute("httpSession", httpSession);
 
         return "pages/kholles/assignments";

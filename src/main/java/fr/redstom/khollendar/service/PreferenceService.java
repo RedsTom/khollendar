@@ -31,13 +31,13 @@ public class PreferenceService {
      * @param unavailableSlotIds Liste des créneaux indisponibles présélectionnés
      */
     public void prepareUnavailabilityForm(
-            Long kholleId, Long userId, Model model, List<Long> unavailableSlotIds) {
-        var user =
+            Model model, Long kholleId, Long userId, List<Long> unavailableSlotIds) {
+        User user =
                 userService
                         .getUserById(userId)
                         .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
 
-        var kholleSession =
+        KholleSession kholleSession =
                 kholleService
                         .getKholleSessionById(kholleId)
                         .orElseThrow(
@@ -64,17 +64,17 @@ public class PreferenceService {
      * @param model Modèle Spring MVC
      */
     public void prepareRankingForm(
+            Model model,
             Long kholleId,
             Long userId,
             List<Long> unavailableSlotIds,
-            List<Long> rankedSlotIds,
-            Model model) {
-        var user =
+            List<Long> rankedSlotIds) {
+        User user =
                 userService
                         .getUserById(userId)
                         .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
 
-        var kholleSession =
+        KholleSession kholleSession =
                 kholleService
                         .getKholleSessionById(kholleId)
                         .orElseThrow(
@@ -125,12 +125,12 @@ public class PreferenceService {
             List<Long> unavailableSlotIds,
             List<Long> rankedSlotIds,
             Model model) {
-        var user =
+        User user =
                 userService
                         .getUserById(userId)
                         .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
 
-        var kholleSession =
+        KholleSession kholleSession =
                 kholleService
                         .getKholleSessionById(kholleId)
                         .orElseThrow(

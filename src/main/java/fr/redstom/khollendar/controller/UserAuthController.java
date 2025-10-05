@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,7 +26,6 @@ public class UserAuthController {
     public String selectUser(
             @RequestParam(required = false) String redirectTo,
             HttpSession httpSession,
-            CsrfToken csrf,
             Model model) {
         List<User> users = userService.getAllUsers();
 
@@ -38,7 +36,6 @@ public class UserAuthController {
 
         model.addAttribute("title", "Connexion utilisateur");
         model.addAttribute("users", users);
-        model.addAttribute("_csrf", csrf);
 
         return "pages/user/login/select";
     }
@@ -67,10 +64,7 @@ public class UserAuthController {
     // Entrer le code secret (si déjà initialisé)
     @GetMapping("/enter-code")
     public String enterCodeForm(
-            HttpSession session,
-            CsrfToken csrf,
-            Model model,
-            RedirectAttributes redirectAttributes) {
+            HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Long userId = (Long) session.getAttribute("selectedUserId");
         if (userId == null) {
             redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un utilisateur");
@@ -90,7 +84,6 @@ public class UserAuthController {
 
         model.addAttribute("title", "Entrer votre code secret");
         model.addAttribute("username", user.username());
-        model.addAttribute("_csrf", csrf);
 
         return "pages/user/login/enter-code";
     }
@@ -101,7 +94,6 @@ public class UserAuthController {
             @Validated @ModelAttribute SecretCodeDto secretCodeDto,
             BindingResult bindingResult,
             HttpSession session,
-            CsrfToken csrf,
             Model model,
             RedirectAttributes redirectAttributes) {
         Long userId = (Long) session.getAttribute("selectedUserId");
@@ -121,7 +113,6 @@ public class UserAuthController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("title", "Entrer votre code secret");
             model.addAttribute("username", user.username());
-            model.addAttribute("_csrf", csrf);
             return "pages/user/login/enter-code";
         }
 
@@ -129,7 +120,6 @@ public class UserAuthController {
             model.addAttribute("title", "Entrer votre code secret");
             model.addAttribute("username", user.username());
             model.addAttribute("error", "Code secret invalide");
-            model.addAttribute("_csrf", csrf);
             return "pages/user/login/enter-code";
         }
 
@@ -151,10 +141,7 @@ public class UserAuthController {
     // Initialiser le code secret (première utilisation)
     @GetMapping("/initialize-code")
     public String initializeCodeForm(
-            HttpSession session,
-            CsrfToken csrf,
-            Model model,
-            RedirectAttributes redirectAttributes) {
+            HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Long userId = (Long) session.getAttribute("selectedUserId");
         if (userId == null) {
             redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un utilisateur");
@@ -174,7 +161,6 @@ public class UserAuthController {
 
         model.addAttribute("title", "Définir votre code secret");
         model.addAttribute("username", user.username());
-        model.addAttribute("_csrf", csrf);
 
         return "pages/user/login/initialize-code";
     }
@@ -185,7 +171,6 @@ public class UserAuthController {
             @Validated @ModelAttribute SecretCodeDto secretCodeDto,
             BindingResult bindingResult,
             HttpSession session,
-            CsrfToken csrf,
             Model model,
             RedirectAttributes redirectAttributes) {
         Long userId = (Long) session.getAttribute("selectedUserId");
@@ -205,7 +190,6 @@ public class UserAuthController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("title", "Définir votre code secret");
             model.addAttribute("username", user.username());
-            model.addAttribute("_csrf", csrf);
             return "pages/user/login/initialize-code";
         }
 
@@ -228,7 +212,7 @@ public class UserAuthController {
             model.addAttribute("title", "Définir votre code secret");
             model.addAttribute("username", user.username());
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("_csrf", csrf);
+
             return "pages/user/login/initialize-code";
         }
     }

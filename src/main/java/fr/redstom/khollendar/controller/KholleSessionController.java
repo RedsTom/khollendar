@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +39,6 @@ public class KholleSessionController {
             @RequestParam(defaultValue = "0") int previousPage,
             @RequestParam(defaultValue = "0") int upcomingPage,
             @RequestParam(defaultValue = "0") int allPage,
-            CsrfToken csrf,
             Model model) {
         model.addAttribute("title", "Liste des sessions de khôlles");
 
@@ -58,16 +56,14 @@ public class KholleSessionController {
         model.addAttribute("previousPage", previousPage);
         model.addAttribute("upcomingPage", upcomingPage);
         model.addAttribute("allPage", allPage);
-        model.addAttribute("_csrf", csrf);
 
         return "pages/kholles/list";
     }
 
     /** Formulaire de création d'une nouvelle khôlle */
     @GetMapping("/create")
-    public String createForm(CsrfToken csrf, Model model) {
+    public String createForm(Model model) {
         model.addAttribute("title", "Créer une session de khôlles");
-        model.addAttribute("_csrf", csrf);
         return "pages/kholles/create";
     }
 
@@ -82,7 +78,6 @@ public class KholleSessionController {
     @GetMapping("/{id}")
     public String show(
             @PathVariable Long id,
-            CsrfToken csrf,
             Model model,
             RedirectAttributes redirectAttributes,
             Principal principal) {
@@ -130,7 +125,6 @@ public class KholleSessionController {
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("assignments", assignments);
         model.addAttribute("assignmentsBySlot", assignmentsBySlot);
-        model.addAttribute("_csrf", csrf);
         return "pages/kholles/show";
     }
 
@@ -210,7 +204,6 @@ public class KholleSessionController {
     public String showPreferences(
             @PathVariable Long id,
             @RequestParam(value = "step", defaultValue = "1") int step,
-            CsrfToken csrf,
             HttpServletRequest request,
             HttpSession session,
             Model model,
@@ -244,7 +237,6 @@ public class KholleSessionController {
 
                 model.addAttribute("session", kholleSession);
                 model.addAttribute("currentUser", user);
-                model.addAttribute("_csrf", csrf);
 
                 return "pages/kholles/preferences-locked";
             }
@@ -264,36 +256,35 @@ public class KholleSessionController {
             }
 
             // Dispatcher vers la bonne méthode selon l'étape
-            switch (step) {
-                case 1:
+            return switch (step) {
+                case 1 -> {
                     preferenceService.prepareUnavailabilityForm(
-                            id, userId, model, preferences.unavailableSlotIds());
-                    model.addAttribute("_csrf", csrf);
-                    return "pages/kholles/preferences-indispo";
+                            model, id, userId, preferences.unavailableSlotIds());
 
-                case 2:
+                    yield "pages/kholles/preferences-indispo";
+                }
+                case 2 -> {
                     preferenceService.prepareRankingForm(
+                            model,
                             id,
                             userId,
                             preferences.unavailableSlotIds(),
-                            preferences.rankedSlotIds(),
-                            model);
-                    model.addAttribute("_csrf", csrf);
-                    return "pages/kholles/preferences-ranking";
+                            preferences.rankedSlotIds());
 
-                case 3:
+                    yield "pages/kholles/preferences-ranking";
+                }
+                case 3 -> {
                     preferenceService.prepareConfirmationForm(
                             id,
                             userId,
                             preferences.unavailableSlotIds(),
                             preferences.rankedSlotIds(),
                             model);
-                    model.addAttribute("_csrf", csrf);
-                    return "pages/kholles/preferences-confirm";
+                    yield "pages/kholles/preferences-confirm";
+                }
 
-                default:
-                    return "redirect:/kholles/" + id + "/preferences?step=1";
-            }
+                default -> "redirect:/kholles/" + id + "/preferences?step=1";
+            };
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/kholles";

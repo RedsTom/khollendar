@@ -1,6 +1,5 @@
 package fr.redstom.khollendar.controller;
 
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,15 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthController {
 
     @GetMapping("/login")
-    public String loginPage(
-            @RequestParam(required = false) String error,
-            @RequestParam(required = false) String logout,
-            CsrfToken csrf,
-            Model model) {
+    public String loginPage(Model model, @RequestParam(required = false) String error) {
         model.addAttribute("title", "Connexion administrateur");
         model.addAttribute("error", error);
-        model.addAttribute("logout", logout);
-        model.addAttribute("_csrf", csrf);
 
         return "pages/auth/login";
     }

@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class UserService {
      * @return Liste de tous les utilisateurs
      */
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     /**
@@ -55,7 +56,8 @@ public class UserService {
      * @return Page contenant les utilisateurs
      */
     public Page<User> getPaginatedUsers(int page, int size) {
-        return userRepository.findAll(PageRequest.of(page, size));
+        return userRepository.findAll(
+                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
     }
 
     /**
@@ -103,6 +105,7 @@ public class UserService {
 
         user.secretCode(passwordEncoder.encode(secretCode));
         user.codeInitialized(true);
+
         userRepository.save(user);
     }
 
@@ -118,6 +121,7 @@ public class UserService {
                         user -> {
                             user.secretCode(null);
                             user.codeInitialized(false);
+
                             userRepository.save(user);
                         });
     }
