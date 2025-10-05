@@ -220,6 +220,12 @@
   .z-50 {
     z-index: 50;
   }
+  .col-start-2 {
+    grid-column-start: 2;
+  }
+  .row-start-2 {
+    grid-row-start: 2;
+  }
   .container {
     width: 100%;
     @media (width >= 40rem) {
@@ -468,6 +474,9 @@
   }
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .grid-rows-\[auto_1fr_auto\] {
     grid-template-rows: auto 1fr auto;
