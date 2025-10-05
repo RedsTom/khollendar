@@ -4,6 +4,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,38 +16,33 @@ public class CustomErrorController implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request, Model model) {
-        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        String errorMessage = "Une erreur est survenue";
-        String errorDescription = "Nous sommes désolés, quelque chose s'est mal passé.";
+        int statusCode = parseErrorCode(request);
 
-        if (status != null) {
-            int statusCode = Integer.parseInt(status.toString());
+        String errorMessage = switch(statusCode) {
+            case 404 -> "Page non trouvée";
+            case 403 -> "Accès interdit";
+            case 500 -> "Erreur serveur";
+            case 400 -> "Requête invalide";
+            case 401 -> "Non autorisé";
+            default -> "Une erreur est survenue";
+        };
+        String errorDescription = switch(statusCode) {
+            case 404 -> "La page que vous recherchez n'existe pas ou a été déplacée.";
+            case 403 -> "Vous n'avez pas les permissions nécessaires pour accéder à cette page.";
+            case 500 -> "Une erreur interne s'est produite. Veuillez réessayer plus tard.";
+            case 400 -> "La requête envoyée n'est pas valide.";
+            case 401 -> "Vous devez être connecté pour accéder à cette page.";
+            default -> "Nous sommes désolés, quelque chose s'est mal passé.";
+        };
 
-            if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                errorMessage = "Page non trouvée";
-                errorDescription = "La page que vous recherchez n'existe pas ou a été déplacée.";
-            } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
-                errorMessage = "Accès interdit";
-                errorDescription =
-                        "Vous n'avez pas les permissions nécessaires pour accéder à cette page.";
-            } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                errorMessage = "Erreur serveur";
-                errorDescription =
-                        "Une erreur interne s'est produite. Veuillez réessayer plus tard.";
-            } else if (statusCode == HttpStatus.BAD_REQUEST.value()) {
-                errorMessage = "Requête invalide";
-                errorDescription = "La requête envoyée n'est pas valide.";
-            } else if (statusCode == HttpStatus.UNAUTHORIZED.value()) {
-                errorMessage = "Non autorisé";
-                errorDescription = "Vous devez être connecté pour accéder à cette page.";
-            }
-
-            model.addAttribute("statusCode", statusCode);
-        }
-
+        model.addAttribute("statusCode", statusCode);
         model.addAttribute("errorMessage", errorMessage);
         model.addAttribute("errorDescription", errorDescription);
 
         return "pages/error";
+    }
+
+    private int parseErrorCode(HttpServletRequest request) {
+        return (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
     }
 }
