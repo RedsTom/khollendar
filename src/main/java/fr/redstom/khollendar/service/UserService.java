@@ -2,14 +2,15 @@ package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.entity.User;
 import fr.redstom.khollendar.repository.UserRepository;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service de gestion des utilisateurs Fournit les opérations CRUD et de gestion des codes secrets
@@ -133,5 +134,14 @@ public class UserService {
      */
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    /**
+     * Vérifie si un utilisateur existe par son ID
+     *
+     * @param userId L'ID de l'utilisateur à vérifier
+     */
+    public boolean exists(Long userId) {
+        return userRepository.existsById(userId);
     }
 }

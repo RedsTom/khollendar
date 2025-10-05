@@ -65,9 +65,7 @@ content = @`
                         </thead>
                         <tbody class="divide-y divide-ctp-surface1">
                         @for(fr.redstom.khollendar.entity.User user : users.getContent())
-                            @template.fragments.admin.UserTableRow(
-                                user = user,
-                            )
+                            @template.fragments.admin.UserTableRow(user = user)
                         @endfor
                         </tbody>
                     </table>
@@ -76,54 +74,7 @@ content = @`
                 <!-- Vue en cartes pour mobile -->
                 <div class="md:hidden space-y-4">
                     @for(fr.redstom.khollendar.entity.User user : users.getContent())
-                        <div class="bg-ctp-surface0 rounded-lg p-4 border border-ctp-surface1">
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="text-xs text-ctp-subtext0">ID</p>
-                                        <p class="font-medium">${user.id()}</p>
-                                    </div>
-                                    <div>
-                                        @if(user.codeInitialized())
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ctp-green/20 text-ctp-green">
-                                                        Code initialisé
-                                                    </span>
-                                        @else
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ctp-yellow/20 text-ctp-yellow">
-                                                        Code non initialisé
-                                                    </span>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-ctp-subtext0">Nom d'utilisateur</p>
-                                    <p class="font-medium">${user.username()}</p>
-                                </div>
-                                <div class="flex gap-2 pt-2">
-                                    @if(user.codeInitialized())
-                                        <form action="/admin/users/${user.id()}/reset-code"
-                                              method="post"
-                                              class="flex-1">
-                                            <input type="hidden"
-                                                   name="${_csrf.getParameterName()}"
-                                                   value="${_csrf.getToken()}"/>
-                                            <button type="submit"
-                                                    class="button warning sm flex items-center gap-1 w-full justify-center"
-                                                    onclick="return confirm('Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?')">
-                                                <i data-feather="key" class="w-3 h-3"></i>
-                                                Réinitialiser
-                                            </button>
-                                        </form>
-                                    @endif
-                                    <button class="button danger sm flex-1 flex items-center gap-1 w-full justify-center"
-                                            hx-confirm="Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.username()} ?"
-                                            hx-delete="/admin/users/${user.id()}">
-                                        <i data-feather="trash-2" class="w-3 h-3"></i>
-                                        Supprimer
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        @template.fragments.admin.UserCard(user = user)
                     @endfor
                 </div>
 

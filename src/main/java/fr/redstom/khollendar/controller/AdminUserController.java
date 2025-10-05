@@ -65,49 +65,25 @@ public class AdminUserController {
     }
 
     @PostMapping("/{userId}/reset-code")
-    public String resetUserCode(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
-        try {
-            userService
-                    .getUserById(userId)
-                    .ifPresentOrElse(
-                            user -> {
-                                userService.resetUserCode(userId);
-                                redirectAttributes.addFlashAttribute(
-                                        "success",
-                                        "Code de l'utilisateur "
-                                                + user.username()
-                                                + " réinitialisé avec succès");
-                            },
-                            () ->
-                                    redirectAttributes.addFlashAttribute(
-                                            "error", "Utilisateur non trouvé"));
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "error", "Erreur lors de la réinitialisation du code : " + e.getMessage());
+    public ResponseEntity<Void> resetUserCode(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
+        if(!userService.exists(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return "redirect:/admin/users";
+        userService.resetUserCode(userId);
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
-        try {
-            userService
-                    .getUserById(userId)
-                    .ifPresentOrElse(
-                            user -> {
-                                userService.deleteUser(userId);
-                                redirectAttributes.addFlashAttribute(
-                                        "success",
-                                        "Utilisateur " + user.username() + " supprimé avec succès");
-                            },
-                            () ->
-                                    redirectAttributes.addFlashAttribute(
-                                            "error", "Utilisateur non trouvé"));
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "error", "Erreur lors de la suppression : " + e.getMessage());
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        if(!userService.exists(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
+        userService.deleteUser(userId);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
