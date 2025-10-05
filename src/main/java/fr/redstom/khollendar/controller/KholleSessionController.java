@@ -4,6 +4,7 @@ import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import fr.redstom.khollendar.dto.KholleSessionCreationDto;
 import fr.redstom.khollendar.entity.*;
 import fr.redstom.khollendar.service.*;
+import fr.redstom.khollendar.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.security.Principal;
@@ -109,7 +110,7 @@ public class KholleSessionController {
         long registeredUsersCount = kholleService.getRegisteredUsersCount(id);
 
         // Vérifier si l'utilisateur est admin
-        boolean isAdmin = principal != null && principal.getName().equals("admin");
+        boolean isAdmin = AuthUtils.admin();
 
         // Récupérer les affectations si elles existent
         List<KholleAssignment> assignments = assignmentService.getSessionAssignments(id);
