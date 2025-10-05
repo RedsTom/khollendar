@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpx @tailwindcss/cli -i ./style.css -o ../resources/static/main.css",
-    "watch": "pnpx @tailwindcss/cli --watch -i ./style.css -o ../resources/static/main.css"
+    "build": "pnpx @tailwindcss/cli -i ./style/style.css -o ../resources/static/main.css",
+    "watch": "pnpx @tailwindcss/cli --watch -i ./style/style.css -o ../resources/static/main.css"
   },
   "keywords": [],
   "author": "",
