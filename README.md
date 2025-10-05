@@ -22,7 +22,7 @@ Khôlle'n'dar est une application web dédiée à la gestion et l'organisation d
 ## 🛠️ Technologies utilisées
 
 - **Backend**
-  - Java 17+
+  - Java 21+
   - Spring Boot 3.x
   - JPA / Hibernate
   - PostgreSQL
