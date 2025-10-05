@@ -22,40 +22,31 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                        authorize ->
-                                authorize
-                                        .requestMatchers("/admin/**")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/create", "/kholles/create/**")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/*/delete")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/*/rename")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/*/status")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/*/assignments/trigger")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/assignments/trigger-all")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/user-auth/**")
-                                        .permitAll()
-                                        .requestMatchers("/**")
-                                        .permitAll())
-                .formLogin(
-                        formLogin ->
-                                formLogin
-                                        .loginPage("/login")
-                                        .defaultSuccessUrl("/")
-                                        .failureUrl("/login?error=true")
-                                        .permitAll())
-                .logout(
-                        logout ->
-                                logout.logoutUrl("/logout")
-                                        .logoutSuccessUrl("/")
-                                        .invalidateHttpSession(true)
-                                        .permitAll());
+        // @formatter:off
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/admin/**",
+                                         "/kholles/create",
+                                         "/kholles/create/**",
+                                         "/kholles/*/delete",
+                                         "/kholles/*/rename",
+                                         "/kholles/*/status",
+                                         "/kholles/*/assignments/trigger",
+                                         "/kholles/assignments/trigger-all")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers("/**", "/user-auth/**").permitAll())
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/login?error=true")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .permitAll());
+        // @formatter:on
 
         return http.build();
     }
@@ -69,8 +60,13 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(adminPassword);
 
-        UserDetails admin =
-                User.builder().username("admin").password(encodedPassword).roles("ADMIN").build();
+        // @formatter:off
+        UserDetails admin = User.builder()
+                .username("admin")
+                .password(encodedPassword)
+                .roles("ADMIN")
+                .build();
+        // @formatter:on
 
         return new InMemoryUserDetailsManager(admin);
     }

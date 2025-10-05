@@ -65,6 +65,7 @@ spotless {
         leadingTabsToSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
+        toggleOffOn("// @formatter:off", "// @formatter:on")
     }
 }
 
