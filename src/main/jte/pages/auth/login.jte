@@ -1,6 +1,8 @@
+@import org.springframework.security.web.csrf.CsrfToken
+
+@param CsrfToken _csrf
 @param String title
 @param boolean error
-@param org.springframework.security.web.csrf.CsrfToken _csrf
 
 @template.layout.MainLayout(
     title = title,
@@ -16,9 +18,7 @@
                             _csrf = _csrf,
                             error = error
                         )
-                    `
-                )
+                    `)
             </div>
         </div>
-    `
-)
+    `)

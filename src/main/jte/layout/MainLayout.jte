@@ -32,6 +32,12 @@
     <meta name="csrf-header" content="${_csrf.getHeaderName()}">
     <meta name="csrf-token" content="${_csrf.getToken()}">
 
+
+    <script defer>
+        window.onload = () =>
+            feather.replace();
+    </script>
+
     <script src="/js/htmx-config.js" defer></script>
 </head>
 <body class="bg-ctp-base text-ctp-text grid grid-rows-[auto_1fr_auto] min-h-screen">
@@ -66,16 +72,17 @@
 
     <div id="buttons" class="flex gap-4">
         @if(fr.redstom.khollendar.utils.AuthUtils.authenticated())
-            <form action="/logout" method="post">
-                <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
-                <button type="submit"
-                        class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-4 py-2 rounded-lg flex gap-2 items-center justify-center">
-                    <i data-feather="log-out" class="w-5 h-5"></i>
-                    Déconnexion
-                </button>
-            </form>
+            <button type="submit"
+                    hx-post="/logout"
+                    hx-swap="none"
+                    hx-on::after-request="window.location.reload()"
+                    class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-4 py-2 rounded-lg flex gap-2 items-center justify-center">
+                <i data-feather="log-out" class="w-5 h-5"></i>
+                Déconnexion
+            </button>
         @else
             <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
+               id="login-btn"
                href="/login">
                 <i data-feather="log-in" class="w-5 h-5"></i>
                 Administrateur
@@ -89,9 +96,5 @@
         </a>
     </div>
 </footer>
-
-<script>
-    feather.replace();
-</script>
 </body>
 </html>
