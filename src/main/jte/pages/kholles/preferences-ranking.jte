@@ -86,23 +86,15 @@
 
                                 <!-- Boutons de navigation -->
                                 <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
-                                    @template.components.ui.Button(
-                                        href = "/kholles/${session.id()}/preferences?step=1",
-                                        variant = "secondary",
-                                        content = @`
-                                            <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i>
-                                            Retour
-                                        `
-                                    )
+                                    <a href="/kholles/${session.id()}/preferences?step=1" class="button secondary">
+                                        <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i>
+                                        Retour
+                                    </a>
 
-                                    @template.components.ui.Button(
-                                        type = "submit",
-                                        variant = "primary",
-                                        content = @`
-                                            Continuer
-                                            <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
-                                        `
-                                    )
+                                    <button type="submit" class="button primary">
+                                        Continuer
+                                        <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                                    </button>
                                 </div>
                             </form>
                         @endif

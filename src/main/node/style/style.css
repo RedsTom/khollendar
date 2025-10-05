@@ -1,7 +1,9 @@
 @import "tailwindcss";
 @import "@catppuccin/tailwindcss/mocha.css";
 
-@source "../jte/**";
+@import "./components/button.css";
+
+@source "../../jte/**";
 
 @source inline("line-through text-slate-600");
 @source inline("bg-ctp-blue/10 border-ctp-blue text-ctp-blue");

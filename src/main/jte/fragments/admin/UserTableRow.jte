@@ -26,17 +26,11 @@
                     <input type="hidden"
                            name="${_csrf.getParameterName()}"
                            value="${_csrf.getToken()}"/>
-                    @template.components.ui.Button(
-                        type = "submit",
-                        variant = "warning",
-                        size = "xs",
-                        extraClasses = "flex items-center gap-1",
-                        onclick = "return confirm('Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?')",
-                        content = @`
-                            <i data-feather="key" class="w-3 h-3"></i>
-                            Réinitialiser code
-                        `
-                    )
+                    <button type="submit" class="button warning sm flex items-center gap-1"
+                            onclick="return confirm('Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?')">
+                        <i data-feather="key" class="w-3 h-3"></i>
+                        Réinitialiser code
+                    </button>
                 </form>
             @endif
             <form action="/admin/users/${user.id()}" method="post">
@@ -44,17 +38,11 @@
                 <input type="hidden"
                        name="${_csrf.getParameterName()}"
                        value="${_csrf.getToken()}"/>
-                @template.components.ui.Button(
-                    type = "submit",
-                    variant = "danger",
-                    size = "xs",
-                    extraClasses = "flex items-center gap-1",
-                    onclick = "return confirm('Êtes-vous sûr de vouloir supprimer l\\'utilisateur ${user.username()} ?')",
-                    content = @`
-                        <i data-feather="trash-2" class="w-3 h-3"></i>
-                        Supprimer
-                    `
-                )
+                <button type="submit" class="button danger sm flex items-center gap-1"
+                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ${user.username()} ?')">
+                    <i data-feather="trash-2" class="w-3 h-3"></i>
+                    Supprimer
+                </button>
             </form>
         </div>
     </td>

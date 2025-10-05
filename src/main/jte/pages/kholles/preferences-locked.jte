@@ -61,14 +61,10 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-                        @template.components.ui.Button(
-                            href = "/kholles",
-                            variant = "primary",
-                            content = @`
-                                <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i>
-                                Retour à la liste des khôlles
-                            `
-                        )
+                        <a href="/kholles" class="button primary">
+                            <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i>
+                            Retour à la liste des khôlles
+                        </a>
                     </div>
                 `
             )

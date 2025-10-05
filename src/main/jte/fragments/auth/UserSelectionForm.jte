@@ -37,12 +37,9 @@
         </div>
 
         <div class="pt-2">
-            @template.components.ui.Button(
-                type = "submit",
-                variant = "primary",
-                extraClasses = "w-full",
-                content = @`Continuer`
-            )
+            <button type="submit" class="button primary w-full">
+                Continuer
+            </button>
         </div>
     </form>
 @endif

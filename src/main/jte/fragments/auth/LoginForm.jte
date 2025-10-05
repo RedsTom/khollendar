@@ -32,12 +32,9 @@
     </div>
 
     <div class="pt-2">
-        @template.components.ui.Button(
-            type = "submit",
-            variant = "primary",
-            extraClasses = "w-full",
-            content = @`Se connecter`
-        )
+        <button type="submit" class="button primary w-full">
+            Se connecter
+        </button>
     </div>
 </form>
 

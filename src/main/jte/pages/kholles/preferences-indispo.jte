@@ -121,23 +121,15 @@
 
                         <!-- Boutons de navigation -->
                         <div class="flex flex-col sm:flex-row justify-between gap-4">
-                            @template.components.ui.Button(
-                                href = "/kholles",
-                                variant = "secondary",
-                                content = @`
-                                    <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i>
-                                    Retour à la liste
-                                `
-                            )
+                            <a href="/kholles" class="button secondary">
+                                <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i>
+                                Retour à la liste
+                            </a>
 
-                            @template.components.ui.Button(
-                                type = "submit",
-                                variant = "primary",
-                                content = @`
-                                    Continuer
-                                    <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
-                                `
-                            )
+                            <button type="submit" class="button primary">
+                                Continuer
+                                <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                            </button>
                         </div>
                     </form>
                 `

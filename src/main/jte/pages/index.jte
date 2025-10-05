@@ -26,11 +26,9 @@
                             <p class="text-ctp-subtext0 mb-4">
                                 Ajoutez une nouvelle session de khôlle pour vos étudiants
                             </p>
-                            @template.components.ui.Button(
-                                href = "/kholles/create",
-                                variant = "primary",
-                                content = @`Créer une session`
-                            )
+                            <a href="/kholles/create" class="button primary">
+                                Créer une session
+                            </a>
                         `
                     )
 
@@ -40,11 +38,9 @@
                             <p class="text-ctp-subtext0 mb-4">
                                 Créez et gérez les utilisateurs de l'application
                             </p>
-                            @template.components.ui.Button(
-                                href = "/admin/users",
-                                variant = "primary",
-                                content = @`Gérer les utilisateurs`
-                            )
+                            <a href="/admin/users" class="button primary">
+                                Gérer les utilisateurs
+                            </a>
                         `
                     )
                 </div>
@@ -67,15 +63,10 @@
                     @endif
 
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4">
-                        @template.components.ui.Button(
-                            href = "/kholles",
-                            variant = "link",
-                            extraClasses = "flex items-center my-4 sm:my-0",
-                            content = @`
-                                Voir toutes les sessions
-                                <i data-feather="arrow-right" class="ml-1 w-4 h-4"></i>
-                            `
-                        )
+                        <a href="/kholles" class="button flex items-center my-4 sm:my-0">
+                            Voir toutes les sessions
+                            <i data-feather="arrow-right" class="ml-1 w-4 h-4"></i>
+                        </a>
                     </div>
                 `
             )
