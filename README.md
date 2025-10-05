@@ -42,20 +42,24 @@ Khôlle'n'dar est une application web dédiée à la gestion et l'organisation d
 
 ### Configuration de la base de données
 
-1. Copiez le fichier de configuration exemple :
-   ```bash
-   cp src/main/resources/application.properties.example src/main/resources/application.properties
-   ```
+Modifiez `src/main/resources/application.properties` avec vos propres valeurs :
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/votre_base
+spring.datasource.username=votre_utilisateur
+spring.datasource.password=votre_mot_de_passe
+admin.password=votre_mot_de_passe_admin
+```
 
-2. Modifiez `src/main/resources/application.properties` avec vos propres valeurs :
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/votre_base
-   spring.datasource.username=votre_utilisateur
-   spring.datasource.password=votre_mot_de_passe
-   admin.password=votre_mot_de_passe_admin
-   ```
+**⚠️ Important** : Ne commitez JAMAIS le fichier `application.properties` avec vos credentials réels. Ce fichier est ignoré par Git.
 
-   **⚠️ Important** : Ne commitez JAMAIS le fichier `application.properties` avec vos credentials réels. Ce fichier est ignoré par Git.
+Pour éviter cela, vous pouvez également utiliser les variables d'environnement :
+```dotenv
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/votre_base
+SPRING_DATASOURCE_USERNAME=votre_utilisateur
+SPRING_DATASOURCE_PASSWORD=votre_mot_de_passe
+
+ADMIN_PASSWORD=votre_mot_de_passe_admin
+```
 
 ### Migrations de base de données
 
@@ -66,23 +70,6 @@ L'application utilise **Flyway** pour gérer les migrations de base de données 
 - Pour plus d'informations sur la création de nouvelles migrations, consultez `src/main/resources/db/migration/README.md`
 
 **Note** : Si vous avez déjà une base de données existante, Flyway utilisera `baseline-on-migrate=true` pour marquer le schéma actuel comme version de base sans le modifier.
-
-#### Commandes Flyway via Gradle
-
-Vous pouvez gérer les migrations directement avec Gradle :
-
-```bash
-# Voir l'état des migrations
-./gradlew flywayInfo
-
-# Appliquer les migrations en attente
-./gradlew flywayMigrate
-
-# Valider les migrations
-./gradlew flywayValidate
-```
-
-Pour plus de détails, consultez [FLYWAY_COMMANDS.md](FLYWAY_COMMANDS.md).
 
 ### Lancement de l'application
 
