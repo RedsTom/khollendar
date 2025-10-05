@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CustomErrorController implements ErrorController {
 
     @RequestMapping("/error")
-    public String handleError(HttpServletRequest request, CsrfToken csrf, Model model) {
+    public String handleError(HttpServletRequest request, Model model) {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String errorMessage = "Une erreur est survenue";
         String errorDescription = "Nous sommes désolés, quelque chose s'est mal passé.";
@@ -47,7 +46,6 @@ public class CustomErrorController implements ErrorController {
 
         model.addAttribute("errorMessage", errorMessage);
         model.addAttribute("errorDescription", errorDescription);
-        model.addAttribute("_csrf", csrf);
 
         return "pages/error";
     }
