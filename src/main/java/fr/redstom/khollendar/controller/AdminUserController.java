@@ -5,6 +5,9 @@ import fr.redstom.khollendar.entity.User;
 import fr.redstom.khollendar.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.net.http.HttpResponse;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -85,7 +90,7 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
         try {
             userService
                     .getUserById(userId)
@@ -104,18 +109,9 @@ public class AdminUserController {
                     "error", "Erreur lors de la suppression : " + e.getMessage());
         }
 
-        return "redirect:/admin/users";
-    }
-
-    @PostMapping("/{userId}")
-    public String handleDeleteUser(
-            @PathVariable Long userId,
-            @RequestParam(name = "_method", required = false) String method,
-            RedirectAttributes redirectAttributes) {
-        if ("DELETE".equalsIgnoreCase(method)) {
-            return deleteUser(userId, redirectAttributes);
-        }
-
-        return "redirect:/admin/users";
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .header("HX-Refresh", "true")
+                .build();
     }
 }

@@ -22,7 +22,12 @@
             integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ"
             crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/css/main.css">
+
+    <meta name="csrf-header" content="${_csrf.getHeaderName()}">
+    <meta name="csrf-token" content="${_csrf.getToken()}">
+
+    <script src="/js/htmx-config.js" defer></script>
 </head>
 <body class="bg-ctp-base text-ctp-text grid grid-rows-[auto_1fr_auto] min-h-screen">
 <header class="bg-ctp-crust w-full flex items-center justify-between p-4">
