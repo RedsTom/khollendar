@@ -17,12 +17,9 @@
                    required
                    autofocus
                    class="flex-1">
-            @template.components.ui.Button(
-                type = "submit",
-                variant = "primary",
-                extraClasses = "w-full sm:w-auto",
-                content = @`Ajouter`
-            )
+            <button type="submit" class="button primary w-full sm:w-auto">
+                Ajouter
+            </button>
         </div>
     </div>
 </form>

@@ -32,15 +32,10 @@
             @template.fragments.common.PageHeader(
                 title = title,
                 action = @`
-                    @template.components.ui.Button(
-                        href = "/kholles/create",
-                        variant = "primary",
-                        extraClasses = "w-full sm:w-auto",
-                        content = @`
-                            <i data-feather="plus" class="mr-2 w-4 h-4 sm:w-5 sm:h-5"></i>
-                            Créer une session
-                        `
-                    )
+                    <a href="/kholles/create" class="button primary w-full sm:w-auto">
+                        <i data-feather="plus" class="mr-2 w-4 h-4 sm:w-5 sm:h-5"></i>
+                        Créer une session
+                    </a>
                 `
             )
 

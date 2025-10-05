@@ -52,18 +52,13 @@
                                 Créneaux horaires
                             </h3>
                             <div id="slots-container" class="space-y-4">
+                                <!-- Les créneaux seront ajoutés ici -->
                             </div>
 
-                            @template.components.ui.Button(
-                                type = "button",
-                                variant = "success",
-                                extraClasses = "mt-4",
-                                onclick = "addSlot()",
-                                content = @`
-                                    <i data-feather="plus" class="mr-2"></i>
-                                    Ajouter un créneau
-                                `
-                            )
+                            <button class="button success mt-4" onclick="addSlot()">
+                                <i data-feather="plus" class="mr-2"></i>
+                                Ajouter un créneau
+                            </button>
                         </div>
 
                         <input type="hidden"
@@ -71,12 +66,9 @@
                                value="${_csrf.getToken()}"/>
 
                         <div class="flex justify-end">
-                            @template.components.ui.Button(
-                                type = "submit",
-                                variant = "primary",
-                                size = "lg",
-                                content = @`Créer la session`
-                            )
+                            <button type="submit" class="button primary lg">
+                                Créer la session
+                            </button>
                         </div>
                     </form>
                 `

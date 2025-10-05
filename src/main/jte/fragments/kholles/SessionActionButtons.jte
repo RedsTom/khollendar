@@ -7,28 +7,21 @@
 <!-- Boutons d'action -->
 <div class="flex gap-2 flex-wrap">
     @if(hasAssignments)
-        @template.components.ui.Button(
-            href = "/kholles/" + session.id() + "/assignments",
-            variant = "primary",
-            content = @`
-                <i data-feather="check-circle" class="mr-2"></i>
-                Voir les détails des affectations
-            `
-        )
+        <a class="button primary" href="/kholles/${session.id()}/assignments">
+            <i data-feather="check-circle" class="mr-2"></i>
+            Voir les détails des affectations
+        </a>
     @endif
 
     @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
-        @template.components.ui.Button(
-            href = "/user-auth/select?redirectTo=/kholles/" + session.id() + "/preferences",
-            variant = "primary",
-            content = @`Indiquer mes disponibilités`
-        )
+        <a class="button primary" href="/user-auth/select?redirectTo=/kholles/${session.id()}/register">
+            <i data-feather="user-plus" class="mr-2"></i>
+            Indiquer mes disponibilités
+        </a>
     @else
-        @template.components.ui.Button(
-            variant = "secondary",
-            disabled = true,
-            content = @`Inscriptions fermées`
-        )
+        <button disabled class="button secondary">
+            Inscriptions fermées
+        </button>
     @endif
 </div>
 
