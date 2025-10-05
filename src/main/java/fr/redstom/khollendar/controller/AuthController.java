@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthController {
 
     @GetMapping("/login")
-    public String loginPage(Model model, @RequestParam(required = false) String error) {
+    public String loginPage(Model model, @RequestParam(required = false) boolean error) {
         model.addAttribute("title", "Connexion administrateur");
         model.addAttribute("error", error);
 

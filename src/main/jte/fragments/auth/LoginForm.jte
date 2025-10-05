@@ -1,9 +1,9 @@
 @import org.springframework.security.web.csrf.CsrfToken
 
 @param CsrfToken _csrf
-@param String error = null
+@param boolean error = false
 
-@if(error != null)
+@if(error)
     @template.components.ui.Alert(
         type = "error",
         message = "Nom d'utilisateur ou mot de passe incorrect"
