@@ -23,7 +23,7 @@ public class KholleSlot {
 
     @Column private LocalDateTime dateTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "session_id", nullable = false)
     private KholleSession session;
 
