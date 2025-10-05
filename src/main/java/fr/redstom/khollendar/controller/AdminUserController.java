@@ -6,7 +6,6 @@ import fr.redstom.khollendar.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -15,8 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.net.http.HttpResponse;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -65,29 +62,25 @@ public class AdminUserController {
     }
 
     @PostMapping("/{userId}/reset-code")
-    public ResponseEntity<Void> resetUserCode(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
-        if(!userService.exists(userId)) {
+    public ResponseEntity<Void> resetUserCode(
+            @PathVariable Long userId, RedirectAttributes redirectAttributes) {
+        if (!userService.exists(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         userService.resetUserCode(userId);
 
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
-        if(!userService.exists(userId)) {
+        if (!userService.exists(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         userService.deleteUser(userId);
 
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .header("HX-Refresh", "true")
-                .build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).header("HX-Refresh", "true").build();
     }
 }
