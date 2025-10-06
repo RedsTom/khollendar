@@ -63,9 +63,9 @@
                     @endif
 
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4">
-                        <a href="/kholles" class="button flex items-center my-4 sm:my-0">
+                        <a href="/kholles" class="button flex items-center gap-1 my-4 sm:my-0">
                             Voir toutes les sessions
-                            <i data-feather="arrow-right" class="ml-1 w-4 h-4"></i>
+                            <i class="feather-icon icon-arrow-right"></i>
                         </a>
                     </div>
                 `

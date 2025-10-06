@@ -4,19 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpx @tailwindcss/cli -i ./style/style.css -o ../resources/static/css/main.css",
-    "watch": "pnpx @tailwindcss/cli --watch -i ./style/style.css -o ../resources/static/css/main.css"
+    "prepare": "cpx node_modules/feather-webfont/dist/*.{eot,ttf,woff} ../resources/static/css/",
+    "build": "pnpm run prepare && pnpx @tailwindcss/cli -i ./style/style.css -o ../resources/static/css/main.css",
+    "watch": "pnpm run prepare && pnpx @tailwindcss/cli --watch -i ./style/style.css -o ../resources/static/css/main.css"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.13",
+    "feather-webfont": "^4.22.3",
     "pnpm": "^10.17.1",
     "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
-    "@catppuccin/tailwindcss": "^1.0.0"
+    "@catppuccin/tailwindcss": "^1.0.0",
+    "cpx": "^1.5.0",
+    "@tailwindcss/cli": "^4.1.13"
   }
 }

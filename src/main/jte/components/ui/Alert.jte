@@ -25,7 +25,8 @@
 <div class="${baseClasses}" role="alert">
     <%-- Icône --%>
     <div class="flex-shrink-0 mt-0.5">
-        <i data-feather="${icon}" class="w-5 h-5"></i>
+        <i class="feather-icon icon-${icon}"></i>
+
     </div>
 
     <%-- Contenu --%>
@@ -43,7 +44,8 @@
                 class="flex-shrink-0 text-ctp-subtext1 hover:text-ctp-text focus:outline-none"
                 onclick="this.parentElement.remove()"
                 aria-label="Fermer">
-            <i data-feather="x" class="w-5 h-5"></i>
+            <i class="feather-icon icon-x"></i>
+
         </button>
     @endif
 </div>

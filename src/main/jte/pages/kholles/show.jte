@@ -38,11 +38,11 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <span class="text-ctp-text">${session.subject()}</span>
                     `
                 )
@@ -78,7 +78,7 @@
                     @if(hasAssignments)
                         <div class="mb-8">
                             <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-                                <i data-feather="check-circle" class="w-6 h-6"></i>
+                                <i class="feather-icon icon-calendar"></i>
                                 Affectations par créneau
                             </h2>
 
@@ -100,7 +100,7 @@
                     <div class="mb-8">
                         <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
                             <h2 class="text-xl sm:text-2xl font-semibold text-ctp-blue flex items-center gap-2">
-                                <i data-feather="users" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                                <i class="feather-icon icon-users"></i>
                                 Préférences des utilisateurs
                             </h2>
                             <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">

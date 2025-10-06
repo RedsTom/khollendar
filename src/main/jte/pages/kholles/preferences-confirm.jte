@@ -29,15 +29,15 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
                             ${session.subject()}
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <span class="text-ctp-text">Confirmation</span>
                     `
                 )
@@ -80,7 +80,7 @@
                         <!-- Résumé des créneaux -->
                         <div class="mb-6">
                             <h3 class="text-lg font-semibold mb-3 text-ctp-blue flex items-center gap-2">
-                                <i data-feather="list" class="w-5 h-5"></i>
+                                <i class="feather-icon icon-list"></i>
                                 Récapitulatif de vos choix :
                             </h3>
 
@@ -101,7 +101,7 @@
                                                 <td class="px-4 py-3">
                                                     @if(unavailableSlots.contains(slot))
                                                         <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-ctp-red/20 text-ctp-red">
-                                                            <i class="h-3 w-3 mr-1" data-feather="x-circle"></i>
+                                                            <i class="feather-icon icon-x-circle"></i>
                                                             Indisponible
                                                         </div>
                                                     @else
@@ -113,7 +113,7 @@
                                                             String icon = rank > 0 ? "check-circle" : "alert-circle";
                                                         }
                                                         <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}">
-                                                            <i class="h-3 w-3 mr-1" data-feather="${icon}"></i>
+                                                            <i class="feather-icon icon-${icon}"></i>
                                                             ${rankDisplay}
                                                         </div>
                                                     @endif
@@ -128,13 +128,13 @@
                         <!-- Boutons d'action -->
                         <div class="mt-6 flex flex-col sm:flex-row justify-between gap-4">
                             <a href="/kholles/${session.id()}/preferences?step=2" class="button secondary">
-                                <i data-feather="arrow-left" class="h-4 w-4 mr-2"></i>
+                                <i class="feather-icon icon-arrow-left"></i>
                                 Retour
                             </a>
 
                             <button type="submit" class="button primary">
                                 Confirmer mes choix
-                                <i data-feather="check" class="h-4 w-4 ml-2"></i>
+                                <i class="feather-icon icon-check"></i>
                             </button>
                         </div>
                     `

@@ -12,7 +12,7 @@
             <button id="closeStatusModal"
                     type="button"
                     class="text-ctp-subtext0 hover:text-ctp-text">
-                <i data-feather="x"></i>
+                <i class="feather-icon x"></i>
             </button>
         </div>
         <form action="/kholles/${session.id()}/status" method="post">

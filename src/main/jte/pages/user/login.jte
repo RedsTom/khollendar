@@ -16,7 +16,8 @@ content = @`
                 <a href="/" class="hover:text-ctp-blue transition-colors">
                     Accueil
                 </a>
-                <i data-feather="chevron-right" class="w-4 h-4"></i>
+                <i class="feather-icon icon-chevron-right"></i>
+
                 <span class="text-ctp-text">Connexion utilisateur</span>
             `)
         </div>
@@ -25,7 +26,6 @@ content = @`
             <div
                     id="form-container"
                     class="w-full flex items-center justify-center"
-                    hx-on::afterSwap="feather.replace()"
             >
                 @template.fragments.auth.UserSelectionForm(users = users, _csrf = _csrf)
             </div>
