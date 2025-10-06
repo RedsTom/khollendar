@@ -35,7 +35,7 @@
                     </h3>
                     <button type="button" class="text-ctp-subtext1 hover:text-ctp-text focus:outline-none"
                             onclick="closeModal('${id}')">
-                        <i class="feather-icon icon-x"></i>
+                        <i class="fa-solid fa-xmark"></i>
 
                     </button>
                 </div>

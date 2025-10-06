@@ -19,15 +19,15 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
                             ${session.subject()}
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">Préférences</span>
                     `
                 )
@@ -48,10 +48,10 @@
                 content = @`
                     <div class="mb-6 text-center">
                         <div class="mx-auto mb-6 p-4 rounded-full bg-ctp-overlay0 inline-flex">
-                            <i class="feather-icon icon-lock"></i>
+                            <i class="fa-solid fa-lock"></i>
                         </div>
                         <h2 class="text-xl font-bold mb-4 text-ctp-blue flex items-center justify-center gap-2">
-                            <i class="feather-icon icon-check-circle"></i>
+                            <i class="fa-solid fa-circle-check"></i>
 
                             Vos préférences sont déjà enregistrées
                         </h2>
@@ -63,7 +63,7 @@
 
                     <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
                         <a href="/kholles" class="button primary">
-                            <i class="feather-icon icon-arrow-left"></i>
+                            <i class="fa-solid fa-arrow-left"></i>
 
                             Retour à la liste des khôlles
                         </a>

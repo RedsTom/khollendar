@@ -16,7 +16,7 @@ content = @`
                 <a href="/" class="hover:text-ctp-blue transition-colors">
                     Accueil
                 </a>
-                <i class="feather-icon icon-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right"></i>
 
                 <span class="text-ctp-text">Connexion utilisateur</span>
             `)

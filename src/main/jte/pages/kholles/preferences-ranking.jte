@@ -21,15 +21,15 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
                             ${session.subject()}
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">Classement des préférences</span>
                     `
                 )
@@ -55,9 +55,10 @@
                         type = "info",
                         body = @`
                             <p class="leading-relaxed">
-                                Utilisez les boutons <span class="px-1 py-0.5 bg-ctp-mantle rounded">▲</span> et
-                                <span class="px-1 py-0.5 bg-ctp-mantle rounded">▼</span> pour réorganiser les créneaux selon vos
-                                préférences. Le créneau en tête de liste sera considéré comme votre premier choix.
+                                Utilisez les boutons
+                                <span class="px-1 py-0.5 bg-ctp-mantle rounded"><i class="fa-solid fa-chevron-up"></i></span> et
+                                <span class="px-1 py-0.5 bg-ctp-mantle rounded"><i class="fa-solid fa-chevron-down"></i></span> pour réorganiser
+                                les créneaux selon vos préférences. Le créneau en tête de liste sera considéré comme votre premier choix.
                             </p>
                         `
                     )
@@ -87,13 +88,13 @@
                                 <!-- Boutons de navigation -->
                                 <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
                                     <a href="/kholles/${session.id()}/preferences?step=1" class="button secondary">
-                                        <i class="feather-icon icon-arrow-left"></i>
+                                        <i class="fa-solid fa-arrow-left"></i>
                                         Retour
                                     </a>
 
                                     <button type="submit" class="button primary">
                                         Continuer
-                                        <i class="feather-icon icon-arrow-right"></i>
+                                        <i class="fa-solid fa-arrow-right"></i>
                                     </button>
                                 </div>
                             </form>

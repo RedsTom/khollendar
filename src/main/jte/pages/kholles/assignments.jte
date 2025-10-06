@@ -28,11 +28,11 @@
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
                             ${session.subject()}
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">Affectations</span>
                     `
                 )
@@ -58,7 +58,7 @@
             @template.components.ui.Card(
                 content = @`
                     <h2 class="text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-                        <i class="feather-icon icon-users"></i>
+                        <i class="fa-solid fa-users"></i>
 
                         Affectations par créneau
                     </h2>

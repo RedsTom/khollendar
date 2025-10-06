@@ -22,7 +22,7 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">Sessions de khôlles</span>
                     `
                 )
@@ -33,7 +33,7 @@
                 title = title,
                 action = @`
                     <a href="/kholles/create" class="button primary w-full sm:w-auto">
-                        <i class="feather-icon icon-plus"></i>
+                        <i class="fa-solid fa-plus"></i>
                         Créer une session
                     </a>
                 `

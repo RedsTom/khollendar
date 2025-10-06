@@ -31,7 +31,7 @@
                         class="button warning sm flex items-center gap-1 w-full justify-center flex-1"
                         hx-confirm="Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?"
                         hx-post="/admin/users/${user.id()}/reset-code">
-                    <i class="feather-icon icon-key"></i>
+                    <i class="fa-solid fa-key"></i>
 
                     Réinitialiser le code
                 </button>
@@ -39,7 +39,7 @@
             <button class="button danger sm flex-1 flex items-center gap-1 w-full justify-center"
                     hx-confirm="Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.username()} ?"
                     hx-delete="/admin/users/${user.id()}">
-                <i class="feather-icon icon-trash-2"></i>
+                <i class="fa-solid fa-trash"></i>
 
                 Supprimer
             </button>

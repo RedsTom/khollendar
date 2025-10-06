@@ -28,15 +28,15 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
                             ${session.subject()}
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">Mes disponibilités</span>
                     `
                 )
@@ -102,7 +102,7 @@
                                     <label for="slot-${slotId}"
                                            class="time-slot !flex items-center p-4 rounded-lg border border-ctp-surface2 cursor-pointer transition-all duration-200 hover:bg-ctp-surface1 bg-ctp-base !mb-0">
                                         <div class="checkbox-custom mr-3 w-5 h-5 rounded-md border border-ctp-overlay0 flex items-center justify-center flex-shrink-0">
-                                            <i class="check-icon feather-icon icon-x text-white"></i>
+                                            <i class="fa-solid fa-xmark text-xs"></i>
                                         </div>
                                         <span class="slot-text text-sm font-medium leading-tight break-words text-ctp-text">
                                             ${WordUtils.capitalizeFirst(slot.dateTime().format(formatter))}
@@ -115,13 +115,13 @@
                         <!-- Boutons de navigation -->
                         <div class="flex flex-col sm:flex-row justify-between gap-4">
                             <a href="/kholles" class="button secondary">
-                                <i class="feather-icon icon-arrow-left"></i>
+                                <i class="fa-solid fa-arrow-left"></i>
                                 Retour à la liste
                             </a>
 
                             <button type="submit" class="button primary">
                                 Continuer
-                                <i class="feather-icon icon-arrow-right"></i>
+                                <i class="fa-solid fa-arrow-right"></i>
                             </button>
                         </div>
                     </form>

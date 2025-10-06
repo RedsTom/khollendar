@@ -19,11 +19,15 @@
         Khôlle'n'Dar | ${title}
     </title>
 
+    <link rel="stylesheet" href="/css/main.css">
+
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"
             integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ"
             crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+          integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
     <meta name="csrf-header" content="${_csrf.getHeaderName()}">
     <meta name="csrf-token" content="${_csrf.getToken()}">
@@ -67,21 +71,21 @@
                     hx-swap="none"
                     hx-on::after-request="window.location.reload()"
                     class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-4 py-2 rounded-lg flex gap-2 items-center justify-center">
-                <i class="feather-icon icon-log-out"></i>
+                <i class="fa-solid fa-right-from-bracket"></i>
                 Déconnexion
             </button>
         @else
             <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
                id="login-btn"
                href="/login">
-                <i class="feather-icon icon-log-in"></i>
+                <i class="fa-solid fa-right-to-bracket"></i>
                 Administrateur
             </a>
         @endif
 
         <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
            href="https://etulab.univ-amu.fr/b24013559/khollendar" target="_blank">
-            <i class="feather-icon icon-gitlab"></i>
+            <i class="fa-brands fa-gitlab"></i>
             GitLab
         </a>
     </div>
