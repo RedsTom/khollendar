@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.crons;
 
 import fr.redstom.khollendar.entity.KholleSession;
@@ -47,9 +65,7 @@ public class AffectationCron {
             try {
                 // Vérifier si la session commence dans moins de 48h
                 Optional<LocalDateTime> firstSlotDate =
-                        session.kholleSlots().stream()
-                                .map(KholleSlot::dateTime)
-                                .min(LocalDateTime::compareTo);
+                        session.kholleSlots().stream().map(KholleSlot::dateTime).min(LocalDateTime::compareTo);
 
                 if (firstSlotDate.isEmpty()) {
                     log.warn("Session {} n'a aucun créneau, ignorée", session.id());
@@ -59,10 +75,7 @@ public class AffectationCron {
 
                 if (firstSlotDate.get().isAfter(in48Hours)) {
                     // La session commence dans plus de 48h, on passe
-                    log.debug(
-                            "Session {} commence le {}, trop loin dans le futur",
-                            session.id(),
-                            firstSlotDate.get());
+                    log.debug("Session {} commence le {}, trop loin dans le futur", session.id(), firstSlotDate.get());
                     continue;
                 }
 
@@ -87,20 +100,12 @@ public class AffectationCron {
 
             } catch (Exception e) {
                 errorCount++;
-                log.error(
-                        "Erreur lors de l'affectation de la session {}: {}",
-                        session.id(),
-                        e.getMessage(),
-                        e);
+                log.error("Erreur lors de l'affectation de la session {}: {}", session.id(), e.getMessage(), e);
             }
         }
 
         log.info("=== Fin de la tâche planifiée d'affectation ===");
-        log.info(
-                "Sessions traitées: {}, ignorées: {}, erreurs: {}",
-                processedCount,
-                skippedCount,
-                errorCount);
+        log.info("Sessions traitées: {}, ignorées: {}, erreurs: {}", processedCount, skippedCount, errorCount);
     }
 
     /**

@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.UserCreationDto;
@@ -52,8 +70,7 @@ public class AdminUserController {
 
         try {
             User user = userService.createUser(userDto.username());
-            redirectAttributes.addFlashAttribute(
-                    "success", "Utilisateur " + user.username() + " créé avec succès");
+            redirectAttributes.addFlashAttribute("success", "Utilisateur " + user.username() + " créé avec succès");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -62,8 +79,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/{userId}/reset-code")
-    public ResponseEntity<Void> resetUserCode(
-            @PathVariable Long userId, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<Void> resetUserCode(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
         if (!userService.exists(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -81,6 +97,8 @@ public class AdminUserController {
 
         userService.deleteUser(userId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).header("HX-Refresh", "true").build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .header("HX-Refresh", "true")
+                .build();
     }
 }
