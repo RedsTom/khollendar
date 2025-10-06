@@ -1,24 +1,20 @@
 @import fr.redstom.khollendar.entity.KholleSession
 @import fr.redstom.khollendar.entity.KholleSlot
 @import fr.redstom.khollendar.entity.KholleAssignment
-@import java.time.format.DateTimeFormatter
-@import java.util.Locale
+@import org.springframework.security.web.csrf.CsrfToken
 @import java.util.List
 @import java.util.Map
-@import jakarta.servlet.http.HttpSession
 
 @param KholleSession session
-@param List<KholleAssignment> assignments
-@param Map<Long, List<KholleAssignment>> assignmentsBySlot
-@param KholleAssignment userAssignment = null
-@param boolean isAdmin = false
+
+@param Map<Long, List<KholleAssignment>> assignments
 @param Map<Integer, Long> rankDistribution
+@param int totalAssignments
 @param long withoutPreferences
 @param double satisfactionRate
-@param org.springframework.security.web.csrf.CsrfToken _csrf
-@param HttpSession httpSession = null
 
-!{boolean userAuthenticated = httpSession != null && httpSession.getAttribute("selectedUserId") != null;}
+@param boolean isAdmin = false
+@param CsrfToken _csrf
 
 @template.layout.MainLayout(
     title = "Affectations - " + session.subject(),
@@ -45,32 +41,12 @@
                 </h1>
             </div>
 
-            <!-- Alerte pour l'affectation de l'utilisateur -->
-            @if(userAuthenticated && userAssignment != null)
-                @template.components.ui.Alert(
-                    type = userAssignment.obtainedPreferenceRank() != null && userAssignment.obtainedPreferenceRank() == 1 ? "success" : "info",
-                    body = @`
-                        @template.fragments.kholles.UserAssignmentAlert(
-                            assignment = userAssignment
-                        )
-                    `
-                )
-            @elseif(userAuthenticated && userAssignment == null)
-                @template.components.ui.Alert(
-                    type = "warning",
-                    body = @`
-                        <p class="font-semibold">Vous n'avez pas d'affectation pour cette session.</p>
-                        <p class="text-sm mt-1">Vous n'avez peut-être pas renseigné vos préférences.</p>
-                    `
-                )
-            @endif
-
             <!-- Statistiques globales -->
             @template.components.ui.Card(
                 content = @`
                     @template.fragments.kholles.AssignmentStatistics(
                         session = session,
-                        totalAssignments = assignments.size(),
+                        totalAssignments = totalAssignments,
                         satisfactionRate = satisfactionRate,
                         withoutPreferences = withoutPreferences,
                         rankDistribution = rankDistribution
@@ -87,7 +63,7 @@
                     </h2>
 
                     <div class="space-y-4">
-                        @for(Map.Entry<Long, List<KholleAssignment>> entry : assignmentsBySlot.entrySet())
+                        @for(Map.Entry<Long, List<KholleAssignment>> entry : assignments.entrySet())
                             !{KholleSlot slot = entry.getValue().get(0).slot();}
                             @template.fragments.kholles.SlotAssignmentCard(
                                 slot = slot,

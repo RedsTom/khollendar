@@ -8,10 +8,7 @@ import fr.redstom.khollendar.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -81,14 +78,14 @@ public class KholleSessionController {
             Model model,
             RedirectAttributes redirectAttributes,
             Principal principal) {
-        Optional<KholleSession> session = kholleService.getKholleSessionById(id);
+        Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
 
-        if (session.isEmpty()) {
+        if (sessionOpt.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Session de khôlle non trouvée");
             return "redirect:/kholles";
         }
 
-        KholleSession kholleSession = session.get();
+        KholleSession session = sessionOpt.get();
 
         // Récupérer toutes les préférences des utilisateurs pour cette session
         Map<User, List<UserPreference>> userPreferences =
@@ -108,8 +105,8 @@ public class KholleSessionController {
         boolean isAdmin = AuthUtils.admin();
 
         // Récupérer les affectations si elles existent
-        List<KholleAssignment> assignments = assignmentService.getSessionAssignments(id);
-        Map<Long, List<KholleAssignment>> assignmentsBySlot = new LinkedHashMap<>();
+        List<KholleAssignment> assignments = assignmentService.getSessionAssignments(session);
+        Map<Long, List<KholleAssignment>> assignmentsBySlot = new HashMap<>();
 
         if (!assignments.isEmpty()) {
             // Grouper par créneau
@@ -118,13 +115,14 @@ public class KholleSessionController {
         }
 
         model.addAttribute("title", "Détails de la session de khôlle");
-        model.addAttribute("session", kholleSession);
+        model.addAttribute("session", session);
         model.addAttribute("userPreferences", userPreferences);
         model.addAttribute("userUnavailableSlots", userUnavailableSlots);
         model.addAttribute("registeredUsersCount", registeredUsersCount);
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("assignments", assignments);
         model.addAttribute("assignmentsBySlot", assignmentsBySlot);
+
         return "pages/kholles/show";
     }
 
