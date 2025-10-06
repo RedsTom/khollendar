@@ -12,23 +12,22 @@ content = @`
     <div class="container mx-auto p-4">
         <!-- Breadcrumb -->
         <div class="mb-6">
-            @template.components.navigation.Breadcrumb(
-            content = @`
+            @template.components.navigation.Breadcrumb(content = @`
                 <a href="/" class="hover:text-ctp-blue transition-colors">
                     Accueil
                 </a>
                 <i data-feather="chevron-right" class="w-4 h-4"></i>
                 <span class="text-ctp-text">Connexion utilisateur</span>
-            `
-            )
+            `)
         </div>
 
         <div class="flex justify-center items-center min-h-[70vh] px-4">
-            <div id="form-container">
-                    @template.fragments.auth.UserSelectionForm(
-                        users = users,
-                        _csrf = _csrf
-                    )
+            <div
+                    id="form-container"
+                    class="w-full flex items-center justify-center"
+                    hx-on::afterSwap="feather.replace()"
+            >
+                @template.fragments.auth.UserSelectionForm(users = users, _csrf = _csrf)
             </div>
         </div>
     </div>
