@@ -1,5 +1,9 @@
-@param java.util.List<fr.redstom.khollendar.entity.User> users
-@param org.springframework.security.web.csrf.CsrfToken _csrf
+@import java.util.List
+@import fr.redstom.khollendar.entity.User
+@import org.springframework.security.web.csrf.CsrfToken
+
+@param List<User> users
+@param CsrfToken _csrf
 
 @template.layout.MainLayout(
     title = "Connexion utilisateur",
