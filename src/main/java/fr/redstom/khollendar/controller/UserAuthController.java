@@ -8,7 +8,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
-  * This program is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -21,27 +21,30 @@ package fr.redstom.khollendar.controller;
 import fr.redstom.khollendar.dto.SecretCodeDto;
 import fr.redstom.khollendar.entity.User;
 import fr.redstom.khollendar.service.SessionService;
+import fr.redstom.khollendar.service.UserAuthService;
 import fr.redstom.khollendar.service.UserService;
 import jakarta.servlet.http.HttpSession;
+
 import java.util.List;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/user-auth")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserAuthController {
 
     private final UserService userService;
+    private final UserAuthService userAuthService;
 
     // Étape 1 : Sélection de l'utilisateur
-    @GetMapping("/select")
+    @GetMapping("/login")
     public String selectUser(@RequestParam(required = false) String redirectTo, HttpSession httpSession, Model model) {
         List<User> users = userService.getAllUsers();
 
@@ -52,52 +55,27 @@ public class UserAuthController {
 
         model.addAttribute("users", users);
 
-        return "pages/user/login/select";
+        return "pages/user/login";
     }
 
     // Étape 2 : Entrée ou définition du code secret
     @PostMapping("/select")
-    public String processUserSelection(@RequestParam Long userId, HttpSession session) {
+    public String processUserSelection(@RequestParam Long userId, HttpSession session, Model model) {
         Optional<User> optionalUser = userService.getUserById(userId);
 
         if (optionalUser.isEmpty()) {
-            return "redirect:/user-auth/select";
+            List<User> users = userService.getAllUsers();
+            return userAuthService.prepareUserSelectionFragment(model, "L'utilisateur sélectionné est invalide.");
         }
 
         User user = optionalUser.get();
         session.setAttribute("selectedUserId", userId);
 
         if (user.codeInitialized()) {
-            return "redirect:/user-auth/enter-code";
+            return userAuthService.prepareCodeEntryFragment(model, user);
         } else {
-            return "redirect:/user-auth/initialize-code";
+            return userAuthService.prepareCodeInitializationFragment(model, user);
         }
-    }
-
-    // Entrer le code secret (si déjà initialisé)
-    @GetMapping("/enter-code")
-    public String enterCodeForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        Long userId = (Long) session.getAttribute("selectedUserId");
-        if (userId == null) {
-            redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un utilisateur");
-            return "redirect:/user-auth/select";
-        }
-
-        Optional<User> optionalUser = userService.getUserById(userId);
-        if (optionalUser.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé");
-            return "redirect:/user-auth/select";
-        }
-
-        User user = optionalUser.get();
-        if (!user.codeInitialized()) {
-            return "redirect:/user-auth/initialize-code";
-        }
-
-        model.addAttribute("title", "Entrer votre code secret");
-        model.addAttribute("username", user.username());
-
-        return "pages/user/login/enter-code";
     }
 
     // Traiter l'entrée du code secret
@@ -106,38 +84,26 @@ public class UserAuthController {
             @Validated @ModelAttribute SecretCodeDto secretCodeDto,
             BindingResult bindingResult,
             HttpSession session,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-        Long userId = (Long) session.getAttribute("selectedUserId");
+            Model model) {
+        Long userId = (Long) session.getAttribute(SessionService.SESSION_USER_ID);
         if (userId == null) {
-            redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un utilisateur");
-            return "redirect:/user-auth/select";
+            return userAuthService.prepareUserSelectionFragment(model, "Votre session a expiré. Veuillez sélectionner à nouveau votre utilisateur.");
         }
 
         Optional<User> optionalUser = userService.getUserById(userId);
         if (optionalUser.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé");
-            return "redirect:/user-auth/select";
+            return userAuthService.prepareUserSelectionFragment(model, "L'utilisateur sélectionné est invalide.");
         }
 
         User user = optionalUser.get();
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("title", "Entrer votre code secret");
-            model.addAttribute("username", user.username());
-            return "pages/user/login/enter-code";
-        }
-
-        if (!userService.isValidSecretCode(user, secretCodeDto.secretCode())) {
-            model.addAttribute("title", "Entrer votre code secret");
-            model.addAttribute("username", user.username());
-            model.addAttribute("error", "Code secret invalide");
-            return "pages/user/login/enter-code";
+        if (bindingResult.hasErrors()
+        || !userService.isValidSecretCode(user, secretCodeDto.secretCode())) {
+            return userAuthService.prepareCodeEntryFragment(model, user, "Code secret invalide");
         }
 
         // Authentification réussie
         session.setAttribute("authenticatedUserId", userId);
-        redirectAttributes.addFlashAttribute("success", "Connexion réussie");
 
         // Rediriger vers l'URL stockée dans la session si elle existe
         String redirectTo = (String) session.getAttribute("redirectAfterLogin");
@@ -145,34 +111,8 @@ public class UserAuthController {
             session.removeAttribute("redirectAfterLogin"); // Supprimer l'URL de redirection après utilisation
             return "redirect:" + redirectTo;
         } else {
-            return "redirect:/kholles"; // Redirection par défaut
+            return "redirect:/"; // Redirection par défaut
         }
-    }
-
-    // Initialiser le code secret (première utilisation)
-    @GetMapping("/initialize-code")
-    public String initializeCodeForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        Long userId = (Long) session.getAttribute("selectedUserId");
-        if (userId == null) {
-            redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un utilisateur");
-            return "redirect:/user-auth/select";
-        }
-
-        Optional<User> optionalUser = userService.getUserById(userId);
-        if (optionalUser.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé");
-            return "redirect:/user-auth/select";
-        }
-
-        User user = optionalUser.get();
-        if (user.codeInitialized()) {
-            return "redirect:/user-auth/enter-code";
-        }
-
-        model.addAttribute("title", "Définir votre code secret");
-        model.addAttribute("username", user.username());
-
-        return "pages/user/login/initialize-code";
     }
 
     // Traiter l'initialisation du code secret
@@ -181,33 +121,29 @@ public class UserAuthController {
             @Validated @ModelAttribute SecretCodeDto secretCodeDto,
             BindingResult bindingResult,
             HttpSession session,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-        Long userId = (Long) session.getAttribute("selectedUserId");
+            Model model) {
+        // TODO: Sécurité douteuse
+        Long userId = (Long) session.getAttribute(SessionService.SESSION_USER_ID);
         if (userId == null) {
-            redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un utilisateur");
-            return "redirect:/user-auth/select";
+            return userAuthService.prepareUserSelectionFragment(model, "Votre session a expiré. Veuillez sélectionner à nouveau votre utilisateur.");
         }
 
         Optional<User> optionalUser = userService.getUserById(userId);
         if (optionalUser.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé");
-            return "redirect:/user-auth/select";
+            return userAuthService.prepareUserSelectionFragment(model, "L'utilisateur sélectionné est invalide.");
         }
 
         User user = optionalUser.get();
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("title", "Définir votre code secret");
-            model.addAttribute("username", user.username());
-            return "pages/user/login/initialize-code";
+            return userAuthService.prepareCodeInitializationFragment(model, user, "Le code secret doit être composé de 6 chiffres.");
         }
 
         try {
             userService.setSecretCode(user, secretCodeDto.secretCode());
+
             // Authentification réussie après initialisation
             session.setAttribute("authenticatedUserId", userId);
-            redirectAttributes.addFlashAttribute("success", "Code secret défini avec succès");
 
             // Rediriger vers l'URL stockée dans la session si elle existe
             String redirectTo = (String) session.getAttribute("redirectAfterLogin");
@@ -218,11 +154,7 @@ public class UserAuthController {
                 return "redirect:/"; // Redirection par défaut
             }
         } catch (IllegalArgumentException e) {
-            model.addAttribute("title", "Définir votre code secret");
-            model.addAttribute("username", user.username());
-            model.addAttribute("error", e.getMessage());
-
-            return "pages/user/login/initialize-code";
+            return userAuthService.prepareCodeInitializationFragment(model, user, e.getMessage());
         }
     }
 }

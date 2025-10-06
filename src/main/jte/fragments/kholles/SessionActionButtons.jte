@@ -14,7 +14,7 @@
     @endif
 
     @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
-        <a class="button primary" href="/user-auth/select?redirectTo=/kholles/${session.id()}/preferences">
+        <a class="button primary" href="/user/login?redirectTo=/kholles/${session.id()}/preferences">
             <i data-feather="user-plus" class="mr-2"></i>
             Indiquer mes disponibilités
         </a>

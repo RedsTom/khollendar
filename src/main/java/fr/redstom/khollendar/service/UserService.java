@@ -120,6 +120,10 @@ public class UserService {
             throw new IllegalArgumentException("Le code secret doit être composé de 6 chiffres");
         }
 
+        if(user.secretCode() != null) {
+            throw new IllegalArgumentException("Le code secret a déjà été initialisé. Veuillez réessayer de vous connecter.");
+        }
+
         user.secretCode(passwordEncoder.encode(secretCode));
         user.codeInitialized(true);
 
