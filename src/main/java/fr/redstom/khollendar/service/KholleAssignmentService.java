@@ -368,15 +368,7 @@ public class KholleAssignmentService {
     }
 
     /** Récupère toutes les affectations d'une session */
-    public List<KholleAssignment> getSessionAssignments(Long sessionId) {
-        KholleSession session =
-                sessionRepository
-                        .findById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session non trouvée : " + sessionId));
-
+    public List<KholleAssignment> getSessionAssignments(KholleSession session) {
         return assignmentRepository.findBySession(session);
     }
 

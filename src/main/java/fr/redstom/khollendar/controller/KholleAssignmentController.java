@@ -7,17 +7,22 @@ import fr.redstom.khollendar.service.KholleAssignmentService;
 import fr.redstom.khollendar.service.KholleService;
 import fr.redstom.khollendar.service.SessionService;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** Contrôleur pour la gestion des affectations de khôlles */
 @Controller
@@ -37,12 +42,11 @@ public class KholleAssignmentController {
             @PathVariable Long id,
             HttpSession httpSession,
             Model model,
-            RedirectAttributes redirectAttributes,
-            java.security.Principal principal) {
+            Principal principal) {
         Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
 
+        // Vérifier si la session existe
         if (sessionOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Session de khôlle non trouvée");
             return "redirect:/kholles";
         }
 
@@ -50,33 +54,22 @@ public class KholleAssignmentController {
 
         // Vérifier si les affectations existent
         if (!assignmentService.isSessionAssigned(id)) {
-            redirectAttributes.addFlashAttribute(
-                    "error", "Aucune affectation n'a encore été effectuée pour cette session");
             return "redirect:/kholles/" + id;
         }
 
         // Récupérer toutes les affectations
-        List<KholleAssignment> assignments = assignmentService.getSessionAssignments(id);
+        List<KholleAssignment> assignments = assignmentService.getSessionAssignments(session);
 
         // Grouper les affectations par créneau
         Map<Long, List<KholleAssignment>> assignmentsBySlot =
                 assignments.stream().collect(Collectors.groupingBy(a -> a.slot().id()));
 
-        // Vérifier si l'utilisateur actuel a une affectation
-        KholleAssignment userAssignment = null;
-        if (sessionService.isUserAuthenticated(httpSession)) {
-            Long userId = sessionService.getCurrentUserId(httpSession);
-            userAssignment =
-                    assignments.stream()
-                            .filter(a -> a.user().id().equals(userId))
-                            .findFirst()
-                            .orElse(null);
-        }
-
         // Vérifier si l'utilisateur est admin
         boolean isAdmin = principal != null && principal.getName().equals("admin");
 
-        // Calculer les statistiques
+        // === Calcul des statistiques ===
+
+        // Distribution des rangs de préférence
         Map<Integer, Long> rankDistribution =
                 assignments.stream()
                         .filter(a -> a.obtainedPreferenceRank() != null)
@@ -85,26 +78,29 @@ public class KholleAssignmentController {
                                         KholleAssignment::obtainedPreferenceRank,
                                         Collectors.counting()));
 
+        // Nombre d'affectations sans préférence
         long withoutPreferences =
                 assignments.stream().filter(a -> a.obtainedPreferenceRank() == null).count();
 
+        // Nombre d'élèves ayant eu leur premier choix
         long firstChoice = rankDistribution.getOrDefault(1, 0L);
+
+        // Taux de satisfaction (élèves ayant eu leur premier choix / élèves avec préférence)
         long assignmentsWithPreferences = assignments.size() - withoutPreferences;
         double satisfactionRate =
                 assignmentsWithPreferences == 0
                         ? 0
                         : (double) firstChoice / assignmentsWithPreferences * 100;
 
-        model.addAttribute("title", "Affectations - " + session.subject());
         model.addAttribute("session", session);
-        model.addAttribute("assignments", assignments);
-        model.addAttribute("assignmentsBySlot", assignmentsBySlot);
-        model.addAttribute("userAssignment", userAssignment);
-        model.addAttribute("isAdmin", isAdmin);
+
+        model.addAttribute("assignments", assignmentsBySlot);
         model.addAttribute("rankDistribution", rankDistribution);
+        model.addAttribute("totalAssignments", assignments.size());
         model.addAttribute("withoutPreferences", withoutPreferences);
         model.addAttribute("satisfactionRate", satisfactionRate);
-        model.addAttribute("httpSession", httpSession);
+
+        model.addAttribute("isAdmin", isAdmin);
 
         return "pages/kholles/assignments";
     }
