@@ -13,11 +13,11 @@
 };}
 
 !{var icon = switch(type) {
-    case "info" -> "info";
-    case "success" -> "check-circle";
-    case "warning" -> "alert-triangle";
-    case "danger", "error" -> "alert-circle";
-    default -> "info";
+    case "info" -> "circle-info";
+    case "success" -> "ciracle-check";
+    case "warning" -> "triangle-exclamation";
+    case "danger", "error" -> "circle-exclamation";
+    default -> "circle-info";
 };}
 
 !{var baseClasses = "flex items-start gap-3 p-4 rounded-lg border-l-4 mb-4 " + colorClasses;}
@@ -25,7 +25,7 @@
 <div class="${baseClasses}" role="alert">
     <%-- Icône --%>
     <div class="flex-shrink-0 mt-0.5">
-        <i class="feather-icon icon-${icon}"></i>
+        <i class="fa-solid fa-${icon}"></i>
 
     </div>
 
@@ -44,7 +44,7 @@
                 class="flex-shrink-0 text-ctp-subtext1 hover:text-ctp-text focus:outline-none"
                 onclick="this.parentElement.remove()"
                 aria-label="Fermer">
-            <i class="feather-icon icon-x"></i>
+            <i class="fa-solid fa-xmark"></i>
 
         </button>
     @endif

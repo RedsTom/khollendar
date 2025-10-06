@@ -8,7 +8,7 @@
 <div class="flex gap-2 flex-wrap">
     @if(hasAssignments)
         <a class="button primary" href="/kholles/${session.id()}/assignments">
-            <i class="feather-icon icon-check-circle"></i>
+            <i class="fa-solid fa-circle-check"></i>
 
             Voir les détails des affectations
         </a>
@@ -16,7 +16,7 @@
 
     @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
         <a class="button primary" href="/user/login?redirectTo=/kholles/${session.id()}/preferences">
-            <i class="feather-icon icon-user-plus"></i>
+            <i class="fa-solid fa-user-plus"></i>
 
             Indiquer mes disponibilités
         </a>

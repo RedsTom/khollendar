@@ -38,11 +38,11 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">${session.subject()}</span>
                     `
                 )
@@ -78,7 +78,7 @@
                     @if(hasAssignments)
                         <div class="mb-8">
                             <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-                                <i class="feather-icon icon-calendar"></i>
+                                <i class="fa-solid fa-calendar"></i>
                                 Affectations par créneau
                             </h2>
 
@@ -100,7 +100,7 @@
                     <div class="mb-8">
                         <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
                             <h2 class="text-xl sm:text-2xl font-semibold text-ctp-blue flex items-center gap-2">
-                                <i class="feather-icon icon-users"></i>
+                                <i class="fa-solid fa-users"></i>
                                 Préférences des utilisateurs
                             </h2>
                             <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
@@ -132,13 +132,13 @@
                                         @if(!preferences.isEmpty())
                                             <div class="mb-3 sm:mb-4">
                                                 <h4 class="text-xs sm:text-sm font-medium text-ctp-green mb-2 flex items-center gap-1">
-                                                    <span class="inline-block w-3 h-3 sm:w-4 sm:h-4">✓</span>
+                                                    <i class="fas fa-check"></i>
                                                     Préférences
                                                 </h4>
                                                 <div class="space-y-1 sm:space-y-2">
                                                     @for(UserPreference preference : preferences.stream().filter(p -> !p.isUnavailable()).toList())
                                                         <div class="flex items-center gap-2 text-xs sm:text-sm">
-                                                            <span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full flex-shrink-0
+                                                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs
                                                                 @if(preference.preferenceRank() == 1)
                                                                     bg-ctp-green text-ctp-base
                                                                 @elseif(preference.preferenceRank() == 2)
@@ -147,8 +147,8 @@
                                                                     bg-ctp-peach text-ctp-base
                                                                 @else
                                                                     bg-ctp-surface2 text-ctp-text
-                                                                @endif
-                                                                font-semibold text-xs">
+                                                                @endif">
+
                                                                 ${preference.preferenceRank()}
                                                             </span>
                                                             <span class="text-ctp-text leading-tight min-w-0 break-words">
@@ -164,14 +164,14 @@
                                         @if(unavailableSlots != null && !unavailableSlots.isEmpty())
                                             <div class="mb-2">
                                                 <h4 class="text-xs sm:text-sm font-medium text-ctp-red mb-2 flex items-center gap-1">
-                                                    <span class="inline-block w-3 h-3 sm:w-4 sm:h-4">✗</span>
+                                                    <i class="fa-solid fa-xmark"></i>
                                                     Indisponibilités
                                                 </h4>
                                                 <div class="space-y-1 sm:space-y-2">
                                                     @for(KholleSlot slot : unavailableSlots)
                                                         <div class="flex items-center gap-2 text-xs sm:text-sm">
-                                                            <span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-ctp-red text-ctp-base font-semibold text-xs flex-shrink-0">
-                                                                ✗
+                                                            <span class="bg-ctp-red text-ctp-base w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                                                                <i class="fa-solid fa-xmark"></i>
                                                             </span>
                                                             <span class="text-ctp-subtext0 leading-tight min-w-0 break-words">
                                                                 ${slot.dateTime().format(DateTimeFormatter.ofPattern("dd/MM à HH:mm", Locale.FRENCH))}

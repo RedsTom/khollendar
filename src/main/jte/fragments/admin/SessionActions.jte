@@ -1,4 +1,5 @@
 @import fr.redstom.khollendar.entity.KholleSession
+@import fr.redstom.khollendar.entity.KholleSessionStatus
 @import org.springframework.security.web.csrf.CsrfToken
 
 @param KholleSession session
@@ -6,7 +7,7 @@
 
 <div class="mb-8 p-4 bg-ctp-surface0/50 rounded-lg border border-ctp-surface2">
     <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue">
-        <i class="feather-icon icon-settings"></i>
+        <i class="fa-solid fa-cogs"></i>
 
         Actions administrateur
     </h2>
@@ -21,7 +22,7 @@
                    value="${_csrf.getToken()}"/>
             <button type="submit"
                     class="button success">
-                <i class="feather-icon icon-zap"></i>
+                <i class="fa-solid fa-bolt-lightning"></i>
 
                 Déclencher l'affectation
             </button>
@@ -31,7 +32,7 @@
             <button type="button"
                     id="statusBtn"
                     class="button secondary">
-                <i class="feather-icon icon-toggle-right"></i>
+                <i class="fa-solid ${session.status() == KholleSessionStatus.REGISTRATIONS_OPEN ? "fa-toggle-on" : "fa-toggle-off"}"></i>
 
                 Changer le statut
             </button>
@@ -40,7 +41,7 @@
         <button type="button"
                 id="renameBtn"
                 class="button secondary">
-            <i class="feather-icon icon-edit-2"></i>
+            <i class="fa-solid fa-edit"></i>
 
             Renommer
         </button>
@@ -54,7 +55,7 @@
                    value="${_csrf.getToken()}"/>
             <button type="submit"
                     class="button danger">
-                <i class="feather-icon icon-trash-2"></i>
+                <i class="fa-solid fa-trash"></i>
 
                 Supprimer la session
             </button>

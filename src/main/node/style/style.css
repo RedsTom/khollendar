@@ -1,6 +1,8 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/brands.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/solid.min.css");
+
 @import "tailwindcss";
 @import "@catppuccin/tailwindcss/mocha.css";
-@import "feather-webfont/dist/feather-icons.css";
 
 @import "./components/button.css";
 

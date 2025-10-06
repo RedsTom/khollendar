@@ -29,15 +29,15 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
                             ${session.subject()}
                         </a>
-                        <i class="feather-icon icon-chevron-right"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">Confirmation</span>
                     `
                 )
@@ -80,7 +80,7 @@
                         <!-- Résumé des créneaux -->
                         <div class="mb-6">
                             <h3 class="text-lg font-semibold mb-3 text-ctp-blue flex items-center gap-2">
-                                <i class="feather-icon icon-list"></i>
+                                <i class="fa-solid fa-list"></i>
                                 Récapitulatif de vos choix :
                             </h3>
 
@@ -100,8 +100,8 @@
                                                 </td>
                                                 <td class="px-4 py-3">
                                                     @if(unavailableSlots.contains(slot))
-                                                        <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-ctp-red/20 text-ctp-red">
-                                                            <i class="feather-icon icon-x-circle"></i>
+                                                        <div class="inline-flex gap-1 items-center px-2 py-1 rounded-full text-xs font-medium bg-ctp-red/20 text-ctp-red">
+                                                            <i class="fa-solid fa-circle-xmark"></i>
                                                             Indisponible
                                                         </div>
                                                     @else
@@ -110,10 +110,10 @@
                                                             String rankDisplay = rank > 0 ? "Choix n°" + rank : "Non classé";
                                                             String bgColor = rank > 0 ? "bg-ctp-green/20" : "bg-ctp-yellow/20";
                                                             String textColor = rank > 0 ? "text-ctp-green" : "text-ctp-yellow";
-                                                            String icon = rank > 0 ? "check-circle" : "alert-circle";
+                                                            String icon = rank > 0 ? "circle-check" : "circle-exclamation";
                                                         }
-                                                        <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}">
-                                                            <i class="feather-icon icon-${icon}"></i>
+                                                        <div class="inline-flex gap-1 items-center px-2 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}">
+                                                            <i class="fa-solid fa-${icon}"></i>
                                                             ${rankDisplay}
                                                         </div>
                                                     @endif
@@ -128,13 +128,13 @@
                         <!-- Boutons d'action -->
                         <div class="mt-6 flex flex-col sm:flex-row justify-between gap-4">
                             <a href="/kholles/${session.id()}/preferences?step=2" class="button secondary">
-                                <i class="feather-icon icon-arrow-left"></i>
+                                <i class="fa-solid fa-arrow-left"></i>
                                 Retour
                             </a>
 
                             <button type="submit" class="button primary">
                                 Confirmer mes choix
-                                <i class="feather-icon icon-check"></i>
+                                <i class="fa-solid fa-check"></i>
                             </button>
                         </div>
                     `

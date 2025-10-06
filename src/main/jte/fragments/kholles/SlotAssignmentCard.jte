@@ -13,7 +13,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3 pb-3 border-b border-ctp-surface2">
         <div>
             <h3 class="text-lg font-semibold text-ctp-text flex items-center gap-2">
-                <i class="feather-icon icon-calendar"></i>
+                <i class="fa-solid fa-calendar"></i>
 
                 ${slot.dateTime().format(formatter)}
             </h3>
@@ -34,7 +34,10 @@
                         @if(assignment.obtainedPreferenceRank() != null)
                             <p class="text-xs text-ctp-subtext0 mt-1">
                                 @if(assignment.obtainedPreferenceRank() == 1)
-                                    <span class="text-ctp-green">✓ 1er choix</span>
+                                    <span class="text-ctp-green inline-flex gap-1">
+                                        <i class="fa-solid fa-check"></i>
+                                        1er choix
+                                    </span>
                                 @else
                                     Choix n°${assignment.obtainedPreferenceRank()}
                                 @endif

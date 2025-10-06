@@ -12,7 +12,7 @@ function addSlot() {
             <button type="button" 
                     onclick="deleteSlot(this)"
                     class="delete-slot button danger">
-                <i class="feather-icon icon-trash-2"></i>
+                <i class="fa-solid fa-trash"></i>
             </button>
         </div>
     `;

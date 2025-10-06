@@ -65,7 +65,7 @@
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4">
                         <a href="/kholles" class="button flex items-center gap-1 my-4 sm:my-0">
                             Voir toutes les sessions
-                            <i class="feather-icon icon-arrow-right"></i>
+                            <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
                 `

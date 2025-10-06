@@ -13,7 +13,7 @@
 
 <div class="bg-ctp-surface0/50 rounded-lg p-4 border border-ctp-surface2">
     <div class="flex items-center gap-2 mb-3">
-        <i class="feather-icon icon-user"></i>
+        <i class="fa-solid fa-user"></i>
 
         <h3 class="text-lg font-semibold">${user.username()}</h3>
     </div>
@@ -49,7 +49,7 @@
                 <ul class="space-y-1">
                     @for(KholleSlot slot : unavailableSlots)
                         <li class="text-sm flex items-start gap-2">
-                            <i class="feather-icon icon-x"></i>
+                            <i class="fa-solid fa-xmark"></i>
 
                             <span class="leading-5">
                                 ${slot.dateTime().format(formatter)}

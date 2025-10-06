@@ -10,7 +10,7 @@
 
 <div class="mb-8">
     <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-        <i class="feather-icon icon-calendar"></i>
+        <i class="fa-solid fa-clock"></i>
 
         ${title}
     </h2>
