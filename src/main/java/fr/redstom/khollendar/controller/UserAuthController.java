@@ -2,6 +2,7 @@ package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.SecretCodeDto;
 import fr.redstom.khollendar.entity.User;
+import fr.redstom.khollendar.service.SessionService;
 import fr.redstom.khollendar.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -31,10 +32,9 @@ public class UserAuthController {
 
         // Stocker l'URL de redirection dans la session si elle est présente
         if (redirectTo != null && !redirectTo.isEmpty()) {
-            httpSession.setAttribute("redirectAfterLogin", redirectTo);
+            httpSession.setAttribute(SessionService.REDIRECT_AFTER_LOGIN, redirectTo);
         }
 
-        model.addAttribute("title", "Connexion utilisateur");
         model.addAttribute("users", users);
 
         return "pages/user/login/select";
@@ -42,12 +42,10 @@ public class UserAuthController {
 
     // Étape 2 : Entrée ou définition du code secret
     @PostMapping("/select")
-    public String processUserSelection(
-            @RequestParam Long userId, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String processUserSelection(@RequestParam Long userId, HttpSession session) {
         Optional<User> optionalUser = userService.getUserById(userId);
 
         if (optionalUser.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Utilisateur non trouvé");
             return "redirect:/user-auth/select";
         }
 

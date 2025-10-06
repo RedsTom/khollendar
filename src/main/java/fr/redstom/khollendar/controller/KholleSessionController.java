@@ -7,7 +7,6 @@ import fr.redstom.khollendar.service.*;
 import fr.redstom.khollendar.utils.AuthUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -73,11 +72,7 @@ public class KholleSessionController {
 
     /** Affiche les détails d'une session de khôlle */
     @GetMapping("/{id}")
-    public String show(
-            @PathVariable Long id,
-            Model model,
-            RedirectAttributes redirectAttributes,
-            Principal principal) {
+    public String show(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
 
         if (sessionOpt.isEmpty()) {

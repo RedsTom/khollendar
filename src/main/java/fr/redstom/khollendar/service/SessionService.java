@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SessionService {
 
-    private static final String SESSION_USER_ID = "selectedUserId";
-    private static final String SESSION_PREFERENCES = "khollePreferences";
-    private static final String REDIRECT_AFTER_LOGIN = "redirectAfterLogin";
+    public static final String SESSION_USER_ID = "selectedUserId";
+    public static final String SESSION_PREFERENCES = "khollePreferences";
+    public static final String REDIRECT_AFTER_LOGIN = "redirectAfterLogin";
 
     /**
      * Récupère l'ID de l'utilisateur connecté depuis la session
