@@ -7,6 +7,11 @@ import fr.redstom.khollendar.service.KholleAssignmentService;
 import fr.redstom.khollendar.service.KholleService;
 import fr.redstom.khollendar.service.SessionService;
 import jakarta.servlet.http.HttpSession;
+import java.security.Principal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,12 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.security.Principal;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /** Contrôleur pour la gestion des affectations de khôlles */
 @Controller
@@ -39,10 +38,7 @@ public class KholleAssignmentController {
     /** Affiche les affectations d'une session de khôlle */
     @GetMapping("/{id}/assignments")
     public String showAssignments(
-            @PathVariable Long id,
-            HttpSession httpSession,
-            Model model,
-            Principal principal) {
+            @PathVariable Long id, HttpSession httpSession, Model model, Principal principal) {
         Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
 
         // Vérifier si la session existe
