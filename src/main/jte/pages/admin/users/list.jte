@@ -14,7 +14,7 @@ content = @`
                 <a href="/" class="hover:text-ctp-blue transition-colors">
                     Accueil
                 </a>
-                <i data-feather="chevron-right" class="w-4 h-4"></i>
+                <i class="feather-icon icon-chevron-right"></i>
                 <span class="text-ctp-text">Gestion des utilisateurs</span>
             `
             )

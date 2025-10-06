@@ -35,7 +35,8 @@
                     </h3>
                     <button type="button" class="text-ctp-subtext1 hover:text-ctp-text focus:outline-none"
                             onclick="closeModal('${id}')">
-                        <i data-feather="x" class="w-5 h-5"></i>
+                        <i class="feather-icon icon-x"></i>
+
                     </button>
                 </div>
             </div>

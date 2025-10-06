@@ -29,7 +29,8 @@
         <!-- Avatar et nom d'utilisateur -->
         <div class="flex flex-col items-center mb-6">
             <div class="w-20 h-20 rounded-full bg-gradient-to-br from-ctp-blue to-ctp-mauve flex items-center justify-center mb-3 shadow-lg">
-                <i data-feather="user" class="w-10 h-10 text-ctp-base"></i>
+                <i class="feather-icon icon-user"></i>
+
             </div>
             <p class="text-lg font-semibold text-ctp-text">${username}</p>
         </div>
@@ -55,7 +56,8 @@
 
         <div class="mt-6 pt-4 border-t border-ctp-surface1">
             <a href="/user/login" class="flex items-center justify-center gap-2 text-sm text-ctp-subtext0 hover:text-ctp-text transition-colors">
-                <i data-feather="arrow-left" class="w-4 h-4"></i>
+                <i class="feather-icon icon-arrow-left"></i>
+
                 <span>Retour à la sélection d'utilisateur</span>
             </a>
         </div>

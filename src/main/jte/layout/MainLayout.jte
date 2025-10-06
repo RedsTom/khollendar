@@ -19,10 +19,6 @@
         Khôlle'n'Dar | ${title}
     </title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js"
-            integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"
             integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ"
             crossorigin="anonymous"></script>
@@ -31,12 +27,6 @@
 
     <meta name="csrf-header" content="${_csrf.getHeaderName()}">
     <meta name="csrf-token" content="${_csrf.getToken()}">
-
-
-    <script defer>
-        window.onload = () =>
-            feather.replace();
-    </script>
 
     <script src="/js/htmx-config.js" defer></script>
 </head>
@@ -77,21 +67,21 @@
                     hx-swap="none"
                     hx-on::after-request="window.location.reload()"
                     class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-4 py-2 rounded-lg flex gap-2 items-center justify-center">
-                <i data-feather="log-out" class="w-5 h-5"></i>
+                <i class="feather-icon icon-log-out"></i>
                 Déconnexion
             </button>
         @else
             <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
                id="login-btn"
                href="/login">
-                <i data-feather="log-in" class="w-5 h-5"></i>
+                <i class="feather-icon icon-log-in"></i>
                 Administrateur
             </a>
         @endif
 
         <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
            href="https://etulab.univ-amu.fr/b24013559/khollendar" target="_blank">
-            <i data-feather="gitlab" class="w-5 h-5"></i>
+            <i class="feather-icon icon-gitlab"></i>
             GitLab
         </a>
     </div>

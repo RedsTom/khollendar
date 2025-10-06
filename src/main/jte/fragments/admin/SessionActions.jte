@@ -6,7 +6,8 @@
 
 <div class="mb-8 p-4 bg-ctp-surface0/50 rounded-lg border border-ctp-surface2">
     <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue">
-        <i data-feather="settings" class="inline-block w-5 h-5 sm:w-6 sm:h-6 mr-2"></i>
+        <i class="feather-icon icon-settings"></i>
+
         Actions administrateur
     </h2>
     <div class="flex gap-2 flex-wrap">
@@ -19,8 +20,9 @@
                    name="${_csrf.getParameterName()}"
                    value="${_csrf.getToken()}"/>
             <button type="submit"
-                    class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-green focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-green hover:bg-ctp-green/80 text-ctp-base border-0">
-                <i data-feather="zap" class="mr-2"></i>
+                    class="button success">
+                <i class="feather-icon icon-zap"></i>
+
                 Déclencher l'affectation
             </button>
         </form>
@@ -28,16 +30,18 @@
         @if(session.status() != fr.redstom.khollendar.entity.KholleSessionStatus.RESULTS_AVAILABLE)
             <button type="button"
                     id="statusBtn"
-                    class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
-                <i data-feather="toggle-right" class="mr-2"></i>
+                    class="button secondary">
+                <i class="feather-icon icon-toggle-right"></i>
+
                 Changer le statut
             </button>
         @endif
 
         <button type="button"
                 id="renameBtn"
-                class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0">
-            <i data-feather="edit-2" class="mr-2"></i>
+                class="button secondary">
+            <i class="feather-icon icon-edit-2"></i>
+
             Renommer
         </button>
 
@@ -49,8 +53,9 @@
                    name="${_csrf.getParameterName()}"
                    value="${_csrf.getToken()}"/>
             <button type="submit"
-                    class="inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-red focus:ring-offset-2 focus:ring-offset-ctp-base px-4 py-2 bg-ctp-red hover:bg-ctp-red/80 text-ctp-base border-0">
-                <i data-feather="trash-2" class="mr-2"></i>
+                    class="button danger">
+                <i class="feather-icon icon-trash-2"></i>
+
                 Supprimer la session
             </button>
         </form>

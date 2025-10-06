@@ -31,14 +31,16 @@
                         class="button warning sm flex items-center gap-1 w-full justify-center flex-1"
                         hx-confirm="Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?"
                         hx-post="/admin/users/${user.id()}/reset-code">
-                    <i data-feather="key" class="w-3 h-3"></i>
+                    <i class="feather-icon icon-key"></i>
+
                     Réinitialiser le code
                 </button>
             @endif
             <button class="button danger sm flex-1 flex items-center gap-1 w-full justify-center"
                     hx-confirm="Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.username()} ?"
                     hx-delete="/admin/users/${user.id()}">
-                <i data-feather="trash-2" class="w-3 h-3"></i>
+                <i class="feather-icon icon-trash-2"></i>
+
                 Supprimer
             </button>
         </div>

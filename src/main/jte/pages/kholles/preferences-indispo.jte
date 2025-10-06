@@ -28,15 +28,15 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
                             ${session.subject()}
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <span class="text-ctp-text">Mes disponibilités</span>
                     `
                 )
@@ -63,13 +63,6 @@
 
                         <!-- Barre de progression -->
                         @template.components.layout.ProgressBar(currentStep = 1, totalSteps = 3)
-
-                        <!-- Instructions -->
-                        <p class="text-ctp-text mb-6 text-sm sm:text-base">
-                            <i data-feather="info" class="inline w-4 h-4 mr-2"></i>
-                            Cochez les créneaux où vous n'êtes <strong>pas disponible</strong>.
-                            Les créneaux non cochés seront considérés comme disponibles pour la suite.
-                        </p>
 
                         @template.components.ui.Alert(
                             type = "warning",
@@ -109,7 +102,7 @@
                                     <label for="slot-${slotId}"
                                            class="time-slot !flex items-center p-4 rounded-lg border border-ctp-surface2 cursor-pointer transition-all duration-200 hover:bg-ctp-surface1 bg-ctp-base !mb-0">
                                         <div class="checkbox-custom mr-3 w-5 h-5 rounded-md border border-ctp-overlay0 flex items-center justify-center flex-shrink-0">
-                                            <i class="check-icon text-white w-3 h-3" data-feather="x"></i>
+                                            <i class="check-icon feather-icon icon-x text-white"></i>
                                         </div>
                                         <span class="slot-text text-sm font-medium leading-tight break-words text-ctp-text">
                                             ${WordUtils.capitalizeFirst(slot.dateTime().format(formatter))}
@@ -122,13 +115,13 @@
                         <!-- Boutons de navigation -->
                         <div class="flex flex-col sm:flex-row justify-between gap-4">
                             <a href="/kholles" class="button secondary">
-                                <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i>
+                                <i class="feather-icon icon-arrow-left"></i>
                                 Retour à la liste
                             </a>
 
                             <button type="submit" class="button primary">
                                 Continuer
-                                <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                                <i class="feather-icon icon-arrow-right"></i>
                             </button>
                         </div>
                     </form>
@@ -151,9 +144,5 @@
                 display: none;
             }
         </style>
-
-        <script>
-            feather.replace();
-        </script>
     `
 )

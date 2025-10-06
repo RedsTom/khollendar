@@ -32,13 +32,15 @@
                 <button type="button"
                         class="move-up p-1 sm:p-2 rounded hover:bg-ctp-surface2 transition-colors"
                         aria-label="Déplacer vers le haut">
-                    <i class="h-4 w-4 sm:h-5 sm:w-5" data-feather="chevron-up"></i>
+                    <i class="feather-icon icon-chevron-up"></i>
+
                 </button>
 
                 <button type="button"
                         class="move-down p-1 sm:p-2 rounded hover:bg-ctp-surface2 transition-colors"
                         aria-label="Déplacer vers le bas">
-                    <i class="h-4 w-4 sm:h-5 sm:w-5" data-feather="chevron-down"></i>
+                    <i class="feather-icon icon-chevron-down"></i>
+
                 </button>
             </div>
         </li>

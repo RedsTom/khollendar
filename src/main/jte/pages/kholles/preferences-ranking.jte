@@ -21,15 +21,15 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <a href="/kholles/${session.id()}" class="hover:text-ctp-blue transition-colors">
                             ${session.subject()}
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <span class="text-ctp-text">Classement des préférences</span>
                     `
                 )
@@ -87,13 +87,13 @@
                                 <!-- Boutons de navigation -->
                                 <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
                                     <a href="/kholles/${session.id()}/preferences?step=1" class="button secondary">
-                                        <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i>
+                                        <i class="feather-icon icon-arrow-left"></i>
                                         Retour
                                     </a>
 
                                     <button type="submit" class="button primary">
                                         Continuer
-                                        <i data-feather="arrow-right" class="ml-2 w-4 h-4"></i>
+                                        <i class="feather-icon icon-arrow-right"></i>
                                     </button>
                                 </div>
                             </form>
@@ -104,8 +104,5 @@
         </div>
 
         <script src="/js/slot-ranking.js"></script>
-        <script>
-            feather.replace();
-        </script>
     `
 )

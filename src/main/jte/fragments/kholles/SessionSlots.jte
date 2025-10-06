@@ -10,7 +10,8 @@
 
 <div class="mb-8">
     <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-        <i data-feather="calendar" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+        <i class="feather-icon icon-calendar"></i>
+
         ${title}
     </h2>
     @if(slots.isEmpty())

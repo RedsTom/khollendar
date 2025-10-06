@@ -15,11 +15,11 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="feather-icon icon-chevron-right"></i>
                         <span class="text-ctp-text">Créer une session</span>
                     `
                 )
@@ -48,7 +48,7 @@
 
                         <div class="mb-6">
                             <h3 class="text-lg font-medium mb-4 text-ctp-blue flex items-center gap-2">
-                                <i data-feather="clock" class="w-5 h-5"></i>
+                                <i class="feather-icon icon-clock"></i>
                                 Créneaux horaires
                             </h3>
                             <div id="slots-container" class="space-y-4">
@@ -56,7 +56,7 @@
                             </div>
 
                             <button class="button success mt-4" onclick="addSlot()">
-                                <i data-feather="plus" class="mr-2"></i>
+                                <i class="feather-icon icon-plus"></i>
                                 Ajouter un créneau
                             </button>
                         </div>
