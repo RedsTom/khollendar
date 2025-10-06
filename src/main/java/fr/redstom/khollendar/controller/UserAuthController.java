@@ -8,7 +8,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -24,10 +24,8 @@ import fr.redstom.khollendar.service.SessionService;
 import fr.redstom.khollendar.service.UserAuthService;
 import fr.redstom.khollendar.service.UserService;
 import jakarta.servlet.http.HttpSession;
-
 import java.util.List;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,7 +85,8 @@ public class UserAuthController {
             Model model) {
         Long userId = (Long) session.getAttribute(SessionService.SESSION_USER_ID);
         if (userId == null) {
-            return userAuthService.prepareUserSelectionFragment(model, "Votre session a expiré. Veuillez sélectionner à nouveau votre utilisateur.");
+            return userAuthService.prepareUserSelectionFragment(
+                    model, "Votre session a expiré. Veuillez sélectionner à nouveau votre utilisateur.");
         }
 
         Optional<User> optionalUser = userService.getUserById(userId);
@@ -97,8 +96,7 @@ public class UserAuthController {
 
         User user = optionalUser.get();
 
-        if (bindingResult.hasErrors()
-        || !userService.isValidSecretCode(user, secretCodeDto.secretCode())) {
+        if (bindingResult.hasErrors() || !userService.isValidSecretCode(user, secretCodeDto.secretCode())) {
             return userAuthService.prepareCodeEntryFragment(model, user, "Code secret invalide");
         }
 
@@ -125,7 +123,8 @@ public class UserAuthController {
         // TODO: Sécurité douteuse
         Long userId = (Long) session.getAttribute(SessionService.SESSION_USER_ID);
         if (userId == null) {
-            return userAuthService.prepareUserSelectionFragment(model, "Votre session a expiré. Veuillez sélectionner à nouveau votre utilisateur.");
+            return userAuthService.prepareUserSelectionFragment(
+                    model, "Votre session a expiré. Veuillez sélectionner à nouveau votre utilisateur.");
         }
 
         Optional<User> optionalUser = userService.getUserById(userId);
@@ -136,7 +135,8 @@ public class UserAuthController {
         User user = optionalUser.get();
 
         if (bindingResult.hasErrors()) {
-            return userAuthService.prepareCodeInitializationFragment(model, user, "Le code secret doit être composé de 6 chiffres.");
+            return userAuthService.prepareCodeInitializationFragment(
+                    model, user, "Le code secret doit être composé de 6 chiffres.");
         }
 
         try {
