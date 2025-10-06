@@ -212,7 +212,7 @@ public class KholleSessionController {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
             sessionService.setRedirectAfterLogin(session, request.getRequestURI());
-            return "redirect:/user-auth/select";
+            return "redirect:/user/login";
         }
 
         Long userId = sessionService.getCurrentUserId(session);
@@ -280,7 +280,7 @@ public class KholleSessionController {
             RedirectAttributes redirectAttributes) {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
-            return "redirect:/user-auth/select";
+            return "redirect:/user/login";
         }
 
         Long userId = sessionService.getCurrentUserId(session);
@@ -310,7 +310,7 @@ public class KholleSessionController {
             RedirectAttributes redirectAttributes) {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
-            return "redirect:/user-auth/select";
+            return "redirect:/user/login";
         }
 
         Long userId = sessionService.getCurrentUserId(session);
@@ -336,7 +336,7 @@ public class KholleSessionController {
     public String savePreferences(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
-            return "redirect:/user-auth/select";
+            return "redirect:/user/login";
         }
 
         Long userId = sessionService.getCurrentUserId(session);
@@ -379,7 +379,7 @@ public class KholleSessionController {
             RedirectAttributes redirectAttributes) {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
-            return "redirect:/user-auth/select";
+            return "redirect:/user/login";
         }
 
         // Log pour déboguer

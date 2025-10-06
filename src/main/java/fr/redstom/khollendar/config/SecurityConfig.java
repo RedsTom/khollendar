@@ -53,7 +53,7 @@ public class SecurityConfig {
                                          "/kholles/assignments/trigger-all")
                         .hasRole("ADMIN")
 
-                        .requestMatchers("/**", "/user-auth/**").permitAll())
+                        .requestMatchers("/**", "/user/**").permitAll())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .defaultSuccessUrl("/")
