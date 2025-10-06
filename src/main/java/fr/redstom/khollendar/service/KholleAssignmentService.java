@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.entity.*;
@@ -42,13 +60,9 @@ public class KholleAssignmentService {
         log.info("Début de l'affectation pour la session {}", sessionId);
 
         // Récupération de la session
-        KholleSession session =
-                sessionRepository
-                        .findById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session non trouvée : " + sessionId));
+        KholleSession session = sessionRepository
+                .findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("Session non trouvée : " + sessionId));
 
         List<KholleSlot> slots = session.kholleSlots();
         if (slots == null || slots.isEmpty()) {
@@ -86,55 +100,45 @@ public class KholleAssignmentService {
 
         // Application de l'algorithme d'affectation
         Map<User, KholleSlot> assignments =
-                performMaxMinFairnessAssignment(
-                        allUsersSet, preferencesByUser, slots, averageCapacity);
+                performMaxMinFairnessAssignment(allUsersSet, preferencesByUser, slots, averageCapacity);
 
         // Sauvegarde des affectations en base
         LocalDateTime now = LocalDateTime.now();
-        List<KholleAssignment> assignmentEntities =
-                assignments.entrySet().stream()
-                        .map(
-                                entry -> {
-                                    User user = entry.getKey();
-                                    KholleSlot slot = entry.getValue();
+        List<KholleAssignment> assignmentEntities = assignments.entrySet().stream()
+                .map(entry -> {
+                    User user = entry.getKey();
+                    KholleSlot slot = entry.getValue();
 
-                                    // Détermination du rang de préférence obtenu
-                                    Integer obtainedRank = null;
-                                    List<UserPreference> userPrefs = preferencesByUser.get(user);
-                                    if (userPrefs != null) {
-                                        obtainedRank =
-                                                userPrefs.stream()
-                                                        .filter(
-                                                                pref ->
-                                                                        pref.slot()
-                                                                                .id()
-                                                                                .equals(slot.id()))
-                                                        .map(UserPreference::preferenceRank)
-                                                        .findFirst()
-                                                        .orElse(null);
-                                    }
+                    // Détermination du rang de préférence obtenu
+                    Integer obtainedRank = null;
+                    List<UserPreference> userPrefs = preferencesByUser.get(user);
+                    if (userPrefs != null) {
+                        obtainedRank = userPrefs.stream()
+                                .filter(pref -> pref.slot().id().equals(slot.id()))
+                                .map(UserPreference::preferenceRank)
+                                .findFirst()
+                                .orElse(null);
+                    }
 
-                                    return KholleAssignment.builder()
-                                            .user(user)
-                                            .session(session)
-                                            .slot(slot)
-                                            .assignedAt(now)
-                                            .obtainedPreferenceRank(obtainedRank)
-                                            .build();
-                                })
-                        .collect(Collectors.toList());
+                    return KholleAssignment.builder()
+                            .user(user)
+                            .session(session)
+                            .slot(slot)
+                            .assignedAt(now)
+                            .obtainedPreferenceRank(obtainedRank)
+                            .build();
+                })
+                .collect(Collectors.toList());
 
         assignmentRepository.saveAll(assignmentEntities);
 
         // Changer le statut de la session vers RESULTS_AVAILABLE après affectation
-        KholleSession updatedSession =
-                session.toBuilder().status(KholleSessionStatus.RESULTS_AVAILABLE).build();
+        KholleSession updatedSession = session.toBuilder()
+                .status(KholleSessionStatus.RESULTS_AVAILABLE)
+                .build();
         sessionRepository.save(updatedSession);
 
-        log.info(
-                "Affectation terminée pour la session {}. {} affectations créées.",
-                sessionId,
-                assignments.size());
+        log.info("Affectation terminée pour la session {}. {} affectations créées.", sessionId, assignments.size());
         logAssignmentStatistics(assignmentEntities);
 
         return assignments;
@@ -162,11 +166,10 @@ public class KholleAssignmentService {
         // Construction d'une map des indisponibilités pour un accès rapide
         Map<User, Set<Long>> unavailableSlotsByUser = new HashMap<>();
         for (Map.Entry<User, List<UserPreference>> entry : preferencesByUser.entrySet()) {
-            Set<Long> unavailableSlots =
-                    entry.getValue().stream()
-                            .filter(UserPreference::isUnavailable)
-                            .map(pref -> pref.slot().id())
-                            .collect(Collectors.toSet());
+            Set<Long> unavailableSlots = entry.getValue().stream()
+                    .filter(UserPreference::isUnavailable)
+                    .map(pref -> pref.slot().id())
+                    .collect(Collectors.toSet());
             if (!unavailableSlots.isEmpty()) {
                 unavailableSlotsByUser.put(entry.getKey(), unavailableSlots);
             }
@@ -176,16 +179,11 @@ public class KholleAssignmentService {
         int currentPreferenceRank = 1;
 
         // Calculer le nombre maximum de préférences (en excluant les indisponibilités)
-        int maxPreferenceRank =
-                preferencesByUser.values().stream()
-                        .mapToInt(
-                                prefs ->
-                                        (int)
-                                                prefs.stream()
-                                                        .filter(pref -> !pref.isUnavailable())
-                                                        .count())
-                        .max()
-                        .orElse(0);
+        int maxPreferenceRank = preferencesByUser.values().stream()
+                .mapToInt(prefs -> (int)
+                        prefs.stream().filter(pref -> !pref.isUnavailable()).count())
+                .max()
+                .orElse(0);
 
         // Affectation par rang de préférence croissant (max-min fairness)
         while (!unassignedUsers.isEmpty() && currentPreferenceRank <= maxPreferenceRank) {
@@ -199,9 +197,7 @@ public class KholleAssignmentService {
                 if (prefs != null) {
                     // Filtrer uniquement les préférences positives (non indisponibilités)
                     List<UserPreference> availablePrefs =
-                            prefs.stream()
-                                    .filter(pref -> !pref.isUnavailable())
-                                    .collect(Collectors.toList());
+                            prefs.stream().filter(pref -> !pref.isUnavailable()).collect(Collectors.toList());
 
                     if (availablePrefs.size() >= currentRank) {
                         UserPreference preference = availablePrefs.get(currentRank - 1);
@@ -253,57 +249,30 @@ public class KholleAssignmentService {
             Collections.shuffle(remainingUsers, random);
 
             for (User user : remainingUsers) {
-                Set<Long> unavailableSlots =
-                        unavailableSlotsByUser.getOrDefault(user, Collections.emptySet());
+                Set<Long> unavailableSlots = unavailableSlotsByUser.getOrDefault(user, Collections.emptySet());
 
                 // Trouver un créneau disponible (avec capacité) qui n'est pas marqué comme
                 // indisponible
-                KholleSlot availableSlot =
-                        slotCapacities.entrySet().stream()
-                                .filter(e -> e.getValue() > 0)
-                                .filter(e -> !unavailableSlots.contains(e.getKey().id()))
-                                .max(Comparator.comparingInt(Map.Entry::getValue))
-                                .map(Map.Entry::getKey)
-                                .orElseGet(
-                                        () -> {
-                                            // Si tous les créneaux avec capacité sont
-                                            // indisponibles,
-                                            // chercher parmi tous les créneaux disponibles (même
-                                            // ceux à capacité 0)
-                                            return slots.stream()
-                                                    .filter(
-                                                            slot ->
-                                                                    !unavailableSlots.contains(
-                                                                            slot.id()))
-                                                    .min(
-                                                            Comparator.comparingInt(
-                                                                    slot ->
-                                                                            (int)
-                                                                                    assignments
-                                                                                            .values()
-                                                                                            .stream()
-                                                                                            .filter(
-                                                                                                    s ->
-                                                                                                            s.id().equals(
-                                                                                                                            slot
-                                                                                                                                    .id()))
-                                                                                            .count()))
-                                                    .orElseThrow(
-                                                            () ->
-                                                                    new IllegalStateException(
-                                                                            "Impossible de trouver"
-                                                                                + " un créneau"
-                                                                                + " disponible pour"
-                                                                                + " l'utilisateur "
-                                                                                    + user
-                                                                                            .username()
-                                                                                    + ". Tous les"
-                                                                                    + " créneaux"
-                                                                                    + " sont"
-                                                                                    + " marqués"
-                                                                                    + " comme"
-                                                                                    + " indisponibles."));
-                                        });
+                KholleSlot availableSlot = slotCapacities.entrySet().stream()
+                        .filter(e -> e.getValue() > 0)
+                        .filter(e -> !unavailableSlots.contains(e.getKey().id()))
+                        .max(Comparator.comparingInt(Map.Entry::getValue))
+                        .map(Map.Entry::getKey)
+                        .orElseGet(() -> {
+                            // Si tous les créneaux avec capacité sont
+                            // indisponibles,
+                            // chercher parmi tous les créneaux disponibles (même
+                            // ceux à capacité 0)
+                            return slots.stream()
+                                    .filter(slot -> !unavailableSlots.contains(slot.id()))
+                                    .min(Comparator.comparingInt(slot -> (int) assignments.values().stream()
+                                            .filter(s -> s.id().equals(slot.id()))
+                                            .count()))
+                                    .orElseThrow(() -> new IllegalStateException(
+                                            "Impossible de trouver un créneau disponible pour l'utilisateur "
+                                                    + user.username()
+                                                    + ". Tous les créneaux sont marqués comme indisponibles."));
+                        });
 
                 assignments.put(user, availableSlot);
                 slotCapacities.merge(availableSlot, -1, Integer::sum);
@@ -315,26 +284,18 @@ public class KholleAssignmentService {
 
     /** Affiche les statistiques d'affectation dans les logs */
     private void logAssignmentStatistics(List<KholleAssignment> assignments) {
-        Map<Integer, Long> rankDistribution =
-                assignments.stream()
-                        .filter(a -> a.obtainedPreferenceRank() != null)
-                        .collect(
-                                Collectors.groupingBy(
-                                        KholleAssignment::obtainedPreferenceRank,
-                                        Collectors.counting()));
+        Map<Integer, Long> rankDistribution = assignments.stream()
+                .filter(a -> a.obtainedPreferenceRank() != null)
+                .collect(Collectors.groupingBy(KholleAssignment::obtainedPreferenceRank, Collectors.counting()));
 
-        long withoutPreferences =
-                assignments.stream().filter(a -> a.obtainedPreferenceRank() == null).count();
+        long withoutPreferences = assignments.stream()
+                .filter(a -> a.obtainedPreferenceRank() == null)
+                .count();
 
         log.info("Statistiques d'affectation:");
         rankDistribution.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
-                .forEach(
-                        entry ->
-                                log.info(
-                                        "  - Choix #{}: {} étudiants",
-                                        entry.getKey(),
-                                        entry.getValue()));
+                .forEach(entry -> log.info("  - Choix #{}: {} étudiants", entry.getKey(), entry.getValue()));
 
         if (withoutPreferences > 0) {
             log.info("  - Sans préférence satisfaite: {} étudiants", withoutPreferences);
@@ -348,21 +309,13 @@ public class KholleAssignmentService {
 
     /** Récupère l'affectation d'un utilisateur pour une session */
     public Optional<KholleAssignment> getAssignment(Long userId, Long sessionId) {
-        User user =
-                userRepository
-                        .findById(userId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Utilisateur non trouvé : " + userId));
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé : " + userId));
 
-        KholleSession session =
-                sessionRepository
-                        .findById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session non trouvée : " + sessionId));
+        KholleSession session = sessionRepository
+                .findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("Session non trouvée : " + sessionId));
 
         return assignmentRepository.findByUserAndSession(user, session);
     }
@@ -374,13 +327,9 @@ public class KholleAssignmentService {
 
     /** Vérifie si les affectations ont été effectuées pour une session */
     public boolean isSessionAssigned(Long sessionId) {
-        KholleSession session =
-                sessionRepository
-                        .findById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session non trouvée : " + sessionId));
+        KholleSession session = sessionRepository
+                .findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("Session non trouvée : " + sessionId));
 
         return !assignmentRepository.findBySession(session).isEmpty();
     }

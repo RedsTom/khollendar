@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.dto.KhollePreferencesDto;
@@ -31,8 +49,7 @@ public class KholleSlotService {
      * @param model Modèle pour la vue (peut être null si utilisé avec redirection)
      * @return true si la réorganisation a réussi, false sinon
      */
-    public boolean reorderSlot(
-            Long sessionId, Long slotId, String direction, HttpSession httpSession, Model model) {
+    public boolean reorderSlot(Long sessionId, Long slotId, String direction, HttpSession httpSession, Model model) {
         if (slotId == null || direction == null) {
             return false;
         }
@@ -58,8 +75,7 @@ public class KholleSlotService {
             }
 
             // Mettre à jour les préférences dans la session
-            List<Long> newOrder =
-                    reorderedSlots.stream().map(KholleSlot::id).collect(Collectors.toList());
+            List<Long> newOrder = reorderedSlots.stream().map(KholleSlot::id).collect(Collectors.toList());
             KhollePreferencesDto updatedPrefs = preferences.withRankedSlots(newOrder);
             sessionService.savePreferences(httpSession, updatedPrefs);
 
@@ -80,24 +96,18 @@ public class KholleSlotService {
      */
     private List<KholleSlot> doReorderSlots(
             Long kholleId, List<Long> unavailableSlotIds, Long slotIdToMove, boolean moveUp) {
-        KholleSession kholleSession =
-                kholleService
-                        .getKholleSessionById(kholleId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle non trouvée"));
+        KholleSession kholleSession = kholleService
+                .getKholleSessionById(kholleId)
+                .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));
 
         List<KholleSlot> allSlots = new ArrayList<>(kholleSession.kholleSlots());
-        List<Long> finalUnavailableSlots =
-                unavailableSlotIds != null ? unavailableSlotIds : new ArrayList<>();
+        List<Long> finalUnavailableSlots = unavailableSlotIds != null ? unavailableSlotIds : new ArrayList<>();
 
         // Filtrer les créneaux disponibles et les trier par date
-        List<KholleSlot> availableSlots =
-                allSlots.stream()
-                        .filter(slot -> !finalUnavailableSlots.contains(slot.id()))
-                        .sorted(Comparator.comparing(KholleSlot::dateTime))
-                        .collect(Collectors.toList());
+        List<KholleSlot> availableSlots = allSlots.stream()
+                .filter(slot -> !finalUnavailableSlots.contains(slot.id()))
+                .sorted(Comparator.comparing(KholleSlot::dateTime))
+                .collect(Collectors.toList());
 
         // Trouver l'index du créneau à déplacer
         int currentIndex = -1;

@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.controller;
 
 import jakarta.servlet.RequestDispatcher;
@@ -28,9 +46,7 @@ public class CustomErrorController implements ErrorController {
         String errorDescription =
                 switch (statusCode) {
                     case 404 -> "La page que vous recherchez n'existe pas ou a été déplacée.";
-                    case 403 ->
-                            "Vous n'avez pas les permissions nécessaires pour accéder à cette"
-                                    + " page.";
+                    case 403 -> "Vous n'avez pas les permissions nécessaires pour accéder à cette page.";
                     case 500 -> "Une erreur interne s'est produite. Veuillez réessayer plus tard.";
                     case 400 -> "La requête envoyée n'est pas valide.";
                     case 401 -> "Vous devez être connecté pour accéder à cette page.";

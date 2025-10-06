@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.crons.AffectationCron;
@@ -37,8 +55,7 @@ public class KholleAssignmentController {
 
     /** Affiche les affectations d'une session de khôlle */
     @GetMapping("/{id}/assignments")
-    public String showAssignments(
-            @PathVariable Long id, HttpSession httpSession, Model model, Principal principal) {
+    public String showAssignments(@PathVariable Long id, HttpSession httpSession, Model model, Principal principal) {
         Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
 
         // Vérifier si la session existe
@@ -66,17 +83,14 @@ public class KholleAssignmentController {
         // === Calcul des statistiques ===
 
         // Distribution des rangs de préférence
-        Map<Integer, Long> rankDistribution =
-                assignments.stream()
-                        .filter(a -> a.obtainedPreferenceRank() != null)
-                        .collect(
-                                Collectors.groupingBy(
-                                        KholleAssignment::obtainedPreferenceRank,
-                                        Collectors.counting()));
+        Map<Integer, Long> rankDistribution = assignments.stream()
+                .filter(a -> a.obtainedPreferenceRank() != null)
+                .collect(Collectors.groupingBy(KholleAssignment::obtainedPreferenceRank, Collectors.counting()));
 
         // Nombre d'affectations sans préférence
-        long withoutPreferences =
-                assignments.stream().filter(a -> a.obtainedPreferenceRank() == null).count();
+        long withoutPreferences = assignments.stream()
+                .filter(a -> a.obtainedPreferenceRank() == null)
+                .count();
 
         // Nombre d'élèves ayant eu leur premier choix
         long firstChoice = rankDistribution.getOrDefault(1, 0L);
@@ -84,9 +98,7 @@ public class KholleAssignmentController {
         // Taux de satisfaction (élèves ayant eu leur premier choix / élèves avec préférence)
         long assignmentsWithPreferences = assignments.size() - withoutPreferences;
         double satisfactionRate =
-                assignmentsWithPreferences == 0
-                        ? 0
-                        : (double) firstChoice / assignmentsWithPreferences * 100;
+                assignmentsWithPreferences == 0 ? 0 : (double) firstChoice / assignmentsWithPreferences * 100;
 
         model.addAttribute("session", session);
 
@@ -122,16 +134,12 @@ public class KholleAssignmentController {
             return "redirect:/kholles/" + id + "/assignments";
 
         } catch (IllegalStateException e) {
-            log.error(
-                    "Erreur lors de l'affectation manuelle de la session {}: {}",
-                    id,
-                    e.getMessage());
+            log.error("Erreur lors de l'affectation manuelle de la session {}: {}", id, e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Erreur : " + e.getMessage());
             return "redirect:/kholles/" + id;
         } catch (Exception e) {
             log.error("Erreur inattendue lors de l'affectation manuelle de la session {}", id, e);
-            redirectAttributes.addFlashAttribute(
-                    "error", "Erreur inattendue lors de l'affectation");
+            redirectAttributes.addFlashAttribute("error", "Erreur inattendue lors de l'affectation");
             return "redirect:/kholles/" + id;
         }
     }
@@ -146,12 +154,10 @@ public class KholleAssignmentController {
             log.info("Déclenchement manuel de l'affectation pour toutes les sessions éligibles");
             schedulerService.triggerManualAssignment();
             redirectAttributes.addFlashAttribute(
-                    "success",
-                    "Affectations déclenchées avec succès pour toutes les sessions éligibles");
+                    "success", "Affectations déclenchées avec succès pour toutes les sessions éligibles");
         } catch (Exception e) {
             log.error("Erreur lors du déclenchement manuel de toutes les affectations", e);
-            redirectAttributes.addFlashAttribute(
-                    "error", "Erreur lors du déclenchement des affectations");
+            redirectAttributes.addFlashAttribute("error", "Erreur lors du déclenchement des affectations");
         }
         return "redirect:/kholles";
     }

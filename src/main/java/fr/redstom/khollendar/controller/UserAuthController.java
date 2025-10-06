@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.SecretCodeDto;
@@ -24,10 +42,7 @@ public class UserAuthController {
 
     // Étape 1 : Sélection de l'utilisateur
     @GetMapping("/select")
-    public String selectUser(
-            @RequestParam(required = false) String redirectTo,
-            HttpSession httpSession,
-            Model model) {
+    public String selectUser(@RequestParam(required = false) String redirectTo, HttpSession httpSession, Model model) {
         List<User> users = userService.getAllUsers();
 
         // Stocker l'URL de redirection dans la session si elle est présente
@@ -61,8 +76,7 @@ public class UserAuthController {
 
     // Entrer le code secret (si déjà initialisé)
     @GetMapping("/enter-code")
-    public String enterCodeForm(
-            HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    public String enterCodeForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Long userId = (Long) session.getAttribute("selectedUserId");
         if (userId == null) {
             redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un utilisateur");
@@ -128,8 +142,7 @@ public class UserAuthController {
         // Rediriger vers l'URL stockée dans la session si elle existe
         String redirectTo = (String) session.getAttribute("redirectAfterLogin");
         if (redirectTo != null && !redirectTo.isEmpty()) {
-            session.removeAttribute(
-                    "redirectAfterLogin"); // Supprimer l'URL de redirection après utilisation
+            session.removeAttribute("redirectAfterLogin"); // Supprimer l'URL de redirection après utilisation
             return "redirect:" + redirectTo;
         } else {
             return "redirect:/kholles"; // Redirection par défaut
@@ -138,8 +151,7 @@ public class UserAuthController {
 
     // Initialiser le code secret (première utilisation)
     @GetMapping("/initialize-code")
-    public String initializeCodeForm(
-            HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    public String initializeCodeForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Long userId = (Long) session.getAttribute("selectedUserId");
         if (userId == null) {
             redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un utilisateur");
@@ -200,8 +212,7 @@ public class UserAuthController {
             // Rediriger vers l'URL stockée dans la session si elle existe
             String redirectTo = (String) session.getAttribute("redirectAfterLogin");
             if (redirectTo != null && !redirectTo.isEmpty()) {
-                session.removeAttribute(
-                        "redirectAfterLogin"); // Supprimer l'URL de redirection après utilisation
+                session.removeAttribute("redirectAfterLogin"); // Supprimer l'URL de redirection après utilisation
                 return "redirect:" + redirectTo;
             } else {
                 return "redirect:/"; // Redirection par défaut

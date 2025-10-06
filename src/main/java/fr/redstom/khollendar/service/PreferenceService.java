@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.entity.KholleSession;
@@ -30,20 +48,14 @@ public class PreferenceService {
      * @param model Modèle Spring MVC
      * @param unavailableSlotIds Liste des créneaux indisponibles présélectionnés
      */
-    public void prepareUnavailabilityForm(
-            Model model, Long kholleId, Long userId, List<Long> unavailableSlotIds) {
-        User user =
-                userService
-                        .getUserById(userId)
-                        .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+    public void prepareUnavailabilityForm(Model model, Long kholleId, Long userId, List<Long> unavailableSlotIds) {
+        User user = userService
+                .getUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
 
-        KholleSession kholleSession =
-                kholleService
-                        .getKholleSessionById(kholleId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle non trouvée"));
+        KholleSession kholleSession = kholleService
+                .getKholleSessionById(kholleId)
+                .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));
 
         List<KholleSlot> slots = new ArrayList<>(kholleSession.kholleSlots());
 
@@ -64,47 +76,33 @@ public class PreferenceService {
      * @param model Modèle Spring MVC
      */
     public void prepareRankingForm(
-            Model model,
-            Long kholleId,
-            Long userId,
-            List<Long> unavailableSlotIds,
-            List<Long> rankedSlotIds) {
-        User user =
-                userService
-                        .getUserById(userId)
-                        .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+            Model model, Long kholleId, Long userId, List<Long> unavailableSlotIds, List<Long> rankedSlotIds) {
+        User user = userService
+                .getUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
 
-        KholleSession kholleSession =
-                kholleService
-                        .getKholleSessionById(kholleId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle non trouvée"));
+        KholleSession kholleSession = kholleService
+                .getKholleSessionById(kholleId)
+                .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));
 
         List<KholleSlot> slots = new ArrayList<>(kholleSession.kholleSlots());
 
         // Filtrer pour ne garder que les créneaux disponibles
-        List<Long> finalUnavailableSlots =
-                unavailableSlotIds != null ? unavailableSlotIds : new ArrayList<>();
-        List<KholleSlot> availableSlots =
-                slots.stream()
-                        .filter(slot -> !finalUnavailableSlots.contains(slot.id()))
-                        .sorted(Comparator.comparing(KholleSlot::dateTime))
-                        .collect(Collectors.toList());
+        List<Long> finalUnavailableSlots = unavailableSlotIds != null ? unavailableSlotIds : new ArrayList<>();
+        List<KholleSlot> availableSlots = slots.stream()
+                .filter(slot -> !finalUnavailableSlots.contains(slot.id()))
+                .sorted(Comparator.comparing(KholleSlot::dateTime))
+                .collect(Collectors.toList());
 
         // Réorganiser selon le classement précédent s'il existe
         if (rankedSlotIds != null && !rankedSlotIds.isEmpty()) {
-            availableSlots.sort(
-                    Comparator.comparing(
-                            slot -> {
-                                int index = rankedSlotIds.indexOf(slot.id());
-                                return index >= 0 ? index : Integer.MAX_VALUE;
-                            }));
+            availableSlots.sort(Comparator.comparing(slot -> {
+                int index = rankedSlotIds.indexOf(slot.id());
+                return index >= 0 ? index : Integer.MAX_VALUE;
+            }));
         }
 
-        model.addAttribute(
-                "title", "Classement de mes préférences pour " + kholleSession.subject());
+        model.addAttribute("title", "Classement de mes préférences pour " + kholleSession.subject());
         model.addAttribute("session", kholleSession);
         model.addAttribute("availableSlots", availableSlots);
         model.addAttribute("currentUser", user);
@@ -120,46 +118,30 @@ public class PreferenceService {
      * @param model Modèle Spring MVC
      */
     public void prepareConfirmationForm(
-            Long kholleId,
-            Long userId,
-            List<Long> unavailableSlotIds,
-            List<Long> rankedSlotIds,
-            Model model) {
-        User user =
-                userService
-                        .getUserById(userId)
-                        .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+            Long kholleId, Long userId, List<Long> unavailableSlotIds, List<Long> rankedSlotIds, Model model) {
+        User user = userService
+                .getUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
 
-        KholleSession kholleSession =
-                kholleService
-                        .getKholleSessionById(kholleId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle non trouvée"));
+        KholleSession kholleSession = kholleService
+                .getKholleSessionById(kholleId)
+                .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));
 
         List<KholleSlot> allSlots = new ArrayList<>(kholleSession.kholleSlots());
         allSlots.sort(Comparator.comparing(KholleSlot::dateTime));
 
         // Convertir les IDs en objets KholleSlot
-        Set<KholleSlot> unavailableSlots =
-                allSlots.stream()
-                        .filter(
-                                slot ->
-                                        unavailableSlotIds != null
-                                                && unavailableSlotIds.contains(slot.id()))
-                        .collect(Collectors.toSet());
+        Set<KholleSlot> unavailableSlots = allSlots.stream()
+                .filter(slot -> unavailableSlotIds != null && unavailableSlotIds.contains(slot.id()))
+                .collect(Collectors.toSet());
 
-        List<KholleSlot> rankedSlotsObjects =
-                Optional.ofNullable(rankedSlotIds).orElse(new ArrayList<>()).stream()
-                        .map(
-                                slotId ->
-                                        allSlots.stream()
-                                                .filter(s -> s.id().equals(slotId))
-                                                .findFirst()
-                                                .orElse(null))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+        List<KholleSlot> rankedSlotsObjects = Optional.ofNullable(rankedSlotIds).orElse(new ArrayList<>()).stream()
+                .map(slotId -> allSlots.stream()
+                        .filter(s -> s.id().equals(slotId))
+                        .findFirst()
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
         model.addAttribute("title", "Confirmation des préférences pour " + kholleSession.subject());
         model.addAttribute("session", kholleSession);
@@ -170,8 +152,7 @@ public class PreferenceService {
     }
 
     /** Enregistre les préférences utilisateur pour une khôlle */
-    public void savePreferences(
-            Long userId, Long kholleId, List<Long> unavailableSlotIds, List<Long> rankedSlotIds) {
+    public void savePreferences(Long userId, Long kholleId, List<Long> unavailableSlotIds, List<Long> rankedSlotIds) {
         // Déléguer l'enregistrement au KholleService
         kholleService.savePreferences(
                 userId,
