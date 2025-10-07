@@ -41,7 +41,9 @@ public class UserAuthController {
     private final UserService userService;
     private final UserAuthService userAuthService;
 
-    // Étape 1 : Sélection de l'utilisateur
+    /**
+     * Affichage de la page de sélection de l'utilisateur
+     */
     @GetMapping("/login")
     public String selectUser(@RequestParam(required = false) String redirectTo, HttpSession httpSession, Model model) {
         List<User> users = userService.getAllUsers();
@@ -56,7 +58,9 @@ public class UserAuthController {
         return "pages/user/login";
     }
 
-    // Étape 2 : Entrée ou définition du code secret
+    /**
+     * Traiter la sélection et renvoyer la page de saisie ou d'initialisation du code secret
+     */
     @PostMapping("/select")
     public String processUserSelection(@RequestParam Long userId, HttpSession session, Model model) {
         Optional<User> optionalUser = userService.getUserById(userId);
@@ -76,7 +80,9 @@ public class UserAuthController {
         }
     }
 
-    // Traiter l'entrée du code secret
+    /**
+     * Traiter l'entrée du code secret
+     */
     @PostMapping("/enter-code")
     public String processEnterCode(
             @Validated @ModelAttribute SecretCodeDto secretCodeDto,
@@ -96,6 +102,7 @@ public class UserAuthController {
 
         User user = optionalUser.get();
 
+        // Vérification du code secret
         if (bindingResult.hasErrors() || !userService.isValidSecretCode(user, secretCodeDto.secretCode())) {
             return userAuthService.prepareCodeEntryFragment(model, user, "Code secret invalide");
         }
@@ -113,7 +120,9 @@ public class UserAuthController {
         }
     }
 
-    // Traiter l'initialisation du code secret
+    /**
+     * Traiter l'initialisation du code secret
+     */
     @PostMapping("/initialize-code")
     public String processInitializeCode(
             @Validated @ModelAttribute SecretCodeDto secretCodeDto,
@@ -134,6 +143,7 @@ public class UserAuthController {
 
         User user = optionalUser.get();
 
+        // Validation du code secret
         if (bindingResult.hasErrors()) {
             return userAuthService.prepareCodeInitializationFragment(
                     model, user, "Le code secret doit être composé de 6 chiffres.");
