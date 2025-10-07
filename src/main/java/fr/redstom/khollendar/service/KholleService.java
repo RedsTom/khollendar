@@ -19,6 +19,7 @@
 package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.dto.KholleCreationDto;
+import fr.redstom.khollendar.dto.KhollePatchDto;
 import fr.redstom.khollendar.dto.KholleSessionCreationDto;
 import fr.redstom.khollendar.entity.*;
 import fr.redstom.khollendar.repository.KholleSessionRepository;
@@ -36,6 +37,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @RequiredArgsConstructor
@@ -310,48 +312,20 @@ public class KholleService {
     }
 
     /**
-     * Renomme une session de khôlle
+     * Modifie une session de khôlle en appliquant un patch
      *
-     * @param sessionId L'ID de la session à renommer
-     * @param newSubject Le nouveau nom de la session
+     * @param sessionId L'ID de la session à modifier
+     * @param patch Le patch contenant les modifications
+     *
      * @return La session mise à jour
      */
     @Transactional
-    public KholleSession renameKholleSession(Long sessionId, String newSubject) {
+    public KholleSession edit(Long sessionId, @Validated KhollePatchDto patch) {
         KholleSession session = getKholleSessionById(sessionId)
                 .orElseThrow(() ->
                         new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
 
-        if (newSubject == null || newSubject.trim().isEmpty()) {
-            throw new IllegalArgumentException("Le nouveau nom de la session ne peut pas être vide");
-        }
-
-        // Créer une nouvelle session avec le nouveau nom
-        KholleSession updatedSession =
-                session.toBuilder().subject(newSubject.trim()).build();
-
-        return kholleSessionRepository.save(updatedSession);
-    }
-
-    /**
-     * Change le statut d'une session de khôlle
-     *
-     * @param sessionId L'ID de la session
-     * @param status Le nouveau statut
-     * @return La session mise à jour
-     */
-    @Transactional
-    public KholleSession updateSessionStatus(Long sessionId, KholleSessionStatus status) {
-        KholleSession session = getKholleSessionById(sessionId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
-
-        if (status == null) {
-            throw new IllegalArgumentException("Le statut ne peut pas être null");
-        }
-
-        KholleSession updatedSession = session.toBuilder().status(status).build();
-
+        KholleSession updatedSession = patch.apply(session);
         return kholleSessionRepository.save(updatedSession);
     }
 }
