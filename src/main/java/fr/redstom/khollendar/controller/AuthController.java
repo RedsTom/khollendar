@@ -26,9 +26,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AuthController {
 
+    /**
+     * Page de connexion administrateur
+     */
     @GetMapping("/login")
     public String loginPage(Model model, @RequestParam(required = false) boolean error) {
-        model.addAttribute("title", "Connexion administrateur");
         model.addAttribute("error", error);
 
         return "pages/auth/login";

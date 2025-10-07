@@ -1,6 +1,5 @@
 @import org.springframework.security.web.csrf.CsrfToken
 
-@param CsrfToken _csrf
 @param boolean error = false
 
 @if(error)
@@ -10,11 +9,7 @@
     )
 @endif
 
-<form action="/login" method="post" class="space-y-6">
-    <input type="hidden"
-           name="${_csrf.getParameterName()}"
-           value="${_csrf.getToken()}"/>
-
+<form hx-post="/login" class="space-y-6">
     <div class="form-field">
         <label for="username">Nom d'utilisateur</label>
         <input type="text"
