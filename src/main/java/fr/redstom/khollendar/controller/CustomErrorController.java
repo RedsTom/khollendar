@@ -30,26 +30,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class CustomErrorController implements ErrorController {
 
+    /**
+     * Gestion des erreurs personnalisées :
+     * Affiche une page d'erreur avec un message adapté en fonction
+     */
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request, Model model) {
         int statusCode = parseErrorCode(request);
 
         String errorMessage =
                 switch (statusCode) {
-                    case 404 -> "Page non trouvée";
-                    case 403 -> "Accès interdit";
-                    case 500 -> "Erreur serveur";
                     case 400 -> "Requête invalide";
                     case 401 -> "Non autorisé";
+                    case 403 -> "Accès interdit";
+                    case 404 -> "Page non trouvée";
+                    case 500 -> "Erreur serveur";
                     default -> "Une erreur est survenue";
                 };
         String errorDescription =
                 switch (statusCode) {
-                    case 404 -> "La page que vous recherchez n'existe pas ou a été déplacée.";
-                    case 403 -> "Vous n'avez pas les permissions nécessaires pour accéder à cette page.";
-                    case 500 -> "Une erreur interne s'est produite. Veuillez réessayer plus tard.";
                     case 400 -> "La requête envoyée n'est pas valide.";
                     case 401 -> "Vous devez être connecté pour accéder à cette page.";
+                    case 403 -> "Vous n'avez pas les permissions nécessaires pour accéder à cette page.";
+                    case 404 -> "La page que vous recherchez n'existe pas ou a été déplacée.";
+                    case 500 -> "Une erreur interne s'est produite. Veuillez réessayer plus tard.";
                     default -> "Nous sommes désolés, quelque chose s'est mal passé.";
                 };
 
