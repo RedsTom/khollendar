@@ -18,6 +18,7 @@
  */
 package fr.redstom.khollendar.controller;
 
+import fr.redstom.khollendar.dto.KhollePatchDto;
 import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import fr.redstom.khollendar.dto.KholleSessionCreationDto;
 import fr.redstom.khollendar.entity.*;
@@ -29,6 +30,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -136,65 +140,38 @@ public class KholleSessionController {
         return "pages/kholles/show";
     }
 
-    /** Suppression d'une session de khôlle (admin uniquement) */
-    @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    /**
+     * Suppression d'une session de khôlle (admin uniquement)
+     */
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             kholleService.deleteKholleSession(id);
-            redirectAttributes.addFlashAttribute("success", "La session de khôlles a été supprimée avec succès");
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .header("HX-Redirect", "/kholles")
+                    .build();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "error", "Erreur lors de la suppression de la session : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-        return "redirect:/kholles";
     }
 
-    /** Renommage d'une session de khôlle (admin uniquement) */
-    @PostMapping("/{id}/rename")
-    public String rename(
-            @PathVariable Long id,
-            @RequestParam("newSubject") String newSubject,
-            RedirectAttributes redirectAttributes) {
+    /**
+     * Edition d'une session de khôlle (admin uniquement)
+     */
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateSession(@PathVariable Long id, @ModelAttribute KhollePatchDto patch) {
         try {
-            kholleService.renameKholleSession(id, newSubject);
-            redirectAttributes.addFlashAttribute("success", "La session de khôlles a été renommée avec succès");
+            KholleSession session = kholleService.edit(id, patch);
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .header("HX-Refresh", "true")
+                    .build();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors du renommage de la session : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        return "redirect:/kholles/" + id;
-    }
-
-    /** Changement du statut d'une session de khôlle (admin uniquement) */
-    @PostMapping("/{id}/status")
-    public String updateStatus(
-            @PathVariable Long id, @RequestParam("status") String statusStr, RedirectAttributes redirectAttributes) {
-        try {
-            // Vérifier que la session existe
-            Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
-            if (sessionOpt.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Session de khôlle non trouvée");
-                return "redirect:/kholles";
-            }
-
-            KholleSession session = sessionOpt.get();
-
-            // Empêcher le changement de statut si les résultats sont disponibles
-            if (session.status() == KholleSessionStatus.RESULTS_AVAILABLE) {
-                redirectAttributes.addFlashAttribute(
-                        "error", "Impossible de changer le statut : les résultats sont déjà disponibles");
-                return "redirect:/kholles/" + id;
-            }
-
-            KholleSessionStatus status = KholleSessionStatus.valueOf(statusStr);
-            kholleService.updateSessionStatus(id, status);
-            redirectAttributes.addFlashAttribute("success", "Le statut de la session a été modifié avec succès");
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", "Statut invalide");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "error", "Erreur lors de la modification du statut : " + e.getMessage());
-        }
-        return "redirect:/kholles/" + id;
     }
 
     /**

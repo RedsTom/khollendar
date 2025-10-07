@@ -49,8 +49,7 @@ public class SecurityConfig {
                                          "/kholles/*/delete",
                                          "/kholles/*/rename",
                                          "/kholles/*/status",
-                                         "/kholles/*/assignments/trigger",
-                                         "/kholles/assignments/trigger-all")
+                                         "/kholles/*/assignments/trigger")
                         .hasRole("ADMIN")
 
                         .requestMatchers("/**", "/user/**").permitAll())

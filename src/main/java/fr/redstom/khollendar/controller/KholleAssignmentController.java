@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /** Contrôleur pour la gestion des affectations de khôlles */
 @Controller
@@ -116,49 +115,27 @@ public class KholleAssignmentController {
     /** Déclenche manuellement l'affectation d'une session (admin uniquement) */
     @PostMapping("/{id}/assignments/trigger")
     @PreAuthorize("hasRole('ADMIN')")
-    public String triggerAssignment(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String triggerAssignment(@PathVariable Long id) {
         try {
             log.info("Déclenchement manuel de l'affectation pour la session {}", id);
 
             // Vérifier que la session existe
             Optional<KholleSession> sessionOpt = kholleService.getKholleSessionById(id);
             if (sessionOpt.isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Session de khôlle non trouvée");
                 return "redirect:/kholles";
             }
 
             // Effectuer l'affectation
             assignmentService.assignStudentsToSlots(id);
 
-            redirectAttributes.addFlashAttribute("success", "Affectation effectuée avec succès");
             return "redirect:/kholles/" + id + "/assignments";
 
         } catch (IllegalStateException e) {
             log.error("Erreur lors de l'affectation manuelle de la session {}: {}", id, e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Erreur : " + e.getMessage());
             return "redirect:/kholles/" + id;
         } catch (Exception e) {
             log.error("Erreur inattendue lors de l'affectation manuelle de la session {}", id, e);
-            redirectAttributes.addFlashAttribute("error", "Erreur inattendue lors de l'affectation");
             return "redirect:/kholles/" + id;
         }
-    }
-
-    /**
-     * Déclenche manuellement l'affectation pour toutes les sessions éligibles (admin uniquement)
-     */
-    @PostMapping("/assignments/trigger-all")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String triggerAllAssignments(RedirectAttributes redirectAttributes) {
-        try {
-            log.info("Déclenchement manuel de l'affectation pour toutes les sessions éligibles");
-            schedulerService.triggerManualAssignment();
-            redirectAttributes.addFlashAttribute(
-                    "success", "Affectations déclenchées avec succès pour toutes les sessions éligibles");
-        } catch (Exception e) {
-            log.error("Erreur lors du déclenchement manuel de toutes les affectations", e);
-            redirectAttributes.addFlashAttribute("error", "Erreur lors du déclenchement des affectations");
-        }
-        return "redirect:/kholles";
     }
 }

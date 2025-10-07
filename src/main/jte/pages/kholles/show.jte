@@ -63,10 +63,7 @@
 
                     <!-- Section Actions administrateur -->
                     @if(isAdmin)
-                        @template.fragments.admin.SessionActions(
-                            session = session,
-                            _csrf = _csrf
-                        )
+                        @template.fragments.admin.SessionActions(session = session)
                     @endif
 
                     <!-- Section des horaires disponibles -->

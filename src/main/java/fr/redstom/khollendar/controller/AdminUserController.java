@@ -90,7 +90,7 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
         if (!userService.exists(userId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
