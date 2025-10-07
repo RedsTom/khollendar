@@ -164,7 +164,7 @@ public class KholleSessionController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateSession(@PathVariable Long id, @ModelAttribute KhollePatchDto patch) {
         try {
-            KholleSession session = kholleService.edit(id, patch);
+            kholleService.edit(id, patch);
 
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .header("HX-Refresh", "true")
