@@ -179,4 +179,18 @@ public class PreferenceService {
         // Vérifie si des préférences existent pour cet utilisateur et cette session
         return userPreferenceRepository.existsByUserAndSession(user, session);
     }
+
+    public String prepareLockedPreferencesView(Model model, Long kholleId, Long userId) {
+        KholleSession kholleSession = kholleService
+                .getKholleSessionById(kholleId)
+                .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));
+        User user = userService
+                .getUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+
+        model.addAttribute("session", kholleSession);
+        model.addAttribute("currentUser", user);
+
+        return "pages/kholles/preferences-locked";
+    }
 }
