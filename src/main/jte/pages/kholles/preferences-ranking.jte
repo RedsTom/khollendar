@@ -73,12 +73,7 @@
                             )
                         @else
                             <form id="rankingForm"
-                                  action="/kholles/${session.id()}/preferences/step2"
-                                  method="post">
-                                <input type="hidden"
-                                       name="${_csrf.getParameterName()}"
-                                       value="${_csrf.getToken()}">
-
+                                  hx-post="/kholles/${session.id()}/preferences/ranking">
                                 <!-- Liste de classement -->
                                 @template.fragments.kholles.SlotRanking(
                                     availableSlots = availableSlots,
@@ -87,10 +82,10 @@
 
                                 <!-- Boutons de navigation -->
                                 <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
-                                    <a href="/kholles/${session.id()}/preferences?step=1" class="button secondary">
+                                    <button hx-post="/kholles/${session.id()}/previous" class="button secondary">
                                         <i class="fa-solid fa-arrow-left"></i>
                                         Retour
-                                    </a>
+                                    </button>
 
                                     <button type="submit" class="button primary">
                                         Continuer

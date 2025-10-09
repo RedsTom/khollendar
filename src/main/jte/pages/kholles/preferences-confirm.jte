@@ -57,12 +57,7 @@
             </div>
 
             <form id="confirmForm"
-                  action="/kholles/${session.id()}/preferences/save"
-                  method="post">
-                <input type="hidden"
-                       name="${_csrf.getParameterName()}"
-                       value="${_csrf.getToken()}">
-
+                  hx-post="/kholles/${session.id()}/preferences/confirm">
                 @template.components.ui.Card(
                     title = "Étape 3 : Confirmation",
                     content = @`
@@ -127,10 +122,10 @@
 
                         <!-- Boutons d'action -->
                         <div class="mt-6 flex flex-col sm:flex-row justify-between gap-4">
-                            <a href="/kholles/${session.id()}/preferences?step=2" class="button secondary">
+                            <button hx-post="/kholles/${session.id()}/previous" class="button secondary">
                                 <i class="fa-solid fa-arrow-left"></i>
                                 Retour
-                            </a>
+                            </button>
 
                             <button type="submit" class="button primary">
                                 Confirmer mes choix
