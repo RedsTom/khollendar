@@ -40,6 +40,7 @@ public class UserAuthController {
 
     private final UserService userService;
     private final UserAuthService userAuthService;
+    private final SessionService sessionService;
 
     /**
      * Affichage de la page de sélection de l'utilisateur
@@ -156,9 +157,9 @@ public class UserAuthController {
             session.setAttribute("authenticatedUserId", userId);
 
             // Rediriger vers l'URL stockée dans la session si elle existe
-            String redirectTo = (String) session.getAttribute("redirectAfterLogin");
+            String redirectTo = sessionService.getRedirectAfterLogin(session);
             if (redirectTo != null && !redirectTo.isEmpty()) {
-                session.removeAttribute("redirectAfterLogin"); // Supprimer l'URL de redirection après utilisation
+                sessionService.unsetRedirectAfterLogin(session); // Supprimer l'URL de redirection après utilisation
                 return "redirect:" + redirectTo;
             } else {
                 return "redirect:/"; // Redirection par défaut

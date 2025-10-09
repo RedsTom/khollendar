@@ -44,15 +44,12 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/admin/**",
-                                         "/kholles/create",
-                                         "/kholles/create/**",
-                                         "/kholles/*/delete",
-                                         "/kholles/*/rename",
-                                         "/kholles/*/status",
-                                         "/kholles/*/assignments/trigger")
+                                         "/kholles/create")
                         .hasRole("ADMIN")
 
-                        .requestMatchers("/**", "/user/**").permitAll())
+                        .requestMatchers("/**", "/user/**")
+                        .permitAll()
+                )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .defaultSuccessUrl("/")
