@@ -49,6 +49,18 @@ public class SessionService {
         session.setAttribute(REDIRECT_AFTER_LOGIN, redirectUrl);
     }
 
+    /** Supprime l'URL de redirection après connexion */
+    public void unsetRedirectAfterLogin(HttpSession session) {
+        session.removeAttribute(REDIRECT_AFTER_LOGIN);
+    }
+
+    /**
+     * Récupère l'URL de redirection après connexion
+     */
+    public String getRedirectAfterLogin(HttpSession session) {
+        return (String) session.getAttribute(REDIRECT_AFTER_LOGIN);
+    }
+
     /** Enregistre les préférences dans la session */
     public void savePreferences(HttpSession session, KhollePreferencesDto preferences) {
         session.setAttribute(SESSION_PREFERENCES, preferences);

@@ -101,6 +101,7 @@ public class KhollePreferenceController {
             HttpSession session) {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
+            sessionService.setRedirectAfterLogin(session, "/kholles/" + kholleId + "/preferences");
             return "redirect:/user/login";
         }
 
@@ -130,6 +131,7 @@ public class KhollePreferenceController {
             Model model) {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
+            sessionService.setRedirectAfterLogin(session, "/kholles/" + kholleId + "/preferences");
             return "redirect:/user/login";
         }
 
