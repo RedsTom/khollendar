@@ -3,6 +3,11 @@ image: eclipse-temurin:21-jdk
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+  # Variables pour Docker
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG_LATEST: $CI_REGISTRY_IMAGE:latest
 
 cache:
   key: "$CI_COMMIT_REF_NAME"
@@ -12,8 +17,8 @@ cache:
 
 stages:
   - check
-  - build
   - test
+  - build
 
 before_script:
   - chmod +x gradlew
@@ -47,3 +52,21 @@ test:
       - build/test-results/
       - build/reports/tests/
     expire_in: 1 week
+
+docker-build:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $IMAGE_TAG -t $IMAGE_TAG_LATEST .
+    - docker push $IMAGE_TAG
+    - docker push $IMAGE_TAG_LATEST
+  only:
+    - main
+    - master
+    - tags
+    - ci
+  dependencies: []
