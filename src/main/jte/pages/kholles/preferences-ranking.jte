@@ -82,7 +82,7 @@
 
                                 <!-- Boutons de navigation -->
                                 <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
-                                    <button hx-post="/kholles/${session.id()}/previous" class="button secondary">
+                                    <button hx-post="/kholles/${session.id()}/preferences/previous" class="button secondary">
                                         <i class="fa-solid fa-arrow-left"></i>
                                         Retour
                                     </button>
