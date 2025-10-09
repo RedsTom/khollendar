@@ -20,8 +20,7 @@
     <td class="py-2 px-4 text-sm">
         <div class="grid grid-cols-2 gap-2">
             @if(user.codeInitialized())
-                <button type="submit"
-                        class="button warning sm flex items-center gap-1"
+                <button class="button warning sm flex items-center gap-1"
                         hx-confirm="Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?"
                         hx-post="/admin/users/${user.id()}/reset-code">
                     <i class="fa-solid fa-key"></i>
