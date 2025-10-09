@@ -20,13 +20,12 @@ package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import fr.redstom.khollendar.dto.KholleUnavailabilitiesDto;
-import fr.redstom.khollendar.service.KholleService;
 import fr.redstom.khollendar.service.PreferenceService;
 import fr.redstom.khollendar.service.SessionService;
-import fr.redstom.khollendar.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,22 +34,10 @@ import org.springframework.web.client.HttpServerErrorException;
 
 @Controller
 @RequestMapping("/kholles/{kholleId}/preferences")
+@RequiredArgsConstructor
 public class KhollePreferenceController {
     private final SessionService sessionService;
     private final PreferenceService preferenceService;
-    private final KholleService kholleService;
-    private final UserService userService;
-
-    public KhollePreferenceController(
-            SessionService sessionService,
-            PreferenceService preferenceService,
-            KholleService kholleService,
-            UserService userService) {
-        this.sessionService = sessionService;
-        this.preferenceService = preferenceService;
-        this.kholleService = kholleService;
-        this.userService = userService;
-    }
 
     /**
      * Formulaire de gestion des préférences pour une khôlle (entrée principale) Utilise un
@@ -58,11 +45,7 @@ public class KhollePreferenceController {
      */
     @GetMapping
     public String showPreferences(
-            @PathVariable Long kholleId,
-            @RequestParam(value = "step", defaultValue = "1") int step,
-            HttpServletRequest request,
-            HttpSession session,
-            Model model) {
+            @PathVariable Long kholleId, HttpServletRequest request, HttpSession session, Model model) {
 
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
@@ -82,15 +65,8 @@ public class KhollePreferenceController {
             // Récupérer ou créer les préférences dans la session
             KhollePreferencesDto preferences = sessionService.getPreferences(session, kholleId);
 
-            // Mettre à jour l'étape si elle diffère
-            if (preferences.step() != step) {
-                preferences = new KhollePreferencesDto(
-                        kholleId, preferences.unavailableSlotIds(), preferences.rankedSlotIds(), step);
-                sessionService.savePreferences(session, preferences);
-            }
-
             // Dispatcher vers la bonne méthode selon l'étape
-            return switch (step) {
+            return switch (preferences.step()) {
                 case 1 -> {
                     preferenceService.prepareUnavailabilityForm(
                             model, kholleId, userId, preferences.unavailableSlotIds());
@@ -142,7 +118,7 @@ public class KhollePreferenceController {
                 .nextStep();
         sessionService.savePreferences(session, preferences);
 
-        return "redirect:/kholles/" + kholleId + "/preferences?step=2";
+        return "redirect:/kholles/" + kholleId + "/preferences";
     }
 
     /** Traitement de la soumission du classement des préférences (étape 2) */
@@ -169,7 +145,7 @@ public class KhollePreferenceController {
         preferences = preferences.withRankedSlots(rankedSlots).nextStep();
         sessionService.savePreferences(session, preferences);
 
-        return "redirect:/kholles/" + kholleId + "/preferences?step=3";
+        return "redirect:/kholles/" + kholleId + "/preferences";
     }
 
     /** Finalisation et enregistrement des préférences (étape 3) */
@@ -198,11 +174,31 @@ public class KhollePreferenceController {
             // Réinitialiser complètement la session utilisateur
             sessionService.clearUserSession(session);
         } catch (Exception e) {
-            throw new HttpServerErrorException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Une erreur est survenue lors de l'enregistrement de vos préférences. Veuillez réessayer.");
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
         return "redirect:/kholles/" + kholleId;
+    }
+
+    @PostMapping("/previous")
+    public String goToPreviousStep(@PathVariable Long kholleId, HttpSession session, Model model) {
+        // Vérifier si l'utilisateur est authentifié
+        if (!sessionService.isUserAuthenticated(session)) {
+            return "redirect:/user/login";
+        }
+
+        Long userId = sessionService.getCurrentUserId(session);
+
+        // Vérifier si l'utilisateur a déjà soumis ses préférences
+        if (preferenceService.hasSubmittedPreferences(userId, kholleId)) {
+            return preferenceService.prepareLockedPreferencesView(model, kholleId, userId);
+        }
+
+        // Récupérer et mettre à jour les préférences
+        KhollePreferencesDto preferences = sessionService.getPreferences(session, kholleId);
+        preferences = preferences.previousStep();
+        sessionService.savePreferences(session, preferences);
+
+        return "redirect:/kholles/" + kholleId + "/preferences";
     }
 }

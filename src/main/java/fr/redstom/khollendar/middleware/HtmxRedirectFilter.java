@@ -23,6 +23,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
+import java.net.http.HttpHeaders;
+
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -39,8 +41,11 @@ public class HtmxRedirectFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String hxRequest = httpRequest.getHeader("HX-Request");
+        String hxIgnore = httpResponse.getHeader("HX-Ignore");
 
-        if (!"true".equals(hxRequest)) {
+        if (!"true".equals(hxRequest) || hxIgnore != null) {
+            httpResponse.setHeader("HX-Ignore", null);
+
             chain.doFilter(request, response);
             return;
         }

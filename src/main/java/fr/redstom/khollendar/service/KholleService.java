@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -132,14 +133,22 @@ public class KholleService {
      * @param rankedSlots Liste des IDs des créneaux disponibles classés par ordre de préférence
      */
     @Transactional
-    public void savePreferences(Long userId, Long sessionId, List<Long> unavailableSlots, List<Long> rankedSlots) {
+    public void savePreferences(
+            @NonNull Long userId,
+            @NonNull Long sessionId,
+            @NonNull List<Long> unavailableSlots,
+            @NonNull List<Long> rankedSlots) {
         User user = userService
                 .getUserById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur avec l'ID " + userId + " non trouvé"));
 
         KholleSession session = getKholleSessionById(sessionId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
+                .orElseThrow(() -> new IllegalArgumentException("Cette session de khôlle n'existe pas."));
+
+        // Vérifier si les inscriptions sont ouvertes
+        if (session.status() != KholleSessionStatus.REGISTRATIONS_OPEN) {
+            throw new IllegalArgumentException("Cette session de khôlle n'est pas ouverte aux inscriptions.");
+        }
 
         // Supprimer toutes les préférences existantes pour cet utilisateur et cette session
         userPreferenceRepository.deleteByUserAndSession(user, session);

@@ -31,7 +31,7 @@ public record KhollePreferencesDto(
 
     /** Avance à l'étape suivante */
     public KhollePreferencesDto nextStep() {
-        return new KhollePreferencesDto(kholleSessionId, unavailableSlotIds, rankedSlotIds, step + 1);
+        return new KhollePreferencesDto(kholleSessionId, unavailableSlotIds, rankedSlotIds, Math.min(3, step + 1));
     }
 
     /** Revient à l'étape précédente */

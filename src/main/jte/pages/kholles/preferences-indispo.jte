@@ -55,11 +55,7 @@
                 title = "Étape 1 : Mes indisponibilités",
                 content = @`
                     <form id="unavailabilityForm"
-                          action="/kholles/${session.id()}/preferences/step1"
-                          method="post">
-                        <input type="hidden"
-                               name="${_csrf.getParameterName()}"
-                               value="${_csrf.getToken()}">
+                          hx-post="/kholles/${session.id()}/preferences/unavailabilities">
 
                         <!-- Barre de progression -->
                         @template.components.layout.ProgressBar(currentStep = 1, totalSteps = 3)
