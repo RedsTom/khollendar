@@ -74,6 +74,29 @@
                     </div>
                 `
             )
+
+
+            <!-- Actions administrateur -->
+            @if(isAdmin)
+                <div class="mt-6">
+                    @template.components.ui.Card(
+                    content = @`
+                        <h2 class="text-xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
+                            <i class="fa-solid fa-cogs"></i>
+                            Actions administrateur
+                        </h2>
+                        <div class="flex gap-3 flex-wrap">
+                            <button hx-post="/kholles/${session.id()}/assignments/trigger"
+                                    hx-confirm="Êtes-vous sûr de vouloir recalculer les affectations ? Cela supprimera les affectations actuelles."
+                                    class="button warning">
+                                <i class="fa-solid fa-refresh"></i>
+                                Recalculer les affectations
+                            </button>
+                        </div>
+                    `
+                    )
+                </div>
+            @endif
         </div>
     `
 )
