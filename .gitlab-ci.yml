@@ -69,5 +69,4 @@ docker-build:
     - main
     - master
     - tags
-    - ci
   dependencies: []
