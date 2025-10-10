@@ -34,7 +34,7 @@ public class AffectationCron {
         log.info("=== Début de la tâche planifiée d'affectation des sessions ===");
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime in48Hours = now.plusHours(48);
+        LocalDateTime in72hours = now.plusHours(72);
 
         // Récupération de toutes les sessions à venir
         List<KholleSession> upcomingSessions = sessionRepository.findUpcomingKholleSessions(now);
@@ -45,7 +45,7 @@ public class AffectationCron {
 
         for (KholleSession session : upcomingSessions) {
             try {
-                // Vérifier si la session commence dans moins de 48h
+                // Vérifier si la session commence dans moins de 72h
                 Optional<LocalDateTime> firstSlotDate =
                         session.kholleSlots().stream()
                                 .map(KholleSlot::dateTime)
@@ -57,7 +57,7 @@ public class AffectationCron {
                     continue;
                 }
 
-                if (firstSlotDate.get().isAfter(in48Hours)) {
+                if (firstSlotDate.get().isAfter(in72hours)) {
                     // La session commence dans plus de 48h, on passe
                     log.debug(
                             "Session {} commence le {}, trop loin dans le futur",

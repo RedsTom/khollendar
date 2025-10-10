@@ -97,7 +97,7 @@
                             <div class="bg-ctp-surface1 rounded-lg p-4 sm:p-6 text-center">
                                 <p class="text-ctp-subtext0">
                                     Aucune affectation n'a encore été réalisée pour cette session.<br/>
-                                    Les affectations sont réalisées environ 48h avant le début de la première khôlle.
+                                    Les affectations sont réalisées environ deux jours avant le début de la première khôlle.
                                 </p>
                             </div>
                         @endif
