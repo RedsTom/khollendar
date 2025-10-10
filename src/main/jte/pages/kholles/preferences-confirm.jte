@@ -47,14 +47,10 @@
             @template.components.layout.UserHeader(username = currentUser.username())
 
             <!-- En-tête -->
-            <div class="rounded-lg mb-4">
-                <h1 class="text-3xl font-bold mb-4">
-                    Khôlle ${WordUtils.definiteArticle(session.subject(), "de", "d'")}<b>${session.subject()}</b>
-                </h1>
-                <p class="text-xl text-ctp-subtext0">
-                    Veuillez confirmer vos choix avant l'envoi définitif.
-                </p>
-            </div>
+            @template.fragments.kholles.PreferencesPageHeader(
+                subject = @`Khôlle ${WordUtils.definiteArticle(session.subject(), "de", "d'")}<b>${session.subject()}</b>`,
+                step = "Veuillez confirmer vos choix avant l'envoi définitif."
+            )
 
             <form id="confirmForm"
                   hx-post="/kholles/${session.id()}/preferences/confirm">
