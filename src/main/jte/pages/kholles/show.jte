@@ -75,13 +75,13 @@
                     )
 
                     <!-- Section des affectations par créneau -->
-                    @if(hasAssignments)
-                        <div class="mb-8">
-                            <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-                                <i data-feather="check-circle" class="w-6 h-6"></i>
-                                Affectations par créneau
-                            </h2>
+                    <div class="mb-8">
+                        <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
+                            <i data-feather="check-circle" class="w-6 h-6"></i>
+                            Affectations par créneau
+                        </h2>
 
+                        @if(hasAssignments)
                             <div class="space-y-4">
                                 @for(KholleSlot slot : sortedSlots)
                                     !{List<KholleAssignment> slotAssignments = assignmentsBySlot.getOrDefault(slot.id(), List.of());}
@@ -93,8 +93,15 @@
                                     @endif
                                 @endfor
                             </div>
-                        </div>
-                    @endif
+                        @else
+                            <div class="bg-ctp-surface1 rounded-lg p-4 sm:p-6 text-center">
+                                <p class="text-ctp-subtext0">
+                                    Aucune affectation n'a encore été réalisée pour cette session.<br/>
+                                    Les affectations sont réalisées environ 48h avant le début de la première khôlle.
+                                </p>
+                            </div>
+                        @endif
+                    </div>
 
                     <!-- Section des préférences des utilisateurs -->
                     <div class="mb-8">
