@@ -67,6 +67,7 @@ EXPOSE 8080
 
 # Environment variables that MUST be set at runtime
 ENV ADMIN_PASSWORD=""
+ENV SITE_BASE_URL=""
 
 # Health check using Spring Boot Actuator
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \

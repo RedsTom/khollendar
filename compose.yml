@@ -28,6 +28,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/kholles_manager
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+      # Configuration de l'url publique du site (À MODIFIER !)
+      SITE_BASE_URL: ${SITE_BASE_URL}
       # Configuration de l'admin (À MODIFIER !)
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme}
     ports:
