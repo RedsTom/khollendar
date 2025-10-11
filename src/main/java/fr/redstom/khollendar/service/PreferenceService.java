@@ -48,7 +48,7 @@ public class PreferenceService {
      * @param model Modèle Spring MVC
      * @param unavailableSlotIds Liste des créneaux indisponibles présélectionnés
      */
-    public void prepareUnavailabilityForm(Model model, Long kholleId, Long userId, List<Long> unavailableSlotIds) {
+    public String prepareUnavailabilityForm(Model model, Long kholleId, Long userId, List<Long> unavailableSlotIds) {
         User user = userService
                 .getUserById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
@@ -64,6 +64,8 @@ public class PreferenceService {
         model.addAttribute("slots", slots);
         model.addAttribute("currentUser", user);
         model.addAttribute("unavailableSlotIds", unavailableSlotIds);
+
+        return "fragments/kholles/preferences/PreferencesUnavailabilityForm";
     }
 
     /**
@@ -75,7 +77,7 @@ public class PreferenceService {
      * @param rankedSlotIds Liste des créneaux classés (ordre de préférence précédent)
      * @param model Modèle Spring MVC
      */
-    public void prepareRankingForm(
+    public String prepareRankingForm(
             Model model, Long kholleId, Long userId, List<Long> unavailableSlotIds, List<Long> rankedSlotIds) {
         User user = userService
                 .getUserById(userId)
@@ -106,6 +108,8 @@ public class PreferenceService {
         model.addAttribute("session", kholleSession);
         model.addAttribute("availableSlots", availableSlots);
         model.addAttribute("currentUser", user);
+
+        return "fragments/kholles/preferences/PreferencesRankingForm";
     }
 
     /**
@@ -117,7 +121,7 @@ public class PreferenceService {
      * @param rankedSlotIds Liste des créneaux classés par ordre de préférence
      * @param model Modèle Spring MVC
      */
-    public void prepareConfirmationForm(
+    public String prepareConfirmationForm(
             Long kholleId, Long userId, List<Long> unavailableSlotIds, List<Long> rankedSlotIds, Model model) {
         User user = userService
                 .getUserById(userId)
@@ -149,6 +153,8 @@ public class PreferenceService {
         model.addAttribute("rankedSlots", rankedSlotsObjects);
         model.addAttribute("unavailableSlots", unavailableSlots);
         model.addAttribute("allSlots", allSlots);
+
+        return "fragments/kholles/preferences/PreferencesConfirmationForm";
     }
 
     /** Enregistre les préférences utilisateur pour une khôlle */
@@ -191,6 +197,6 @@ public class PreferenceService {
         model.addAttribute("session", kholleSession);
         model.addAttribute("currentUser", user);
 
-        return "pages/kholles/preferences-locked";
+        return "fragments/kholles/preferences/PreferencesLockedError";
     }
 }

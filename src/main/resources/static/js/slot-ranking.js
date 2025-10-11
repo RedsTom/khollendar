@@ -1,12 +1,6 @@
-let isAnimating = false;
+if(typeof isAnimating === 'undefined') var isAnimating;
 
-function initializeSlotRanking() {
-    const slotRanking = document.getElementById('slot-ranking');
-    if (!slotRanking) return;
-
-    attachEventListeners();
-    updateButtonStates();
-}
+isAnimating = false;
 
 function attachEventListeners() {
     const slotRanking = document.getElementById('slot-ranking');
@@ -133,59 +127,12 @@ function styleButton(btn, disabled) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
-    initializeSlotRanking();
-});
-let slotCount = 1;
+console.log("Initializing slot ranking...");
 
-function addSlot() {
-    const container = document.getElementById('slots-container');
-    const newSlot = document.createElement('div');
-    newSlot.className = 'slot-input';
+if(typeof slotRanking === "undefined") var slotRanking;
+slotRanking = document.getElementById('slot-ranking');
 
-    newSlot.innerHTML = `
-        <label for="slot-${slotCount}-time">Date et heure</label>
-        <div class="flex gap-4">
-            <input type="datetime-local" id="slot-${slotCount}-time" name="slots[${slotCount}].time" required class="flex-1">
-            <button type="button" 
-                    onclick="deleteSlot(this)"
-                    class="delete-slot inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-red focus:ring-offset-2 focus:ring-offset-ctp-base px-2 py-2 sm:px-3 sm:py-2 text-xs sm:text-sm bg-ctp-red hover:bg-ctp-red/80 text-ctp-base border-0">
-                <i data-feather="trash-2"></i>
-            </button>
-        </div>
-    `;
-
-    container.appendChild(newSlot);
-    slotCount++;
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
+if (slotRanking) {
+    attachEventListeners();
+    updateButtonStates();
 }
-
-function deleteSlot(button) {
-    const slotElement = button.closest('.slot-input');
-    if (document.querySelectorAll('.slot-input').length > 1) {
-        slotElement.remove();
-        renumberSlots();
-    } else {
-        alert('Vous devez avoir au moins un créneau.');
-    }
-}
-
-function renumberSlots() {
-    const slots = document.querySelectorAll('.slot-input');
-    slots.forEach((slot, index) => {
-        const input = slot.querySelector('input[type="datetime-local"]');
-        input.name = `slots[${index}].time`;
-        input.id = `slot-${index}-time`;
-        const label = slot.querySelector('label');
-        if (label) {
-            label.setAttribute('for', `slot-${index}-time`);
-        }
-    });
-    slotCount = slots.length;
-}
-

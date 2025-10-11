@@ -20,13 +20,18 @@ package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.KhollePreferencesDto;
 import fr.redstom.khollendar.dto.KholleUnavailabilitiesDto;
+import fr.redstom.khollendar.entity.KholleSession;
+import fr.redstom.khollendar.entity.User;
+import fr.redstom.khollendar.service.KholleService;
 import fr.redstom.khollendar.service.PreferenceService;
 import fr.redstom.khollendar.service.SessionService;
+import fr.redstom.khollendar.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +43,8 @@ import org.springframework.web.client.HttpServerErrorException;
 public class KhollePreferenceController {
     private final SessionService sessionService;
     private final PreferenceService preferenceService;
+    private final KholleService kholleService;
+    private final UserService userService;
 
     /**
      * Formulaire de gestion des préférences pour une khôlle (entrée principale) Utilise un
@@ -62,34 +69,50 @@ public class KhollePreferenceController {
                 return preferenceService.prepareLockedPreferencesView(model, kholleId, userId);
             }
 
-            // Récupérer ou créer les préférences dans la session
-            KhollePreferencesDto preferences = sessionService.getPreferences(session, kholleId);
+            KholleSession kholleSession = kholleService
+                    .getKholleSessionById(kholleId)
+                    .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));
 
-            // Dispatcher vers la bonne méthode selon l'étape
-            return switch (preferences.step()) {
-                case 1 -> {
-                    preferenceService.prepareUnavailabilityForm(
-                            model, kholleId, userId, preferences.unavailableSlotIds());
+            User user = userService
+                    .getUserById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
 
-                    yield "pages/kholles/preferences-indispo";
-                }
-                case 2 -> {
-                    preferenceService.prepareRankingForm(
-                            model, kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds());
+            model.addAttribute("session", kholleSession);
+            model.addAttribute("currentUser", user);
 
-                    yield "pages/kholles/preferences-ranking";
-                }
-                case 3 -> {
-                    preferenceService.prepareConfirmationForm(
-                            kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds(), model);
-                    yield "pages/kholles/preferences-confirm";
-                }
-
-                default -> "redirect:/kholles/" + kholleId + "/preferences?step=1";
-            };
+            return "pages/kholles/preferences";
         } catch (IllegalArgumentException e) {
             return "redirect:/kholles";
         }
+    }
+
+    @GetMapping("/current-step")
+    @PreAuthorize("#hxRequest == 'true'")
+    public String getCurrentStepTemplate(@PathVariable Long kholleId, @RequestHeader("HX-Request") String hxRequest, HttpSession session, Model model) {
+        // Vérifier si l'utilisateur est authentifié
+        if (!sessionService.isUserAuthenticated(session)) {
+            return "redirect:/user/login";
+        }
+
+        Long userId = sessionService.getCurrentUserId(session);
+
+        // Vérifier si l'utilisateur a déjà soumis ses préférences
+        if (preferenceService.hasSubmittedPreferences(userId, kholleId)) {
+            return preferenceService.prepareLockedPreferencesView(model, kholleId, userId);
+        }
+
+        // Récupérer les préférences dans la session
+        KhollePreferencesDto preferences = sessionService.getPreferences(session, kholleId);
+
+        // Retourner le template correspondant à l'étape actuelle
+        return switch (preferences.step()) {
+            case 2 -> preferenceService.prepareRankingForm(
+                    model, kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds());
+            case 3 -> preferenceService.prepareConfirmationForm(
+                    kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds(), model);
+            default -> preferenceService.prepareUnavailabilityForm(
+                    model, kholleId, userId, preferences.unavailableSlotIds());
+        };
     }
 
     /** Traitement de la soumission des indisponibilités (étape 1) */
@@ -119,7 +142,8 @@ public class KhollePreferenceController {
                 .nextStep();
         sessionService.savePreferences(session, preferences);
 
-        return "redirect:/kholles/" + kholleId + "/preferences";
+        return preferenceService.prepareRankingForm(
+                model, kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds());
     }
 
     /** Traitement de la soumission du classement des préférences (étape 2) */
@@ -147,7 +171,8 @@ public class KhollePreferenceController {
         preferences = preferences.withRankedSlots(rankedSlots).nextStep();
         sessionService.savePreferences(session, preferences);
 
-        return "redirect:/kholles/" + kholleId + "/preferences";
+        return preferenceService.prepareConfirmationForm(
+                kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds(), model);
     }
 
     /** Finalisation et enregistrement des préférences (étape 3) */
@@ -201,6 +226,6 @@ public class KhollePreferenceController {
         preferences = preferences.previousStep();
         sessionService.savePreferences(session, preferences);
 
-        return "redirect:/kholles/" + kholleId + "/preferences";
+        return getCurrentStepTemplate(kholleId, "true", session, model);
     }
 }

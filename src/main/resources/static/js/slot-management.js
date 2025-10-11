@@ -24,10 +24,6 @@ function addSlot() {
         el.querySelector('input').focus();
     }
 
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
-
     // Ajouter les event listeners pour les raccourcis clavier
     const input = el.querySelector('input[type="datetime-local"]');
     attachKeyboardShortcuts(input);
