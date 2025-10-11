@@ -10,8 +10,10 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <meta name="description" content="Khôlle'n'Dar est une application web de gestion de planning de khôlles pour les étudiants en double licence Maths-Info à l'Université d'Aix-Marseille.">
-    <meta name="keywords" content="Khôlle'n'Dar, Khôlles, Planning, Double Licence, Maths-Info, Université d'Aix-Marseille, Gestion, Étudiants">
+    <meta name="description"
+          content="Khôlle'n'Dar est une application web de gestion de planning de khôlles pour les étudiants en double licence Maths-Info à l'Université d'Aix-Marseille.">
+    <meta name="keywords"
+          content="Khôlle'n'Dar, Khôlles, Planning, Double Licence, Maths-Info, Université d'Aix-Marseille, Gestion, Étudiants">
     <meta name="author" content="Tom BUTIN">
 
     <link rel="icon" type="image/png" href="/favicon.ico"/>
@@ -57,6 +59,13 @@
     </div>
 </header>
 <main class="h-full relative">
+    <noscript>
+        @template.components.ui.Alert(
+            type = "warning",
+            message = "JavaScript est désactivé dans votre navigateur. Certaines fonctionnalités de ce site pourraient ne pas fonctionner correctement."
+        )
+    </noscript>
+
     ${content}
 </main>
 <footer class="w-full flex flex-col md:flex-row gap-4 items-center justify-between p-4 bg-ctp-crust">
