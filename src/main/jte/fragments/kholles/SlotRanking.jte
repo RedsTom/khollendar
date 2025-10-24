@@ -28,36 +28,9 @@
                 </span>
             </div>
 
-            <div class="flex items-center gap-1 flex-shrink-0">
-                <button type="button"
-                        class="move-up p-1 sm:p-2 rounded hover:bg-ctp-surface2 transition-colors"
-                        aria-label="Déplacer vers le haut">
-                    <i class="fa-solid fa-chevron-up"></i>
-
-                </button>
-
-                <button type="button"
-                        class="move-down p-1 sm:p-2 rounded hover:bg-ctp-surface2 transition-colors"
-                        aria-label="Déplacer vers le bas">
-                    <i class="fa-solid fa-chevron-down"></i>
-
-                </button>
+            <div class="drag-handle">
+                <i class="fa-solid fa-grip-lines text-ctp-subtext0 cursor-move"></i>
             </div>
         </li>
     @endfor
 </ul>
-
-<style>
-    .rank-changed {
-        animation: pulse-rank 0.4s cubic-bezier(.33,1,.68,1);
-    }
-
-    @keyframes pulse-rank {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.15); }
-    }
-
-    .slot-item {
-        transition: transform 0.38s cubic-bezier(.33,1,.68,1);
-    }
-</style>

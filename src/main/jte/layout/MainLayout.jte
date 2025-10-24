@@ -31,6 +31,10 @@
           integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"
+            integrity="sha512-csIng5zcB+XpulRUa+ev1zKo7zRNGpEaVfNB9On1no9KYTEY/rLGAEEpvgdw6nim1WdTuihZY1eqZ31K7/fZjw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <meta name="csrf-header" content="${_csrf.getHeaderName()}">
     <meta name="csrf-token" content="${_csrf.getToken()}">
 
@@ -61,8 +65,8 @@
 <main class="h-full relative">
     <noscript>
         @template.components.ui.Alert(
-            type = "warning",
-            message = "JavaScript est désactivé dans votre navigateur. Certaines fonctionnalités de ce site pourraient ne pas fonctionner correctement."
+        type = "warning",
+        message = "JavaScript est désactivé dans votre navigateur. Certaines fonctionnalités de ce site pourraient ne pas fonctionner correctement."
         )
     </noscript>
 

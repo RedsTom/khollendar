@@ -92,3 +92,17 @@ select {
 .time-slot-container .slot-checkbox:checked + .time-slot .slot-text {
     color: rgb(243, 139, 168);
 }
+
+
+.sortable-ghost {
+    @apply border-2 border-b-ctp-blue;
+}
+
+.sortable-ghost .rank-number {
+    content: '?' !important;
+    background-color: var(--color-ctp-green);
+}
+
+.sortable-drag {
+    @apply hidden !important;
+}

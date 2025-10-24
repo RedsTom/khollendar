@@ -416,6 +416,9 @@
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
   }
+  .cursor-move {
+    cursor: move;
+  }
   .cursor-not-allowed {
     cursor: not-allowed;
   }
@@ -732,9 +735,6 @@
   }
   .p-0 {
     padding: calc(var(--spacing) * 0);
-  }
-  .p-1 {
-    padding: calc(var(--spacing) * 1);
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
@@ -1158,11 +1158,6 @@
         margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
         margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
       }
-    }
-  }
-  .sm\:p-2 {
-    @media (width >= 40rem) {
-      padding: calc(var(--spacing) * 2);
     }
   }
   .sm\:p-4 {
@@ -2570,6 +2565,14 @@ input[type="text"], input[type="password"], input[type="datetime-local"], input[
 }
 .time-slot-container .slot-checkbox:checked + .time-slot .slot-text {
   color: rgb(243, 139, 168);
+}
+.sortable-ghost {
+  border-style: var(--tw-border-style);
+  border-width: 2px;
+  border-bottom-color: var(--catppuccin-color-blue);
+}
+.sortable-drag {
+  display: none;
 }
 @property --tw-rotate-x {
   syntax: "*";
