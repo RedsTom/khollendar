@@ -2,9 +2,12 @@
 @import java.util.function.Function
 
 @param Page<?> page
-@param int currentPage
 @param Function<Integer, String> urlMaker
-@param String paramName
+@param String target
+
+!{
+    int currentPage = page.getNumber();
+}
 
 <div class="flex justify-between items-center mt-4">
     <div class="text-sm text-ctp-subtext0">
@@ -12,7 +15,8 @@
     </div>
     <div class="flex space-x-2">
         @if(page.hasPrevious())
-            <a href="${urlMaker.apply(currentPage - 1)}"
+            <a hx-get="${urlMaker.apply(currentPage - 1)}"
+               hx-target="#${target}"
                class="px-3 py-1 bg-ctp-surface1 hover:bg-ctp-surface2 rounded text-sm scroll-preserve">
                 Précédent
             </a>
@@ -23,7 +27,8 @@
         @endif
 
         @if(page.hasNext())
-            <a href="${urlMaker.apply(currentPage + 1)}"
+            <a hx-get="${urlMaker.apply(currentPage + 1)}"
+               hx-target="#${target}"
                class="px-3 py-1 bg-ctp-surface1 hover:bg-ctp-surface2 rounded text-sm scroll-preserve">
                 Suivant
             </a>

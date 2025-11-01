@@ -1,7 +1,7 @@
 @import fr.redstom.khollendar.entity.User
-@import org.springframework.security.web.csrf.CsrfToken
 
 @param User user
+@param int page = 0
 
 <tr class="hover:bg-ctp-mantle/50">
     <td class="py-2 px-4 text-sm">${user.id()}</td>
@@ -21,16 +21,18 @@
         <div class="grid grid-cols-2 gap-2">
             @if(user.codeInitialized())
                 <button class="button warning sm flex items-center gap-1"
+                        hx-target="#user-list"
                         hx-confirm="Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?"
-                        hx-post="/admin/users/${user.id()}/reset-code">
+                        hx-post="/admin/users/${user.id()}/reset-code?page=${page}">
                     <i class="fa-solid fa-key"></i>
 
                     Réinitialiser le code
                 </button>
             @endif
             <button class="button danger sm flex items-center gap-1 col-start-2"
+                    hx-target="#user-list"
                     hx-confirm="Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.username()} ?"
-                    hx-delete="/admin/users/${user.id()}">
+                    hx-delete="/admin/users/${user.id()}?page=${page}">
                 <i class="fa-solid fa-trash"></i>
 
                 Supprimer

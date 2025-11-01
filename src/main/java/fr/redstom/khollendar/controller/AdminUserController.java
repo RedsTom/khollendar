@@ -23,15 +23,12 @@ import fr.redstom.khollendar.entity.User;
 import fr.redstom.khollendar.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -42,63 +39,83 @@ public class AdminUserController {
     private final UserService userService;
 
     @GetMapping
-    public String listUsers(@RequestParam(defaultValue = "0") int page, Model model) {
+    public String list() {
+        return "pages/admin/users/list";
+    }
+
+    @GetMapping("/paginated")
+    public String paginated(
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
         Page<User> users = userService.getPaginatedUsers(page, 10);
 
         model.addAttribute("title", "Gestion des utilisateurs");
         model.addAttribute("users", users);
         model.addAttribute("currentPage", page);
 
-        return "pages/admin/users/list";
+        return "fragments/admin/UserList";
     }
 
     @PostMapping
     public String createUser(
             @Validated @ModelAttribute("newUser") UserCreationDto userDto,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
+            @RequestParam(defaultValue = "0") int page,
             Model model) {
         if (bindingResult.hasErrors()) {
-            Page<User> users = userService.getPaginatedUsers(0, 10);
-
-            model.addAttribute("title", "Gestion des utilisateurs");
+            Page<User> users = userService.getPaginatedUsers(page, 10);
             model.addAttribute("users", users);
-            model.addAttribute("currentPage", 0);
-
-            return "pages/admin/users/list";
+            return "fragments/admin/UserList";
         }
 
         try {
-            User user = userService.createUser(userDto.username());
-            redirectAttributes.addFlashAttribute("success", "Utilisateur " + user.username() + " créé avec succès");
+            userService.createUser(userDto.username());
+            Page<User> users = userService.getPaginatedUsers(page, 10);
+            model.addAttribute("users", users);
+            return "fragments/admin/UserList";
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            Page<User> users = userService.getPaginatedUsers(page, 10);
+            model.addAttribute("users", users);
+            model.addAttribute("error", e.getMessage());
+            return "fragments/admin/UserList";
         }
-
-        return "redirect:/admin/users";
     }
 
     @PostMapping("/{userId}/reset-code")
-    public ResponseEntity<Void> resetUserCode(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
+    public String resetUserCode(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
         if (!userService.exists(userId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            Page<User> users = userService.getPaginatedUsers(page, 10);
+            model.addAttribute("users", users);
+            return "fragments/admin/UserList";
         }
 
         userService.resetUserCode(userId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        Page<User> users = userService.getPaginatedUsers(page, 10);
+        model.addAttribute("users", users);
+
+        return "fragments/admin/UserList";
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+    public String deleteUser(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
         if (!userService.exists(userId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            Page<User> users = userService.getPaginatedUsers(page, 10);
+            model.addAttribute("users", users);
+            return "fragments/admin/UserList";
         }
 
         userService.deleteUser(userId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .header("HX-Refresh", "true")
-                .build();
+        Page<User> users = userService.getPaginatedUsers(page, 10);
+        model.addAttribute("users", users);
+
+        return "fragments/admin/UserList";
     }
 }

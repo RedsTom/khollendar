@@ -50,27 +50,40 @@ public class KholleSessionController {
 
     /** Liste toutes les sessions de khôlles */
     @GetMapping
-    public String list(
-            @RequestParam(defaultValue = "0") int previousPage,
-            @RequestParam(defaultValue = "0") int upcomingPage,
-            @RequestParam(defaultValue = "0") int allPage,
-            Model model) {
+    public String list(Model model) {
         model.addAttribute("title", "Liste des sessions de khôlles");
 
-        // Récupérer les données paginées via le service
-        Page<KholleSession> previousSessions = kholleService.getPreviousKholleSessions(previousPage, 5);
-        Page<KholleSession> upcomingSessions = kholleService.getUpcomingKholleSessions(upcomingPage, 5);
-        Page<KholleSession> allSessions = kholleService.getAllKholleSessions(allPage, 10);
-
-        // Ajouter les données au modèle
-        model.addAttribute("previousSessions", previousSessions);
-        model.addAttribute("upcomingSessions", upcomingSessions);
-        model.addAttribute("allSessions", allSessions);
-        model.addAttribute("previousPage", previousPage);
-        model.addAttribute("upcomingPage", upcomingPage);
-        model.addAttribute("allPage", allPage);
-
         return "pages/kholles/list";
+    }
+
+    @GetMapping("/paginated")
+    public String paginated(
+            @RequestParam(defaultValue = "0") int type,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
+        if (type < 0 || type > 2) {
+            type = 0;
+        }
+
+        model.addAttribute("type", type);
+
+        model.addAttribute("title", switch(type) {
+            case 0 -> "Toutes les sessions de khôlles";
+            case 1 -> "Sessions de khôlles passées";
+            case 2 -> "Sessions de khôlles à venir";
+            default -> throw new IllegalStateException("Unexpected value: " + type);
+        });
+
+        Page<KholleSession> sessions = switch(type) {
+            case 0 -> kholleService.getAllKholleSessions(page, 10);
+            case 1 -> kholleService.getPreviousKholleSessions(page, 10);
+            case 2 -> kholleService.getUpcomingKholleSessions(page, 10);
+            default -> throw new IllegalStateException("Unexpected value: " + type);
+        };
+
+        model.addAttribute("page", sessions);
+
+        return "fragments/kholles/KholleList";
     }
 
     /** Formulaire de création d'une nouvelle khôlle */

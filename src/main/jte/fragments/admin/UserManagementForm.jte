@@ -2,7 +2,9 @@
 
 @param CsrfToken _csrf
 
-<form action="/admin/users" method="post">
+<form hx-post="/admin/users?page=0"
+      hx-target="#user-list"
+      hx-on::after-request="if(event.detail.successful) this.reset()">
     <input type="hidden"
            name="${_csrf.getParameterName()}"
            value="${_csrf.getToken()}">

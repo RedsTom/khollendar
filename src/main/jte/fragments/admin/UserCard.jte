@@ -1,6 +1,7 @@
 @import fr.redstom.khollendar.entity.User
 
 @param User user
+@param int page = 0
 
 <div class="bg-ctp-surface0 rounded-lg p-4 border border-ctp-surface1">
     <div class="space-y-2">
@@ -28,16 +29,18 @@
         <div class="flex gap-2 pt-2">
             @if(user.codeInitialized())
                 <button class="button warning sm flex items-center gap-1 w-full justify-center flex-1"
+                        hx-target="#user-list"
                         hx-confirm="Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?"
-                        hx-post="/admin/users/${user.id()}/reset-code">
+                        hx-post="/admin/users/${user.id()}/reset-code?page=${page}">
                     <i class="fa-solid fa-key"></i>
 
                     Réinitialiser le code
                 </button>
             @endif
             <button class="button danger sm flex-1 flex items-center gap-1 w-full justify-center"
+                    hx-target="#user-list"
                     hx-confirm="Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.username()} ?"
-                    hx-delete="/admin/users/${user.id()}">
+                    hx-delete="/admin/users/${user.id()}?page=${page}">
                 <i class="fa-solid fa-trash"></i>
 
                 Supprimer
