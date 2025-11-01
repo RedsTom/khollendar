@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.UserCreationDto;
@@ -6,13 +24,11 @@ import fr.redstom.khollendar.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -23,104 +39,75 @@ public class AdminUserController {
     private final UserService userService;
 
     @GetMapping
-    public String listUsers(
-            @RequestParam(defaultValue = "0") int page, CsrfToken csrf, Model model) {
+    public String list() {
+        return "pages/admin/users/list";
+    }
+
+    @GetMapping("/paginated")
+    public String paginated(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<User> users = userService.getPaginatedUsers(page, 10);
 
         model.addAttribute("title", "Gestion des utilisateurs");
         model.addAttribute("users", users);
         model.addAttribute("currentPage", page);
-        model.addAttribute("_csrf", csrf);
 
-        return "pages/admin/users/list";
+        return "fragments/admin/UserList";
     }
 
     @PostMapping
     public String createUser(
             @Validated @ModelAttribute("newUser") UserCreationDto userDto,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model,
-            CsrfToken csrf) {
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
         if (bindingResult.hasErrors()) {
-            Page<User> users = userService.getPaginatedUsers(0, 10);
-
-            model.addAttribute("title", "Gestion des utilisateurs");
+            Page<User> users = userService.getPaginatedUsers(page, 10);
             model.addAttribute("users", users);
-            model.addAttribute("currentPage", 0);
-            model.addAttribute("_csrf", csrf);
-
-            return "pages/admin/users/list";
+            return "fragments/admin/UserList";
         }
 
         try {
-            User user = userService.createUser(userDto.username());
-            redirectAttributes.addFlashAttribute(
-                    "success", "Utilisateur " + user.username() + " créé avec succès");
+            userService.createUser(userDto.username());
+            Page<User> users = userService.getPaginatedUsers(page, 10);
+            model.addAttribute("users", users);
+            return "fragments/admin/UserList";
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            Page<User> users = userService.getPaginatedUsers(page, 10);
+            model.addAttribute("users", users);
+            model.addAttribute("error", e.getMessage());
+            return "fragments/admin/UserList";
         }
-
-        return "redirect:/admin/users";
     }
 
     @PostMapping("/{userId}/reset-code")
-    public String resetUserCode(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
-        try {
-            userService
-                    .getUserById(userId)
-                    .ifPresentOrElse(
-                            user -> {
-                                userService.resetUserCode(userId);
-                                redirectAttributes.addFlashAttribute(
-                                        "success",
-                                        "Code de l'utilisateur "
-                                                + user.username()
-                                                + " réinitialisé avec succès");
-                            },
-                            () ->
-                                    redirectAttributes.addFlashAttribute(
-                                            "error", "Utilisateur non trouvé"));
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "error", "Erreur lors de la réinitialisation du code : " + e.getMessage());
+    public String resetUserCode(@PathVariable Long userId, @RequestParam(defaultValue = "0") int page, Model model) {
+        if (!userService.exists(userId)) {
+            Page<User> users = userService.getPaginatedUsers(page, 10);
+            model.addAttribute("users", users);
+            return "fragments/admin/UserList";
         }
 
-        return "redirect:/admin/users";
+        userService.resetUserCode(userId);
+
+        Page<User> users = userService.getPaginatedUsers(page, 10);
+        model.addAttribute("users", users);
+
+        return "fragments/admin/UserList";
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
-        try {
-            userService
-                    .getUserById(userId)
-                    .ifPresentOrElse(
-                            user -> {
-                                userService.deleteUser(userId);
-                                redirectAttributes.addFlashAttribute(
-                                        "success",
-                                        "Utilisateur " + user.username() + " supprimé avec succès");
-                            },
-                            () ->
-                                    redirectAttributes.addFlashAttribute(
-                                            "error", "Utilisateur non trouvé"));
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "error", "Erreur lors de la suppression : " + e.getMessage());
+    public String deleteUser(@PathVariable Long userId, @RequestParam(defaultValue = "0") int page, Model model) {
+        if (!userService.exists(userId)) {
+            Page<User> users = userService.getPaginatedUsers(page, 10);
+            model.addAttribute("users", users);
+            return "fragments/admin/UserList";
         }
 
-        return "redirect:/admin/users";
-    }
+        userService.deleteUser(userId);
 
-    @PostMapping("/{userId}")
-    public String handleDeleteUser(
-            @PathVariable Long userId,
-            @RequestParam(name = "_method", required = false) String method,
-            RedirectAttributes redirectAttributes) {
-        if ("DELETE".equalsIgnoreCase(method)) {
-            return deleteUser(userId, redirectAttributes);
-        }
+        Page<User> users = userService.getPaginatedUsers(page, 10);
+        model.addAttribute("users", users);
 
-        return "redirect:/admin/users";
+        return "fragments/admin/UserList";
     }
 }

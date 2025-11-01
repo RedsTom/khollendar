@@ -1,9 +1,10 @@
-@param String title
-@param String error
-@param org.springframework.security.web.csrf.CsrfToken _csrf
+@import org.springframework.security.web.csrf.CsrfToken
+
+@param CsrfToken _csrf
+@param boolean error
 
 @template.layout.MainLayout(
-    title = title,
+    title = "Connexion administrateur",
     _csrf = _csrf,
     content = @`
         <div class="flex justify-center items-center min-h-[80vh] px-4">
@@ -13,12 +14,9 @@
                     extraClasses = "shadow-lg",
                     content = @`
                         @template.fragments.auth.LoginForm(
-                            _csrf = _csrf,
                             error = error
                         )
-                    `
-                )
+                    `)
             </div>
         </div>
-    `
-)
+    `)

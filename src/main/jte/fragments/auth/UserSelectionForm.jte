@@ -10,6 +10,10 @@
         .toList();
 }
 
+@template.components.ui.Card(
+title = "Connexion utilisateur",
+extraClasses = "w-full max-w-md shadow-lg",
+content = @`
 @if(users.isEmpty())
     @template.components.ui.Alert(
         type = "warning",
@@ -21,11 +25,10 @@
         body = @`Vous ne vous voyez pas dans la liste ? Contactez l'administrateur pour qu'il crée votre compte.`
     )
 
-    <form action="/user-auth/select" method="post" class="space-y-6">
-        <input type="hidden"
-               name="${_csrf.getParameterName()}"
-               value="${_csrf.getToken()}">
-
+    <form hx-post="/user/select"
+          hx-target="closest #form-container"
+          hx-swap="innerHTML"
+          class="space-y-6">
         <div class="form-field">
             <label for="userId">Sélectionner votre nom d'utilisateur</label>
             <select id="userId" name="userId" required>
@@ -37,12 +40,10 @@
         </div>
 
         <div class="pt-2">
-            @template.components.ui.Button(
-                type = "submit",
-                variant = "primary",
-                extraClasses = "w-full",
-                content = @`Continuer`
-            )
+            <button type="submit" class="button primary w-full">
+                Continuer
+            </button>
         </div>
     </form>
 @endif
+`)

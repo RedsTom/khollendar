@@ -15,11 +15,11 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">Créer une session</span>
                     `
                 )
@@ -48,22 +48,17 @@
 
                         <div class="mb-6">
                             <h3 class="text-lg font-medium mb-4 text-ctp-blue flex items-center gap-2">
-                                <i data-feather="clock" class="w-5 h-5"></i>
+                                <i class="fa-solid fa-clock"></i>
                                 Créneaux horaires
                             </h3>
                             <div id="slots-container" class="space-y-4">
+                                <!-- Les créneaux seront ajoutés ici -->
                             </div>
 
-                            @template.components.ui.Button(
-                                type = "button",
-                                variant = "success",
-                                extraClasses = "mt-4",
-                                onclick = "addSlot()",
-                                content = @`
-                                    <i data-feather="plus" class="mr-2"></i>
-                                    Ajouter un créneau
-                                `
-                            )
+                            <button class="button success mt-4" onclick="addSlot()">
+                                <i class="fa-solid fa-plus"></i>
+                                Ajouter un créneau
+                            </button>
                         </div>
 
                         <input type="hidden"
@@ -71,12 +66,9 @@
                                value="${_csrf.getToken()}"/>
 
                         <div class="flex justify-end">
-                            @template.components.ui.Button(
-                                type = "submit",
-                                variant = "primary",
-                                size = "lg",
-                                content = @`Créer la session`
-                            )
+                            <button type="submit" class="button primary lg">
+                                Créer la session
+                            </button>
                         </div>
                     </form>
                 `

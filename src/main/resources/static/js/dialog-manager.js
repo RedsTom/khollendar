@@ -19,21 +19,7 @@ function initializeDialog(dialogId, openButtonId, closeButtonIds) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialiser les dialogues selon la page
-    const renameDialog = document.getElementById('renameModal');
-    const statusDialog = document.getElementById('statusModal');
-
-    if (renameDialog) {
-        initializeDialog('renameModal', 'renameBtn', ['cancelRenameBtn']);
-    }
-
-    if (statusDialog) {
-        initializeDialog('statusModal', 'statusBtn', ['closeStatusModal', 'cancelStatusBtn']);
-    }
-
-    // Remplacer les icônes Feather
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
+    initializeDialog('rename-modal', 'rename-btn', ['cancel-rename']);
+    initializeDialog('status-modal', 'status-btn', ['cancel-status']);
 });
 

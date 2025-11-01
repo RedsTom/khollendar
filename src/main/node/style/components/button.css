@@ -1,0 +1,47 @@
+/* Default button styling */
+.button {
+    @apply inline-flex items-center justify-center font-medium rounded-lg transition-colors gap-2;
+    @apply focus:outline-none focus:ring-2 focus:ring-ctp-blue focus:ring-offset-2 focus:ring-offset-ctp-base;
+}
+
+/* Color variants */
+.button:not(:is(.primary, .secondary, .success, .danger, .warning)), .button.primary {
+    @apply bg-ctp-blue hover:bg-ctp-blue/80 text-ctp-base;
+}
+
+.button.secondary {
+    @apply bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text border border-ctp-overlay0;
+}
+
+.button.success {
+    @apply bg-ctp-green hover:bg-ctp-green/80 text-ctp-base;
+}
+
+.button.danger {
+    @apply bg-ctp-red hover:bg-ctp-red/80 text-ctp-base;
+}
+
+.button.warning {
+    @apply bg-ctp-yellow hover:bg-ctp-yellow/80 text-ctp-base;
+}
+
+/* Size variants */
+.button:not(:is(.sm, .md, .lg)), .md {
+    @apply px-4 py-2 text-base;
+}
+
+.button.sm {
+    @apply px-3 py-1.5 text-sm;
+}
+
+.button.lg {
+    @apply px-5 py-3 text-lg;
+}
+
+/* Disabled state */
+.button:disabled,
+.button.disabled {
+    @apply opacity-50 cursor-not-allowed;
+    @apply hover:bg-none hover:text-ctp-text;
+    @apply focus:ring-0;
+}

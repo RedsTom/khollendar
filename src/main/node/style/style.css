@@ -1,7 +1,13 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/brands.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/solid.min.css");
+
 @import "tailwindcss";
 @import "@catppuccin/tailwindcss/mocha.css";
 
-@source "../jte/**";
+@import "./components/button.css";
+
+@source "../../jte/**";
+@source "../../resources/static/js/**";
 
 @source inline("line-through text-slate-600");
 @source inline("bg-ctp-blue/10 border-ctp-blue text-ctp-blue");
@@ -11,6 +17,16 @@
 
 * {
     @apply transition;
+}
+
+/* Transition entre les pages */
+@view-transition {
+    navigation: auto;
+}
+
+/* Fond des dialogs */
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 /* Styles pour les formulaires */
@@ -75,4 +91,18 @@ select {
 
 .time-slot-container .slot-checkbox:checked + .time-slot .slot-text {
     color: rgb(243, 139, 168);
+}
+
+
+.sortable-ghost {
+    @apply border-2 border-b-ctp-blue;
+}
+
+.sortable-ghost .rank-number {
+    content: '?' !important;
+    background-color: var(--color-ctp-green);
+}
+
+.sortable-drag {
+    @apply hidden!;
 }

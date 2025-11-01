@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.entity;
 
 import jakarta.persistence.*;
@@ -16,10 +34,7 @@ public class UserPreference {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_preference_seq")
-    @SequenceGenerator(
-            name = "user_preference_seq",
-            sequenceName = "user_preference_seq",
-            allocationSize = 1)
+    @SequenceGenerator(name = "user_preference_seq", sequenceName = "user_preference_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne
@@ -46,8 +61,6 @@ public class UserPreference {
     private Boolean isUnavailable = false;
 
     // Index unique pour éviter les doublons user/session/slot
-    @Table(
-            uniqueConstraints =
-                    @UniqueConstraint(columnNames = {"user_id", "session_id", "slot_id"}))
+    @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "session_id", "slot_id"}))
     public static class UserPreferenceConstraints {}
 }
