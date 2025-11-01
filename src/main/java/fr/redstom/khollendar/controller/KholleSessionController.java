@@ -24,7 +24,6 @@ import fr.redstom.khollendar.entity.*;
 import fr.redstom.khollendar.service.*;
 import fr.redstom.khollendar.utils.AuthUtils;
 import java.util.*;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -58,28 +57,29 @@ public class KholleSessionController {
 
     @GetMapping("/paginated")
     public String paginated(
-            @RequestParam(defaultValue = "0") int type,
-            @RequestParam(defaultValue = "0") int page,
-            Model model) {
+            @RequestParam(defaultValue = "0") int type, @RequestParam(defaultValue = "0") int page, Model model) {
         if (type < 0 || type > 2) {
             type = 0;
         }
 
         model.addAttribute("type", type);
 
-        model.addAttribute("title", switch(type) {
-            case 0 -> "Toutes les sessions de khôlles";
-            case 1 -> "Sessions de khôlles passées";
-            case 2 -> "Sessions de khôlles à venir";
-            default -> throw new IllegalStateException("Unexpected value: " + type);
-        });
+        model.addAttribute(
+                "title",
+                switch (type) {
+                    case 0 -> "Toutes les sessions de khôlles";
+                    case 1 -> "Sessions de khôlles passées";
+                    case 2 -> "Sessions de khôlles à venir";
+                    default -> throw new IllegalStateException("Unexpected value: " + type);
+                });
 
-        Page<KholleSession> sessions = switch(type) {
-            case 0 -> kholleService.getAllKholleSessions(page, 10);
-            case 1 -> kholleService.getPreviousKholleSessions(page, 10);
-            case 2 -> kholleService.getUpcomingKholleSessions(page, 10);
-            default -> throw new IllegalStateException("Unexpected value: " + type);
-        };
+        Page<KholleSession> sessions =
+                switch (type) {
+                    case 0 -> kholleService.getAllKholleSessions(page, 10);
+                    case 1 -> kholleService.getPreviousKholleSessions(page, 10);
+                    case 2 -> kholleService.getUpcomingKholleSessions(page, 10);
+                    default -> throw new IllegalStateException("Unexpected value: " + type);
+                };
 
         model.addAttribute("page", sessions);
 

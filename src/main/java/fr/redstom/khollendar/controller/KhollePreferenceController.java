@@ -82,7 +82,11 @@ public class KhollePreferenceController {
 
     @GetMapping("/current-step")
     @PreAuthorize("#hxRequest == 'true'")
-    public String getCurrentStepTemplate(@PathVariable Long kholleId, @RequestHeader("HX-Request") String hxRequest, HttpSession session, Model model) {
+    public String getCurrentStepTemplate(
+            @PathVariable Long kholleId,
+            @RequestHeader("HX-Request") String hxRequest,
+            HttpSession session,
+            Model model) {
         // Vérifier si l'utilisateur est authentifié
         if (!sessionService.isUserAuthenticated(session)) {
             return "redirect:/user/login";
@@ -100,12 +104,14 @@ public class KhollePreferenceController {
 
         // Retourner le template correspondant à l'étape actuelle
         return switch (preferences.step()) {
-            case 2 -> preferenceService.prepareRankingForm(
-                    model, kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds());
-            case 3 -> preferenceService.prepareConfirmationForm(
-                    kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds(), model);
-            default -> preferenceService.prepareUnavailabilityForm(
-                    model, kholleId, userId, preferences.unavailableSlotIds());
+            case 2 ->
+                preferenceService.prepareRankingForm(
+                        model, kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds());
+            case 3 ->
+                preferenceService.prepareConfirmationForm(
+                        kholleId, userId, preferences.unavailableSlotIds(), preferences.rankedSlotIds(), model);
+            default ->
+                preferenceService.prepareUnavailabilityForm(model, kholleId, userId, preferences.unavailableSlotIds());
         };
     }
 

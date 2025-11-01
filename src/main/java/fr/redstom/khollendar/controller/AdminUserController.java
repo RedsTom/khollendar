@@ -44,9 +44,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/paginated")
-    public String paginated(
-            @RequestParam(defaultValue = "0") int page,
-            Model model) {
+    public String paginated(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<User> users = userService.getPaginatedUsers(page, 10);
 
         model.addAttribute("title", "Gestion des utilisateurs");
@@ -82,10 +80,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/{userId}/reset-code")
-    public String resetUserCode(
-            @PathVariable Long userId,
-            @RequestParam(defaultValue = "0") int page,
-            Model model) {
+    public String resetUserCode(@PathVariable Long userId, @RequestParam(defaultValue = "0") int page, Model model) {
         if (!userService.exists(userId)) {
             Page<User> users = userService.getPaginatedUsers(page, 10);
             model.addAttribute("users", users);
@@ -101,10 +96,7 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(
-            @PathVariable Long userId,
-            @RequestParam(defaultValue = "0") int page,
-            Model model) {
+    public String deleteUser(@PathVariable Long userId, @RequestParam(defaultValue = "0") int page, Model model) {
         if (!userService.exists(userId)) {
             Page<User> users = userService.getPaginatedUsers(page, 10);
             model.addAttribute("users", users);
