@@ -15,7 +15,7 @@ COPY src/main/node/package.json src/main/node/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copy CSS source
-COPY src/main/node/css ./
+COPY src/main/node/style ./style
 
 # Copy JTE templates (needed for Tailwind to scan for CSS classes)
 COPY src/main/jte ../jte
