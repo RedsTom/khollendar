@@ -64,13 +64,15 @@
                         </span>
                     </div>
                     <div class="w-full bg-ctp-surface0 rounded-full h-2">
-                        <div class="h-2 rounded-full transition-all
-                            @if(rank == 1) bg-ctp-green
-                            @elseif(rank == 2) bg-ctp-blue
-                            @elseif(rank == 3) bg-ctp-yellow
-                            @else bg-ctp-overlay0
-                            @endif
-                        " style="width: ${percentage}%"></div>
+                        !{
+                        String bgColor = switch (rank) {
+                            case 1 -> "bg-ctp-green";
+                            case 2 -> "bg-ctp-blue";
+                            case 3 -> "bg-ctp-yellow";
+                            default -> "bg-ctp-overlay0";
+                        };
+                        }
+                        <div class="h-2 rounded-full transition-all ${bgColor}" style="width: ${percentage}%"></div>
                     </div>
                 </div>
             @endfor

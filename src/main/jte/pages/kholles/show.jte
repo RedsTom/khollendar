@@ -107,10 +107,16 @@
                                 <i class="fa-solid fa-users"></i>
                                 Préférences des utilisateurs
                             </h2>
-                            <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
-                                ${registeredUsersCount} utilisateur${registeredUsersCount > 1 ? "s ont" : " a"}
-                                enregistré ${registeredUsersCount > 1 ? "leurs" : "ses"} préférences
-                            </div>
+                            @if (registeredUsersCount == 0)
+                                <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
+                                    Aucun utilisateur n'a enregistré ses préférences
+                                </div>
+                            @else
+                                <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
+                                    ${registeredUsersCount} utilisateur${registeredUsersCount > 1 ? "s ont" : " a"}
+                                    enregistré ${registeredUsersCount > 1 ? "leurs" : "ses"} préférences
+                                </div>
+                            @endif
                         </div>
 
                         @if(userPreferences.isEmpty())
@@ -142,16 +148,15 @@
                                                 <div class="space-y-1 sm:space-y-2">
                                                     @for(UserPreference preference : preferences.stream().filter(p -> !p.isUnavailable()).toList())
                                                         <div class="flex items-center gap-2 text-xs sm:text-sm">
-                                                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs
-                                                                @if(preference.preferenceRank() == 1)
-                                                                    bg-ctp-green text-ctp-base
-                                                                @elseif(preference.preferenceRank() == 2)
-                                                                    bg-ctp-yellow text-ctp-base
-                                                                @elseif(preference.preferenceRank() == 3)
-                                                                    bg-ctp-peach text-ctp-base
-                                                                @else
-                                                                    bg-ctp-surface2 text-ctp-text
-                                                                @endif">
+                                                            !{
+                                                            String colors = switch(preference.preferenceRank()) {
+                                                                case 1 -> "bg-ctp-green text-ctp-base";
+                                                                case 2 -> "bg-ctp-yellow text-ctp-base";
+                                                                case 3 -> "bg-ctp-peach text-ctp-base";
+                                                                default -> "bg-ctp-surface2 text-ctp-text";
+                                                            };
+                                                            }
+                                                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs ${colors}">
 
                                                                 ${preference.preferenceRank()}
                                                             </span>

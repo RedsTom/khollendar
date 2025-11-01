@@ -18,7 +18,10 @@
  */
 package fr.redstom.khollendar.entity;
 
+import lombok.Getter;
+
 /** Énumération représentant les différents états possibles d'une session de khôlle */
+@Getter
 public enum KholleSessionStatus {
     /** Les inscriptions sont ouvertes, les utilisateurs peuvent enregistrer leurs préférences */
     REGISTRATIONS_OPEN("Inscriptions ouvertes"),
@@ -35,9 +38,5 @@ public enum KholleSessionStatus {
 
     KholleSessionStatus(String label) {
         this.label = label;
-    }
-
-    public String getLabel() {
-        return label;
     }
 }

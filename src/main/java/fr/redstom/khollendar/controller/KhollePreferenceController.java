@@ -63,12 +63,6 @@ public class KhollePreferenceController {
         Long userId = sessionService.getCurrentUserId(session);
 
         try {
-            // Vérifier si l'utilisateur a déjà soumis ses préférences
-            if (preferenceService.hasSubmittedPreferences(userId, kholleId)) {
-                // Si oui, rediriger vers la page des préférences verrouillées
-                return preferenceService.prepareLockedPreferencesView(model, kholleId, userId);
-            }
-
             KholleSession kholleSession = kholleService
                     .getKholleSessionById(kholleId)
                     .orElseThrow(() -> new IllegalArgumentException("Session de khôlle non trouvée"));

@@ -82,7 +82,7 @@
             <button type="submit"
                     hx-post="/logout"
                     hx-swap="none"
-                    hx-on::after-request="window.location.reload()"
+                    hx-on::afterRequest="window.location.reload()"
                     class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-4 py-2 rounded-lg flex gap-2 items-center justify-center">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 Déconnexion
