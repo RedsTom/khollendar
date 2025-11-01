@@ -10,8 +10,10 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <meta name="description" content="Khôlle'n'Dar est une application web de gestion de planning de khôlles pour les étudiants en double licence Maths-Info à l'Université d'Aix-Marseille.">
-    <meta name="keywords" content="Khôlle'n'Dar, Khôlles, Planning, Double Licence, Maths-Info, Université d'Aix-Marseille, Gestion, Étudiants">
+    <meta name="description"
+          content="Khôlle'n'Dar est une application web de gestion de planning de khôlles pour les étudiants en double licence Maths-Info à l'Université d'Aix-Marseille.">
+    <meta name="keywords"
+          content="Khôlle'n'Dar, Khôlles, Planning, Double Licence, Maths-Info, Université d'Aix-Marseille, Gestion, Étudiants">
     <meta name="author" content="Tom BUTIN">
 
     <link rel="icon" type="image/png" href="/favicon.ico"/>
@@ -19,11 +21,24 @@
         Khôlle'n'Dar | ${title}
     </title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js"
-            integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A=="
+    <link rel="stylesheet" href="/css/main.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"
+            integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+          integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"
+            integrity="sha512-csIng5zcB+XpulRUa+ev1zKo7zRNGpEaVfNB9On1no9KYTEY/rLGAEEpvgdw6nim1WdTuihZY1eqZ31K7/fZjw=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <link rel="stylesheet" href="/main.css">
+    <meta name="csrf-header" content="${_csrf.getHeaderName()}">
+    <meta name="csrf-token" content="${_csrf.getToken()}">
+
+    <script src="/js/htmx-config.js" defer></script>
 </head>
 <body class="bg-ctp-base text-ctp-text grid grid-rows-[auto_1fr_auto] min-h-screen">
 <header class="bg-ctp-crust w-full flex items-center justify-between p-4">
@@ -48,6 +63,13 @@
     </div>
 </header>
 <main class="h-full relative">
+    <noscript>
+        @template.components.ui.Alert(
+        type = "warning",
+        message = "JavaScript est désactivé dans votre navigateur. Certaines fonctionnalités de ce site pourraient ne pas fonctionner correctement."
+        )
+    </noscript>
+
     ${content}
 </main>
 <footer class="w-full flex flex-col md:flex-row gap-4 items-center justify-between p-4 bg-ctp-crust">
@@ -57,32 +79,29 @@
 
     <div id="buttons" class="flex gap-4">
         @if(fr.redstom.khollendar.utils.AuthUtils.authenticated())
-            <form action="/logout" method="post">
-                <input type="hidden" name="${_csrf.getParameterName()}" value="${_csrf.getToken()}"/>
-                <button type="submit"
-                        class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-4 py-2 rounded-lg flex gap-2 items-center justify-center">
-                    <i data-feather="log-out" class="w-5 h-5"></i>
-                    Déconnexion
-                </button>
-            </form>
+            <button type="submit"
+                    hx-post="/logout"
+                    hx-swap="none"
+                    hx-on::afterRequest="window.location.reload()"
+                    class="bg-ctp-red hover:bg-ctp-red/80 text-ctp-base px-4 py-2 rounded-lg flex gap-2 items-center justify-center">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Déconnexion
+            </button>
         @else
             <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
+               id="login-btn"
                href="/login">
-                <i data-feather="log-in" class="w-5 h-5"></i>
+                <i class="fa-solid fa-right-to-bracket"></i>
                 Administrateur
             </a>
         @endif
 
         <a class="bg-ctp-surface0 hover:bg-ctp-surface1 px-4 py-2 rounded-lg flex gap-2 items-center justify-center"
            href="https://etulab.univ-amu.fr/b24013559/khollendar" target="_blank">
-            <i data-feather="gitlab" class="w-5 h-5"></i>
+            <i class="fa-brands fa-gitlab"></i>
             GitLab
         </a>
     </div>
 </footer>
-
-<script>
-    feather.replace();
-</script>
 </body>
 </html>

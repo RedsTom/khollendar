@@ -8,19 +8,19 @@ importers:
 
   .:
     dependencies:
+      '@catppuccin/tailwindcss':
+        specifier: ^1.0.0
+        version: 1.0.0
+      tailwindcss:
+        specifier: ^4.1.13
+        version: 4.1.13
+    devDependencies:
       '@tailwindcss/cli':
         specifier: ^4.1.13
         version: 4.1.13
       pnpm:
         specifier: ^10.17.1
         version: 10.17.1
-      tailwindcss:
-        specifier: ^4.1.13
-        version: 4.1.13
-    devDependencies:
-      '@catppuccin/tailwindcss':
-        specifier: ^1.0.0
-        version: 1.0.0
 
 packages:
 

@@ -1,6 +1,25 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.dto.KholleCreationDto;
+import fr.redstom.khollendar.dto.KhollePatchDto;
 import fr.redstom.khollendar.dto.KholleSessionCreationDto;
 import fr.redstom.khollendar.entity.*;
 import fr.redstom.khollendar.repository.KholleSessionRepository;
@@ -13,11 +32,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @RequiredArgsConstructor
@@ -35,11 +56,10 @@ public class KholleService {
      */
     public KholleSession createKholle(KholleSessionCreationDto dto) {
         // Création d'une nouvelle session avec les informations de base
-        KholleSession session =
-                KholleSession.builder()
-                        .subject(dto.subject())
-                        .kholleSlots(new ArrayList<>())
-                        .build();
+        KholleSession session = KholleSession.builder()
+                .subject(dto.subject())
+                .kholleSlots(new ArrayList<>())
+                .build();
 
         // Sauvegarde de la session d'abord pour obtenir un ID
         session = kholleSessionRepository.save(session);
@@ -47,11 +67,10 @@ public class KholleService {
         // Création des créneaux (slots) associés à cette session sauvegardée
         List<KholleSlot> slots = new ArrayList<>();
         for (KholleCreationDto slotDto : dto.slots()) {
-            KholleSlot slot =
-                    KholleSlot.builder()
-                            .dateTime(slotDto.time())
-                            .session(session) // Référence à la session déjà persistée
-                            .build();
+            KholleSlot slot = KholleSlot.builder()
+                    .dateTime(slotDto.time())
+                    .session(session) // Référence à la session déjà persistée
+                    .build();
             slots.add(slot);
         }
 
@@ -70,8 +89,7 @@ public class KholleService {
      * @return Page contenant les sessions de khôlles, triées par ID décroissant
      */
     public Page<KholleSession> getAllKholleSessions(int page, int size) {
-        return kholleSessionRepository.findAll(
-                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
+        return kholleSessionRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
     }
 
     /**
@@ -82,8 +100,7 @@ public class KholleService {
      * @return Page contenant les sessions de khôlles à venir, triées par date croissante
      */
     public Page<KholleSession> getUpcomingKholleSessions(int page, int size) {
-        return kholleSessionRepository.findUpcomingKholleSessionsPaged(
-                LocalDateTime.now(), PageRequest.of(page, size));
+        return kholleSessionRepository.findUpcomingKholleSessionsPaged(LocalDateTime.now(), PageRequest.of(page, size));
     }
 
     /**
@@ -94,8 +111,7 @@ public class KholleService {
      * @return Page contenant les sessions de khôlles passées, triées par date décroissante
      */
     public Page<KholleSession> getPreviousKholleSessions(int page, int size) {
-        return kholleSessionRepository.findPreviousKholleSessions(
-                LocalDateTime.now(), PageRequest.of(page, size));
+        return kholleSessionRepository.findPreviousKholleSessions(LocalDateTime.now(), PageRequest.of(page, size));
     }
 
     /**
@@ -118,49 +134,40 @@ public class KholleService {
      */
     @Transactional
     public void savePreferences(
-            Long userId, Long sessionId, List<Long> unavailableSlots, List<Long> rankedSlots) {
-        User user =
-                userService
-                        .getUserById(userId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Utilisateur avec l'ID " + userId + " non trouvé"));
+            @NonNull Long userId,
+            @NonNull Long sessionId,
+            @NonNull List<Long> unavailableSlots,
+            @NonNull List<Long> rankedSlots) {
+        User user = userService
+                .getUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur avec l'ID " + userId + " non trouvé"));
 
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
+        KholleSession session = getKholleSessionById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("Cette session de khôlle n'existe pas."));
+
+        // Vérifier si les inscriptions sont ouvertes
+        if (session.status() != KholleSessionStatus.REGISTRATIONS_OPEN) {
+            throw new IllegalArgumentException("Cette session de khôlle n'est pas ouverte aux inscriptions.");
+        }
 
         // Supprimer toutes les préférences existantes pour cet utilisateur et cette session
         userPreferenceRepository.deleteByUserAndSession(user, session);
 
         // Sauvegarder les indisponibilités (avec isUnavailable = true)
         for (Long slotId : unavailableSlots) {
-            KholleSlot slot =
-                    session.kholleSlots().stream()
-                            .filter(s -> s.id().equals(slotId))
-                            .findFirst()
-                            .orElseThrow(
-                                    () ->
-                                            new IllegalArgumentException(
-                                                    "Créneau avec l'ID "
-                                                            + slotId
-                                                            + " non trouvé dans la session "
-                                                            + sessionId));
+            KholleSlot slot = session.kholleSlots().stream()
+                    .filter(s -> s.id().equals(slotId))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Créneau avec l'ID " + slotId + " non trouvé dans la session " + sessionId));
 
-            UserPreference unavailability =
-                    UserPreference.builder()
-                            .user(user)
-                            .session(session)
-                            .slot(slot)
-                            .preferenceRank(-1) // Les indisponibilités ont un rang négatif
-                            .isUnavailable(true)
-                            .build();
+            UserPreference unavailability = UserPreference.builder()
+                    .user(user)
+                    .session(session)
+                    .slot(slot)
+                    .preferenceRank(-1) // Les indisponibilités ont un rang négatif
+                    .isUnavailable(true)
+                    .build();
 
             userPreferenceRepository.save(unavailability);
         }
@@ -171,27 +178,20 @@ public class KholleService {
             Long slotId = rankedSlots.get(i);
 
             // Trouver le créneau correspondant dans la session
-            KholleSlot slot =
-                    session.kholleSlots().stream()
-                            .filter(s -> s.id().equals(slotId))
-                            .findFirst()
-                            .orElseThrow(
-                                    () ->
-                                            new IllegalArgumentException(
-                                                    "Créneau avec l'ID "
-                                                            + slotId
-                                                            + " non trouvé dans la session "
-                                                            + sessionId));
+            KholleSlot slot = session.kholleSlots().stream()
+                    .filter(s -> s.id().equals(slotId))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Créneau avec l'ID " + slotId + " non trouvé dans la session " + sessionId));
 
             // Créer une nouvelle préférence
-            UserPreference preference =
-                    UserPreference.builder()
-                            .user(user)
-                            .session(session)
-                            .slot(slot)
-                            .preferenceRank(i + 1) // Le rang commence à 1 (premier choix = rang 1)
-                            .isUnavailable(false)
-                            .build();
+            UserPreference preference = UserPreference.builder()
+                    .user(user)
+                    .session(session)
+                    .slot(slot)
+                    .preferenceRank(i + 1) // Le rang commence à 1 (premier choix = rang 1)
+                    .isUnavailable(false)
+                    .build();
 
             userPreferenceRepository.save(preference);
         }
@@ -205,22 +205,13 @@ public class KholleService {
      * @return Liste des préférences ordonnées par rang de préférence
      */
     public List<UserPreference> getUserPreferences(Long userId, Long sessionId) {
-        User user =
-                userService
-                        .getUserById(userId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Utilisateur avec l'ID " + userId + " non trouvé"));
+        User user = userService
+                .getUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur avec l'ID " + userId + " non trouvé"));
 
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
+        KholleSession session = getKholleSessionById(sessionId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
 
         return userPreferenceRepository.findByUserAndSessionOrderByPreferenceRankAsc(user, session);
     }
@@ -233,22 +224,13 @@ public class KholleService {
      * @return true si l'utilisateur a déjà enregistré des préférences, false sinon
      */
     public boolean hasUserRegisteredPreferences(Long userId, Long sessionId) {
-        User user =
-                userService
-                        .getUserById(userId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Utilisateur avec l'ID " + userId + " non trouvé"));
+        User user = userService
+                .getUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur avec l'ID " + userId + " non trouvé"));
 
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
+        KholleSession session = getKholleSessionById(sessionId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
 
         return userPreferenceRepository.existsByUserAndSession(user, session);
     }
@@ -260,14 +242,9 @@ public class KholleService {
      * @return Le nombre d'utilisateurs ayant enregistré leurs préférences
      */
     public long getRegisteredUsersCount(Long sessionId) {
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
+        KholleSession session = getKholleSessionById(sessionId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
 
         return userPreferenceRepository.countDistinctUsersBySession(session);
     }
@@ -280,14 +257,9 @@ public class KholleService {
      *     rang
      */
     public Map<User, List<UserPreference>> getAllUserPreferencesForSession(Long sessionId) {
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
+        KholleSession session = getKholleSessionById(sessionId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
 
         // Récupérer toutes les préférences pour cette session
         List<UserPreference> allPreferences =
@@ -313,27 +285,17 @@ public class KholleService {
      * @return Liste des créneaux indisponibles
      */
     public List<KholleSlot> getUnavailableSlots(Long userId, Long sessionId) {
-        User user =
-                userService
-                        .getUserById(userId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Utilisateur avec l'ID " + userId + " non trouvé"));
+        User user = userService
+                .getUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur avec l'ID " + userId + " non trouvé"));
 
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
+        KholleSession session = getKholleSessionById(sessionId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
 
         // Récupérer les préférences de l'utilisateur
         List<UserPreference> userPreferences =
-                userPreferenceRepository.findByUserAndSessionOrderByPreferenceRankAsc(
-                        user, session);
+                userPreferenceRepository.findByUserAndSessionOrderByPreferenceRankAsc(user, session);
 
         // Retourner uniquement les créneaux marqués comme indisponibles
         return userPreferences.stream()
@@ -350,72 +312,29 @@ public class KholleService {
      */
     @Transactional
     public void deleteKholleSession(Long sessionId) {
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
+        KholleSession session = getKholleSessionById(sessionId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
 
         // Les préférences et les slots seront supprimés en cascade grâce aux relations JPA
         kholleSessionRepository.delete(session);
     }
 
     /**
-     * Renomme une session de khôlle
+     * Modifie une session de khôlle en appliquant un patch
      *
-     * @param sessionId L'ID de la session à renommer
-     * @param newSubject Le nouveau nom de la session
+     * @param sessionId L'ID de la session à modifier
+     * @param patch Le patch contenant les modifications
+     *
      * @return La session mise à jour
      */
     @Transactional
-    public KholleSession renameKholleSession(Long sessionId, String newSubject) {
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
+    public KholleSession edit(Long sessionId, @Validated KhollePatchDto patch) {
+        KholleSession session = getKholleSessionById(sessionId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Session de khôlle avec l'ID " + sessionId + " non trouvée"));
 
-        if (newSubject == null || newSubject.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Le nouveau nom de la session ne peut pas être vide");
-        }
-
-        // Créer une nouvelle session avec le nouveau nom
-        KholleSession updatedSession = session.toBuilder().subject(newSubject.trim()).build();
-
-        return kholleSessionRepository.save(updatedSession);
-    }
-
-    /**
-     * Change le statut d'une session de khôlle
-     *
-     * @param sessionId L'ID de la session
-     * @param status Le nouveau statut
-     * @return La session mise à jour
-     */
-    @Transactional
-    public KholleSession updateSessionStatus(Long sessionId, KholleSessionStatus status) {
-        KholleSession session =
-                getKholleSessionById(sessionId)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Session de khôlle avec l'ID "
-                                                        + sessionId
-                                                        + " non trouvée"));
-
-        if (status == null) {
-            throw new IllegalArgumentException("Le statut ne peut pas être null");
-        }
-
-        KholleSession updatedSession = session.toBuilder().status(status).build();
-
+        KholleSession updatedSession = patch.apply(session);
         return kholleSessionRepository.save(updatedSession);
     }
 }

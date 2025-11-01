@@ -10,7 +10,7 @@
             <h3 class="text-lg font-semibold text-ctp-text">${title}</h3>
         </div>
     @endif
-    <div class="p-6">
+    <div class="p-6 h-full">
         ${content}
     </div>
 </div>

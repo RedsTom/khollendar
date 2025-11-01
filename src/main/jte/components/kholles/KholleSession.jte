@@ -13,20 +13,11 @@
     extraClasses = "hover:border-ctp-blue",
     content = @`
         <div class="flex justify-between items-start gap-3 mb-2">
-            <h3 class="text-lg font-medium @if(isEnded) line-through text-ctp-subtext1 @else text-ctp-text @endif flex-1">
+            !{String textStyle = isEnded ? "line-through text-ctp-subtext1" : "text-ctp-text";}
+            <h3 class="text-lg font-medium flex-1 ${textStyle}">
                 ${session.subject()}
             </h3>
-            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium flex-shrink-0
-                @if(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_OPEN)
-                    bg-ctp-green/20 text-ctp-green border border-ctp-green/30
-                @elseif(session.status() == fr.redstom.khollendar.entity.KholleSessionStatus.REGISTRATIONS_CLOSED)
-                    bg-ctp-red/20 text-ctp-red border border-ctp-red/30
-                @else
-                    bg-ctp-blue/20 text-ctp-blue border border-ctp-blue/30
-                @endif
-            ">
-                ${session.status().getLabel()}
-            </span>
+            @template.components.badges.StatusBadge(status = session.status())
         </div>
         <div class="text-sm text-ctp-subtext0">
             @if(session.calculateDateRange().isPresent())

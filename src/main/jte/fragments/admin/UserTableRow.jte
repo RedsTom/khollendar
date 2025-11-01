@@ -1,8 +1,7 @@
 @import fr.redstom.khollendar.entity.User
-@import org.springframework.security.web.csrf.CsrfToken
 
 @param User user
-@param CsrfToken _csrf
+@param int page = 0
 
 <tr class="hover:bg-ctp-mantle/50">
     <td class="py-2 px-4 text-sm">${user.id()}</td>
@@ -19,43 +18,25 @@
         @endif
     </td>
     <td class="py-2 px-4 text-sm">
-        <div class="flex gap-2">
+        <div class="grid grid-cols-2 gap-2">
             @if(user.codeInitialized())
-                <form action="/admin/users/${user.id()}/reset-code"
-                      method="post">
-                    <input type="hidden"
-                           name="${_csrf.getParameterName()}"
-                           value="${_csrf.getToken()}"/>
-                    @template.components.ui.Button(
-                        type = "submit",
-                        variant = "warning",
-                        size = "xs",
-                        extraClasses = "flex items-center gap-1",
-                        onclick = "return confirm('Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?')",
-                        content = @`
-                            <i data-feather="key" class="w-3 h-3"></i>
-                            Réinitialiser code
-                        `
-                    )
-                </form>
+                <button class="button warning sm flex items-center gap-1"
+                        hx-target="#user-list"
+                        hx-confirm="Êtes-vous sûr de vouloir réinitialiser le code de ${user.username()} ?"
+                        hx-post="/admin/users/${user.id()}/reset-code?page=${page}">
+                    <i class="fa-solid fa-key"></i>
+
+                    Réinitialiser le code
+                </button>
             @endif
-            <form action="/admin/users/${user.id()}" method="post">
-                <input type="hidden" name="_method" value="DELETE"/>
-                <input type="hidden"
-                       name="${_csrf.getParameterName()}"
-                       value="${_csrf.getToken()}"/>
-                @template.components.ui.Button(
-                    type = "submit",
-                    variant = "danger",
-                    size = "xs",
-                    extraClasses = "flex items-center gap-1",
-                    onclick = "return confirm('Êtes-vous sûr de vouloir supprimer l\\'utilisateur ${user.username()} ?')",
-                    content = @`
-                        <i data-feather="trash-2" class="w-3 h-3"></i>
-                        Supprimer
-                    `
-                )
-            </form>
+            <button class="button danger sm flex items-center gap-1 col-start-2"
+                    hx-target="#user-list"
+                    hx-confirm="Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.username()} ?"
+                    hx-delete="/admin/users/${user.id()}?page=${page}">
+                <i class="fa-solid fa-trash"></i>
+
+                Supprimer
+            </button>
         </div>
     </td>
 </tr>

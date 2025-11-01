@@ -11,8 +11,8 @@ function addSlot() {
             <input type="datetime-local" id="slot-${slotCount}-time" name="slots[${slotCount}].time" required class="flex-1">
             <button type="button" 
                     onclick="deleteSlot(this)"
-                    class="delete-slot inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ctp-red focus:ring-offset-2 focus:ring-offset-ctp-base px-2 py-2 sm:px-3 sm:py-2 text-xs sm:text-sm bg-ctp-red hover:bg-ctp-red/80 text-ctp-base border-0">
-                <i data-feather="trash-2"></i>
+                    class="delete-slot button danger">
+                <i class="fa-solid fa-trash"></i>
             </button>
         </div>
     `;
@@ -22,10 +22,6 @@ function addSlot() {
 
     if(slotCount > 1) {
         el.querySelector('input').focus();
-    }
-
-    if (typeof feather !== 'undefined') {
-        feather.replace();
     }
 
     // Ajouter les event listeners pour les raccourcis clavier

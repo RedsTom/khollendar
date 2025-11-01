@@ -11,7 +11,8 @@
 !{int assignmentsWithPreferences = totalAssignments - (int) withoutPreferences;}
 
 <h2 class="text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-    <i data-feather="bar-chart-2" class="w-6 h-6"></i>
+    <i class="fa-solid fa-bar-chart"></i>
+
     Statistiques d'affectation
 </h2>
 
@@ -46,7 +47,8 @@
 @if(!rankDistribution.isEmpty())
     <div class="mt-6 pt-6 border-t border-ctp-surface2">
         <h3 class="text-lg font-semibold mb-3 text-ctp-blue flex items-center gap-2">
-            <i data-feather="pie-chart" class="w-5 h-5"></i>
+            <i class="fa-solid fa-pie-chart"></i>
+
             Distribution par rang de préférence
         </h3>
         <div class="space-y-2">
@@ -62,13 +64,15 @@
                         </span>
                     </div>
                     <div class="w-full bg-ctp-surface0 rounded-full h-2">
-                        <div class="h-2 rounded-full transition-all
-                            @if(rank == 1) bg-ctp-green
-                            @elseif(rank == 2) bg-ctp-blue
-                            @elseif(rank == 3) bg-ctp-yellow
-                            @else bg-ctp-overlay0
-                            @endif
-                        " style="width: ${percentage}%"></div>
+                        !{
+                        String bgColor = switch (rank) {
+                            case 1 -> "bg-ctp-green";
+                            case 2 -> "bg-ctp-blue";
+                            case 3 -> "bg-ctp-yellow";
+                            default -> "bg-ctp-overlay0";
+                        };
+                        }
+                        <div class="h-2 rounded-full transition-all ${bgColor}" style="width: ${percentage}%"></div>
                     </div>
                 </div>
             @endfor

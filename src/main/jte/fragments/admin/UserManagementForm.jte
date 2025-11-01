@@ -2,7 +2,9 @@
 
 @param CsrfToken _csrf
 
-<form action="/admin/users" method="post">
+<form hx-post="/admin/users?page=0"
+      hx-target="#user-list"
+      hx-on::after-request="if(event.detail.successful) this.reset()">
     <input type="hidden"
            name="${_csrf.getParameterName()}"
            value="${_csrf.getToken()}">
@@ -17,12 +19,9 @@
                    required
                    autofocus
                    class="flex-1">
-            @template.components.ui.Button(
-                type = "submit",
-                variant = "primary",
-                extraClasses = "w-full sm:w-auto",
-                content = @`Ajouter`
-            )
+            <button type="submit" class="button primary w-full sm:w-auto">
+                Ajouter
+            </button>
         </div>
     </div>
 </form>

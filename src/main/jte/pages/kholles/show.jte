@@ -6,8 +6,6 @@
 @import java.time.format.DateTimeFormatter
 @import java.util.Locale
 @import java.util.List
-@import java.util.ArrayList
-@import java.util.Comparator
 @import java.util.Map
 
 @param KholleSession session
@@ -17,14 +15,6 @@
 @param org.springframework.security.web.csrf.CsrfToken _csrf
 @param boolean isAdmin = false
 @param List<KholleAssignment> assignments = null
-@param Map<Long, List<KholleAssignment>> assignmentsBySlot = null
-
-!{boolean hasAssignments = assignments != null && !assignments.isEmpty();}
-
-!{
-    List<KholleSlot> sortedSlots = new ArrayList<>(session.kholleSlots());
-    sortedSlots.sort(Comparator.comparing(KholleSlot::dateTime));
-}
 
 @template.layout.MainLayout(
     title = "Détails de la session",
@@ -38,11 +28,11 @@
                         <a href="/" class="hover:text-ctp-blue transition-colors">
                             Accueil
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <a href="/kholles" class="hover:text-ctp-blue transition-colors">
                             Sessions de khôlles
                         </a>
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                         <span class="text-ctp-text">${session.subject()}</span>
                     `
                 )
@@ -56,64 +46,44 @@
                         actionButtons = @`
                             @template.fragments.kholles.SessionActionButtons(
                                 session = session,
-                                hasAssignments = hasAssignments
+                                hasAssignments = !assignments.isEmpty()
                             )
                         `
                     )
 
                     <!-- Section Actions administrateur -->
                     @if(isAdmin)
-                        @template.fragments.admin.SessionActions(
-                            session = session,
-                            _csrf = _csrf
-                        )
+                        @template.fragments.admin.SessionActions(session = session)
                     @endif
 
                     <!-- Section des horaires disponibles -->
                     @template.fragments.kholles.SessionSlots(
-                        slots = sortedSlots
+                        slots = session.kholleSlots()
                     )
 
                     <!-- Section des affectations par créneau -->
-                    <div class="mb-8">
-                        <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-                            <i data-feather="check-circle" class="w-6 h-6"></i>
-                            Affectations par créneau
-                        </h2>
-
-                        @if(hasAssignments)
-                            <div class="space-y-4">
-                                @for(KholleSlot slot : sortedSlots)
-                                    !{List<KholleAssignment> slotAssignments = assignmentsBySlot.getOrDefault(slot.id(), List.of());}
-                                    @if(!slotAssignments.isEmpty())
-                                        @template.fragments.kholles.SlotAssignmentCard(
-                                            slot = slot,
-                                            assignments = slotAssignments
-                                        )
-                                    @endif
-                                @endfor
-                            </div>
-                        @else
-                            <div class="bg-ctp-surface1 rounded-lg p-4 sm:p-6 text-center">
-                                <p class="text-ctp-subtext0">
-                                    Aucune affectation n'a encore été réalisée pour cette session.<br/>
-                                    Les affectations sont réalisées environ deux jours avant le début de la première khôlle.
-                                </p>
-                            </div>
-                        @endif
-                    </div>
+                    @template.fragments.kholles.Assignments(
+                        session = session,
+                        assignments = assignments
+                    )
 
                     <!-- Section des préférences des utilisateurs -->
                     <div class="mb-8">
                         <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-4">
                             <h2 class="text-xl sm:text-2xl font-semibold text-ctp-blue flex items-center gap-2">
-                                <i data-feather="users" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                                <i class="fa-solid fa-users"></i>
                                 Préférences des utilisateurs
                             </h2>
-                            <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
-                                ${registeredUsersCount} utilisateur${registeredUsersCount > 1 ? "s ont" : " a"}
-                                enregistré ${registeredUsersCount > 1 ? "leurs" : "ses"} préférences
-                            </div>
+                            @if (registeredUsersCount == 0)
+                                <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
+                                    Aucun utilisateur n'a enregistré ses préférences
+                                </div>
+                            @else
+                                <div class="text-xs sm:text-sm text-ctp-subtext0 bg-ctp-surface1 px-3 py-1 rounded-full">
+                                    ${registeredUsersCount} utilisateur${registeredUsersCount > 1 ? "s ont" : " a"}
+                                    enregistré ${registeredUsersCount > 1 ? "leurs" : "ses"} préférences
+                                </div>
+                            @endif
                         </div>
 
                         @if(userPreferences.isEmpty())
@@ -139,23 +109,22 @@
                                         @if(!preferences.isEmpty())
                                             <div class="mb-3 sm:mb-4">
                                                 <h4 class="text-xs sm:text-sm font-medium text-ctp-green mb-2 flex items-center gap-1">
-                                                    <span class="inline-block w-3 h-3 sm:w-4 sm:h-4">✓</span>
+                                                    <i class="fas fa-check"></i>
                                                     Préférences
                                                 </h4>
                                                 <div class="space-y-1 sm:space-y-2">
                                                     @for(UserPreference preference : preferences.stream().filter(p -> !p.isUnavailable()).toList())
                                                         <div class="flex items-center gap-2 text-xs sm:text-sm">
-                                                            <span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full flex-shrink-0
-                                                                @if(preference.preferenceRank() == 1)
-                                                                    bg-ctp-green text-ctp-base
-                                                                @elseif(preference.preferenceRank() == 2)
-                                                                    bg-ctp-yellow text-ctp-base
-                                                                @elseif(preference.preferenceRank() == 3)
-                                                                    bg-ctp-peach text-ctp-base
-                                                                @else
-                                                                    bg-ctp-surface2 text-ctp-text
-                                                                @endif
-                                                                font-semibold text-xs">
+                                                            !{
+                                                            String colors = switch(preference.preferenceRank()) {
+                                                                case 1 -> "bg-ctp-green text-ctp-base";
+                                                                case 2 -> "bg-ctp-yellow text-ctp-base";
+                                                                case 3 -> "bg-ctp-peach text-ctp-base";
+                                                                default -> "bg-ctp-surface2 text-ctp-text";
+                                                            };
+                                                            }
+                                                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs ${colors}">
+
                                                                 ${preference.preferenceRank()}
                                                             </span>
                                                             <span class="text-ctp-text leading-tight min-w-0 break-words">
@@ -171,14 +140,14 @@
                                         @if(unavailableSlots != null && !unavailableSlots.isEmpty())
                                             <div class="mb-2">
                                                 <h4 class="text-xs sm:text-sm font-medium text-ctp-red mb-2 flex items-center gap-1">
-                                                    <span class="inline-block w-3 h-3 sm:w-4 sm:h-4">✗</span>
+                                                    <i class="fa-solid fa-xmark"></i>
                                                     Indisponibilités
                                                 </h4>
                                                 <div class="space-y-1 sm:space-y-2">
                                                     @for(KholleSlot slot : unavailableSlots)
                                                         <div class="flex items-center gap-2 text-xs sm:text-sm">
-                                                            <span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-ctp-red text-ctp-base font-semibold text-xs flex-shrink-0">
-                                                                ✗
+                                                            <span class="bg-ctp-red text-ctp-base w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                                                                <i class="fa-solid fa-xmark"></i>
                                                             </span>
                                                             <span class="text-ctp-subtext0 leading-tight min-w-0 break-words">
                                                                 ${slot.dateTime().format(DateTimeFormatter.ofPattern("dd/MM à HH:mm", Locale.FRENCH))}

@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,40 +40,27 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                        authorize ->
-                                authorize
-                                        .requestMatchers("/admin/**")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/create", "/kholles/create/**")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/*/delete")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/*/rename")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/*/status")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/*/assignments/trigger")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/kholles/assignments/trigger-all")
-                                        .hasRole("ADMIN")
-                                        .requestMatchers("/user-auth/**")
-                                        .permitAll()
-                                        .requestMatchers("/**")
-                                        .permitAll())
-                .formLogin(
-                        formLogin ->
-                                formLogin
-                                        .loginPage("/login")
-                                        .defaultSuccessUrl("/")
-                                        .failureUrl("/login?error=true")
-                                        .permitAll())
-                .logout(
-                        logout ->
-                                logout.logoutUrl("/logout")
-                                        .logoutSuccessUrl("/")
-                                        .invalidateHttpSession(true)
-                                        .permitAll());
+        // @formatter:off
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/admin/**",
+                                         "/kholles/create")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers("/**", "/user/**")
+                        .permitAll()
+                )
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/login?error=true")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .permitAll());
+        // @formatter:on
 
         return http.build();
     }
@@ -69,8 +74,13 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         String encodedPassword = passwordEncoder.encode(adminPassword);
 
-        UserDetails admin =
-                User.builder().username("admin").password(encodedPassword).roles("ADMIN").build();
+        // @formatter:off
+        UserDetails admin = User.builder()
+                .username("admin")
+                .password(encodedPassword)
+                .roles("ADMIN")
+                .build();
+        // @formatter:on
 
         return new InMemoryUserDetailsManager(admin);
     }

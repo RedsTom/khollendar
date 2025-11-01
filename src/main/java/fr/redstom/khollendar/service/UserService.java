@@ -1,3 +1,21 @@
+/*
+ * Kholle'n'dar is a web application to manage oral interrogations planning
+ * for French students.
+ * Copyright (C) 2025 Tom BUTIN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+  * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.redstom.khollendar.service;
 
 import fr.redstom.khollendar.entity.User;
@@ -7,6 +25,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +63,7 @@ public class UserService {
      * @return Liste de tous les utilisateurs
      */
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     /**
@@ -55,7 +74,7 @@ public class UserService {
      * @return Page contenant les utilisateurs
      */
     public Page<User> getPaginatedUsers(int page, int size) {
-        return userRepository.findAll(PageRequest.of(page, size));
+        return userRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
     }
 
     /**
@@ -101,8 +120,14 @@ public class UserService {
             throw new IllegalArgumentException("Le code secret doit être composé de 6 chiffres");
         }
 
+        if (user.secretCode() != null) {
+            throw new IllegalArgumentException(
+                    "Le code secret a déjà été initialisé. Veuillez réessayer de vous connecter.");
+        }
+
         user.secretCode(passwordEncoder.encode(secretCode));
         user.codeInitialized(true);
+
         userRepository.save(user);
     }
 
@@ -112,14 +137,12 @@ public class UserService {
      * @param userId L'ID de l'utilisateur dont le code doit être réinitialisé
      */
     public void resetUserCode(Long userId) {
-        userRepository
-                .findById(userId)
-                .ifPresent(
-                        user -> {
-                            user.secretCode(null);
-                            user.codeInitialized(false);
-                            userRepository.save(user);
-                        });
+        userRepository.findById(userId).ifPresent(user -> {
+            user.secretCode(null);
+            user.codeInitialized(false);
+
+            userRepository.save(user);
+        });
     }
 
     /**
@@ -129,5 +152,14 @@ public class UserService {
      */
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    /**
+     * Vérifie si un utilisateur existe par son ID
+     *
+     * @param userId L'ID de l'utilisateur à vérifier
+     */
+    public boolean exists(Long userId) {
+        return userRepository.existsById(userId);
     }
 }
