@@ -1,5 +1,6 @@
 @import fr.redstom.khollendar.entity.KholleSlot
 @import java.time.format.DateTimeFormatter
+@import java.util.Comparator
 @import java.util.List
 @import java.util.Locale
 
@@ -7,6 +8,11 @@
 @param String title = "Horaires disponibles"
 
 !{DateTimeFormatter detailedFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy 'à' HH:mm", Locale.FRENCH);}
+!{
+    slots = slots.stream()
+        .sorted(Comparator.comparing(KholleSlot::dateTime))
+        .toList();
+}
 
 <div class="mb-8">
     <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">

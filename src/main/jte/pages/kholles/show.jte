@@ -6,8 +6,6 @@
 @import java.time.format.DateTimeFormatter
 @import java.util.Locale
 @import java.util.List
-@import java.util.ArrayList
-@import java.util.Comparator
 @import java.util.Map
 
 @param KholleSession session
@@ -17,14 +15,6 @@
 @param org.springframework.security.web.csrf.CsrfToken _csrf
 @param boolean isAdmin = false
 @param List<KholleAssignment> assignments = null
-@param Map<Long, List<KholleAssignment>> assignmentsBySlot = null
-
-!{boolean hasAssignments = assignments != null && !assignments.isEmpty();}
-
-!{
-    List<KholleSlot> sortedSlots = new ArrayList<>(session.kholleSlots());
-    sortedSlots.sort(Comparator.comparing(KholleSlot::dateTime));
-}
 
 @template.layout.MainLayout(
     title = "Détails de la session",
@@ -56,7 +46,7 @@
                         actionButtons = @`
                             @template.fragments.kholles.SessionActionButtons(
                                 session = session,
-                                hasAssignments = hasAssignments
+                                hasAssignments = !assignments.isEmpty()
                             )
                         `
                     )
@@ -68,37 +58,14 @@
 
                     <!-- Section des horaires disponibles -->
                     @template.fragments.kholles.SessionSlots(
-                        slots = sortedSlots
+                        slots = session.kholleSlots()
                     )
 
                     <!-- Section des affectations par créneau -->
-                    <div class="mb-8">
-                        <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-                            <i class="fa-solid fa-calendar"></i>
-                            Affectations par créneau
-                        </h2>
-
-                        @if(hasAssignments)
-                            <div class="space-y-4">
-                                @for(KholleSlot slot : sortedSlots)
-                                    !{List<KholleAssignment> slotAssignments = assignmentsBySlot.getOrDefault(slot.id(), List.of());}
-                                    @if(!slotAssignments.isEmpty())
-                                        @template.fragments.kholles.SlotAssignmentCard(
-                                            slot = slot,
-                                            assignments = slotAssignments
-                                        )
-                                    @endif
-                                @endfor
-                            </div>
-                        @else
-                            <div class="bg-ctp-surface1 rounded-lg p-4 sm:p-6 text-center">
-                                <p class="text-ctp-subtext0">
-                                    Aucune affectation n'a encore été réalisée pour cette session.<br/>
-                                    Les affectations sont réalisées environ deux jours avant le début de la première khôlle.
-                                </p>
-                            </div>
-                        @endif
-                    </div>
+                    @template.fragments.kholles.Assignments(
+                        session = session,
+                        assignments = assignments
+                    )
 
                     <!-- Section des préférences des utilisateurs -->
                     <div class="mb-8">

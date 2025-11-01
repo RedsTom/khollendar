@@ -1,5 +1,4 @@
 @import fr.redstom.khollendar.entity.KholleSession
-@import fr.redstom.khollendar.entity.KholleSlot
 @import fr.redstom.khollendar.entity.KholleAssignment
 @import org.springframework.security.web.csrf.CsrfToken
 @import java.util.List
@@ -7,7 +6,7 @@
 
 @param KholleSession session
 
-@param Map<Long, List<KholleAssignment>> assignments
+@param List<KholleAssignment> assignments
 @param Map<Integer, Long> rankDistribution
 @param int totalAssignments
 @param long withoutPreferences
@@ -57,45 +56,31 @@
             <!-- Liste des affectations par créneau -->
             @template.components.ui.Card(
                 content = @`
-                    <h2 class="text-2xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-                        <i class="fa-solid fa-users"></i>
-
-                        Affectations par créneau
-                    </h2>
-
-                    <div class="space-y-4">
-                        @for(Map.Entry<Long, List<KholleAssignment>> entry : assignments.entrySet())
-                            !{KholleSlot slot = entry.getValue().get(0).slot();}
-                            @template.fragments.kholles.SlotAssignmentCard(
-                                slot = slot,
-                                assignments = entry.getValue()
-                            )
-                        @endfor
-                    </div>
+                    @template.fragments.kholles.Assignments(
+                        session = session,
+                        assignments = assignments
+                    )
                 `
             )
 
-
             <!-- Actions administrateur -->
             @if(isAdmin)
-                <div class="mt-6">
-                    @template.components.ui.Card(
-                    content = @`
-                        <h2 class="text-xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
-                            <i class="fa-solid fa-cogs"></i>
-                            Actions administrateur
-                        </h2>
-                        <div class="flex gap-3 flex-wrap">
-                            <button hx-post="/kholles/${session.id()}/assignments/trigger"
-                                    hx-confirm="Êtes-vous sûr de vouloir recalculer les affectations ? Cela supprimera les affectations actuelles."
-                                    class="button warning">
-                                <i class="fa-solid fa-refresh"></i>
-                                Recalculer les affectations
-                            </button>
-                        </div>
-                    `
-                    )
-                </div>
+                @template.components.ui.Card(
+                content = @`
+                    <h2 class="text-xl font-semibold mb-4 text-ctp-blue flex items-center gap-2">
+                        <i class="fa-solid fa-cogs"></i>
+                        Actions administrateur
+                    </h2>
+                    <div class="flex gap-3 flex-wrap">
+                        <button hx-post="/kholles/${session.id()}/assignments/trigger"
+                                hx-confirm="Êtes-vous sûr de vouloir recalculer les affectations ? Cela supprimera les affectations actuelles."
+                                class="button warning">
+                            <i class="fa-solid fa-refresh"></i>
+                            Recalculer les affectations
+                        </button>
+                    </div>
+                `
+                )
             @endif
         </div>
     `

@@ -72,10 +72,6 @@ public class KholleAssignmentController {
         // Récupérer toutes les affectations
         List<KholleAssignment> assignments = assignmentService.getSessionAssignments(session);
 
-        // Grouper les affectations par créneau
-        Map<Long, List<KholleAssignment>> assignmentsBySlot =
-                assignments.stream().collect(Collectors.groupingBy(a -> a.slot().id()));
-
         // Vérifier si l'utilisateur est admin
         boolean isAdmin = principal != null && principal.getName().equals("admin");
 
@@ -101,7 +97,7 @@ public class KholleAssignmentController {
 
         model.addAttribute("session", session);
 
-        model.addAttribute("assignments", assignmentsBySlot);
+        model.addAttribute("assignments", assignments);
         model.addAttribute("rankDistribution", rankDistribution);
         model.addAttribute("totalAssignments", assignments.size());
         model.addAttribute("withoutPreferences", withoutPreferences);

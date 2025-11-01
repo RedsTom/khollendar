@@ -117,13 +117,6 @@ public class KholleSessionController {
 
         // Récupérer les affectations si elles existent
         List<KholleAssignment> assignments = assignmentService.getSessionAssignments(session);
-        Map<Long, List<KholleAssignment>> assignmentsBySlot = new HashMap<>();
-
-        if (!assignments.isEmpty()) {
-            // Grouper par créneau
-            assignmentsBySlot = assignments.stream()
-                    .collect(Collectors.groupingBy(a -> a.slot().id()));
-        }
 
         model.addAttribute("title", "Détails de la session de khôlle");
         model.addAttribute("session", session);
@@ -132,7 +125,6 @@ public class KholleSessionController {
         model.addAttribute("registeredUsersCount", registeredUsersCount);
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("assignments", assignments);
-        model.addAttribute("assignmentsBySlot", assignmentsBySlot);
 
         return "pages/kholles/show";
     }
