@@ -77,7 +77,7 @@
         Copyright &copy; ${java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)} - Tom BUTIN - GNU GPL v3
     </p>
 
-    <div id="buttons" class="flex gap-4">
+    <div id="buttons" class="flex flex-wrap gap-4 justify-center sm:justify-start w-full sm:w-auto">
         @if(fr.redstom.khollendar.utils.AuthUtils.authenticated())
             <button type="submit"
                     hx-post="/logout"
