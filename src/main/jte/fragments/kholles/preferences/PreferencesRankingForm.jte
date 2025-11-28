@@ -58,14 +58,14 @@
 
                 <!-- Boutons de navigation -->
                 <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
-                    <button type="submit" form="rankingForm" class="button primary" disabled>
-                        Continuer
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-
                     <button hx-post="/kholles/${session.id()}/preferences/previous" class="button secondary" disabled>
                         <i class="fa-solid fa-arrow-left"></i>
                         Retour
+                    </button>
+
+                    <button type="submit" form="rankingForm" class="button primary" disabled>
+                        Continuer
+                        <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             @endif
