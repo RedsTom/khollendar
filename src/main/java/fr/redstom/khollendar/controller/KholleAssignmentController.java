@@ -48,9 +48,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class KholleAssignmentController {
 
     private final KholleAssignmentService assignmentService;
-    private final AffectationCron schedulerService;
     private final KholleService kholleService;
-    private final SessionService sessionService;
 
     /** Affiche les affectations d'une session de khôlle */
     @GetMapping("/{id}/assignments")

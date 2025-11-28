@@ -19,7 +19,6 @@
 package fr.redstom.khollendar.controller;
 
 import fr.redstom.khollendar.dto.KhollePreferencesDto;
-import fr.redstom.khollendar.dto.KholleUnavailabilitiesDto;
 import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.entity.User;
 import fr.redstom.khollendar.service.KholleService;
@@ -119,7 +118,7 @@ public class KhollePreferenceController {
     @PostMapping("/unavailabilities")
     public String saveUnavailabilities(
             @PathVariable Long kholleId,
-            @ModelAttribute KholleUnavailabilitiesDto unavailabilities,
+            @RequestParam(name = "unavailable-slots", required = false) List<Long> unavailableSlots,
             Model model,
             HttpSession session) {
         // Vérifier si l'utilisateur est authentifié
@@ -135,10 +134,12 @@ public class KhollePreferenceController {
             return preferenceService.prepareLockedPreferencesView(model, kholleId, userId);
         }
 
+        System.out.println("Got unavailabilities: " + unavailableSlots);
+
         // Récupérer et mettre à jour les préférences
         KhollePreferencesDto preferences = sessionService.getPreferences(session, kholleId);
         preferences = preferences
-                .withUnavailableSlots(unavailabilities.unavailableSlotIds())
+                .withUnavailableSlots(unavailableSlots)
                 .nextStep();
         sessionService.savePreferences(session, preferences);
 
