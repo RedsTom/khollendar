@@ -42,7 +42,7 @@ RUN gradle dependencies --no-daemon || true
 COPY src src
 
 # Copy compiled CSS from css-build stage
-COPY --from=css-build /app/resources/static/main.css src/main/resources/static/main.css
+COPY --from=css-build /app/resources/static/css/main.css src/main/resources/static/css/main.css
 
 # Build the application using gradle command (not gradlew)
 RUN gradle bootJar --no-daemon -x test

@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.17 | MIT License | https://tailwindcss.com */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/brands.min.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/solid.min.css");
 @layer properties;
@@ -43,7 +43,6 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
-    --color-ctp-green: var(--catppuccin-color-green);
   }
 }
 @layer base {
@@ -752,9 +751,6 @@
   .p-8 {
     padding: calc(var(--spacing) * 8);
   }
-  .px-1 {
-    padding-inline: calc(var(--spacing) * 1);
-  }
   .px-2 {
     padding-inline: calc(var(--spacing) * 2);
   }
@@ -1067,6 +1063,11 @@
       margin-bottom: calc(var(--spacing) * 4);
     }
   }
+  .sm\:hidden {
+    @media (width >= 40rem) {
+      display: none;
+    }
+  }
   .sm\:inline {
     @media (width >= 40rem) {
       display: inline;
@@ -1115,6 +1116,11 @@
   .sm\:justify-between {
     @media (width >= 40rem) {
       justify-content: space-between;
+    }
+  }
+  .sm\:justify-start {
+    @media (width >= 40rem) {
+      justify-content: flex-start;
     }
   }
   .sm\:gap-3 {
@@ -2556,14 +2562,26 @@ input[type="text"], input[type="password"], input[type="datetime-local"], input[
 .time-slot-container .slot-checkbox:checked + .time-slot .slot-text {
   color: rgb(243, 139, 168);
 }
+.slot-item {
+  cursor: move;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.slot-item.dragging {
+  --tw-scale-x: 105%;
+  --tw-scale-y: 105%;
+  --tw-scale-z: 105%;
+  scale: var(--tw-scale-x) var(--tw-scale-y);
+  opacity: 50%;
+}
 .sortable-ghost {
   border-style: var(--tw-border-style);
   border-width: 2px;
-  border-bottom-color: var(--catppuccin-color-blue);
+  border-color: var(--catppuccin-color-blue);
+  background-color: var(--catppuccin-color-surface0);
 }
 .sortable-ghost .rank-number {
-  content: '?' !important;
-  background-color: var(--color-ctp-green);
+  background-color: var(--catppuccin-color-green);
 }
 .sortable-drag {
   display: none !important;
@@ -2727,6 +2745,21 @@ input[type="text"], input[type="password"], input[type="datetime-local"], input[
   syntax: "*";
   inherits: false;
 }
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
@@ -2765,6 +2798,9 @@ input[type="text"], input[type="password"], input[type="datetime-local"], input[
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
       --tw-duration: initial;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
     }
   }
 }

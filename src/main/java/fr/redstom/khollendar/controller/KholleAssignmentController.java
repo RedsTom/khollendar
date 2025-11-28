@@ -18,12 +18,10 @@
  */
 package fr.redstom.khollendar.controller;
 
-import fr.redstom.khollendar.crons.AffectationCron;
 import fr.redstom.khollendar.entity.KholleAssignment;
 import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.service.KholleAssignmentService;
 import fr.redstom.khollendar.service.KholleService;
-import fr.redstom.khollendar.service.SessionService;
 import jakarta.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;
@@ -48,9 +46,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class KholleAssignmentController {
 
     private final KholleAssignmentService assignmentService;
-    private final AffectationCron schedulerService;
     private final KholleService kholleService;
-    private final SessionService sessionService;
 
     /** Affiche les affectations d'une session de khôlle */
     @GetMapping("/{id}/assignments")
