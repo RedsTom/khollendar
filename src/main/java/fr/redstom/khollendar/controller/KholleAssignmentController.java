@@ -18,12 +18,10 @@
  */
 package fr.redstom.khollendar.controller;
 
-import fr.redstom.khollendar.crons.AffectationCron;
 import fr.redstom.khollendar.entity.KholleAssignment;
 import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.service.KholleAssignmentService;
 import fr.redstom.khollendar.service.KholleService;
-import fr.redstom.khollendar.service.SessionService;
 import jakarta.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;

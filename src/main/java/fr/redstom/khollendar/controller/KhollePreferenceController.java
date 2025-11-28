@@ -136,9 +136,7 @@ public class KhollePreferenceController {
 
         // Récupérer et mettre à jour les préférences
         KhollePreferencesDto preferences = sessionService.getPreferences(session, kholleId);
-        preferences = preferences
-                .withUnavailableSlots(unavailableSlots)
-                .nextStep();
+        preferences = preferences.withUnavailableSlots(unavailableSlots).nextStep();
         sessionService.savePreferences(session, preferences);
 
         return preferenceService.prepareRankingForm(
