@@ -134,8 +134,6 @@ public class KhollePreferenceController {
             return preferenceService.prepareLockedPreferencesView(model, kholleId, userId);
         }
 
-        System.out.println("Got unavailabilities: " + unavailableSlots);
-
         // Récupérer et mettre à jour les préférences
         KhollePreferencesDto preferences = sessionService.getPreferences(session, kholleId);
         preferences = preferences

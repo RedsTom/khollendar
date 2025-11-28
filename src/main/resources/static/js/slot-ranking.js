@@ -1,6 +1,4 @@
 htmx.onLoad((content) => {
-    console.log("Initializing dragging");
-
     const slotRankingList = content.querySelector("#slot-ranking");
     if(!slotRankingList) return;
 
