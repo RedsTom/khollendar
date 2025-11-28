@@ -19,6 +19,7 @@
 package fr.redstom.khollendar.crons;
 
 import fr.redstom.khollendar.entity.KholleSession;
+import fr.redstom.khollendar.entity.KholleSessionStatus;
 import fr.redstom.khollendar.entity.KholleSlot;
 import fr.redstom.khollendar.repository.KholleSessionRepository;
 import fr.redstom.khollendar.service.KholleAssignmentService;
@@ -80,7 +81,7 @@ public class AffectationCron {
                 }
 
                 // Vérifier si la session a déjà été affectée
-                if (assignmentService.isSessionAssigned(session.id())) {
+                if (session.status() == KholleSessionStatus.RESULTS_AVAILABLE) {
                     log.debug("Session {} déjà affectée, ignorée", session.id());
                     skippedCount++;
                     continue;
