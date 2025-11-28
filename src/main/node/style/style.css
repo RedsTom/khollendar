@@ -93,14 +93,23 @@ select {
     color: rgb(243, 139, 168);
 }
 
+/* Styles pour le drag and drop des créneaux */
+.slot-item {
+    @apply cursor-move select-none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.slot-item.dragging {
+    @apply opacity-50 scale-105;
+}
 
 .sortable-ghost {
-    @apply border-2 border-b-ctp-blue;
+    @apply border-2 border-ctp-blue bg-ctp-surface0;
 }
 
 .sortable-ghost .rank-number {
-    content: '?' !important;
-    background-color: var(--color-ctp-green);
+    @apply bg-ctp-green;
 }
 
 .sortable-drag {

@@ -26,10 +26,14 @@
             type = "info",
             body = @`
                 <p class="leading-relaxed">
-                    Utilisez les boutons
-                    <span class="px-1 py-0.5 bg-ctp-mantle rounded"><i class="fa-solid fa-chevron-up"></i></span> et
-                    <span class="px-1 py-0.5 bg-ctp-mantle rounded"><i class="fa-solid fa-chevron-down"></i></span> pour réorganiser
-                    les créneaux selon vos préférences. Le créneau en tête de liste sera considéré comme votre premier choix.
+                    <span class="hidden sm:inline">
+                        Utilisez l'icône <i class="fa-solid fa-grip-lines"></i> pour glisser-déposer et réorganiser
+                        les créneaux selon vos préférences.
+                    </span>
+                    <span class="sm:hidden">
+                        Maintenez et glissez les créneaux pour les réorganiser selon vos préférences.
+                    </span>
+                    Le créneau en tête de liste sera considéré comme votre premier choix.
                 </p>
             `
         )
@@ -50,20 +54,20 @@
                         availableSlots = availableSlots,
                         _csrf = _csrf
                     )
-
-                    <!-- Boutons de navigation -->
-                    <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
-                        <button hx-post="/kholles/${session.id()}/preferences/previous" class="button secondary">
-                            <i class="fa-solid fa-arrow-left"></i>
-                            Retour
-                        </button>
-
-                        <button type="submit" class="button primary">
-                            Continuer
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
                 </form>
+
+                <!-- Boutons de navigation -->
+                <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
+                    <button type="submit" form="rankingForm" class="button primary" disabled>
+                        Continuer
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                    <button hx-post="/kholles/${session.id()}/preferences/previous" class="button secondary" disabled>
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Retour
+                    </button>
+                </div>
             @endif
         </div>
     `
