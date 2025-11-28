@@ -26,13 +26,8 @@
         type = "info",
         body = @`
             <p class="leading-relaxed">
-                        <span class="hidden sm:inline">
-                            Utilisez l'icône <i class="fa-solid fa-grip-lines"></i> pour glisser-déposer et réorganiser
-                            les créneaux selon vos préférences.
-                        </span>
-                <span class="sm:hidden">
-                            Maintenez et glissez les créneaux pour les réorganiser selon vos préférences.
-                        </span>
+                Utilisez les flèches <i class="fa-solid fa-chevron-up"></i> et <i class="fa-solid fa-chevron-down"></i> pour réorganiser
+                les créneaux selon vos préférences.
                 Le créneau en tête de liste sera considéré comme votre premier choix.
             </p>
         `

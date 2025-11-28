@@ -28,8 +28,13 @@
                 </span>
             </div>
 
-            <div class="drag-handle">
-                <i class="fa-solid fa-grip-lines text-ctp-subtext0 cursor-move"></i>
+            <div class="flex flex-row gap-2">
+                <button type="button" class="move-up-btn w-10 h-10 text-lg flex items-center justify-center rounded-full hover:bg-ctp-surface0 text-ctp-subtext0 hover:text-ctp-text transition-colors" title="Monter">
+                    <i class="fa-solid fa-chevron-up"></i>
+                </button>
+                <button type="button" class="move-down-btn w-10 h-10 text-lg flex items-center justify-center rounded-full hover:bg-ctp-surface0 text-ctp-subtext0 hover:text-ctp-text transition-colors" title="Descendre">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
             </div>
         </li>
     @endfor

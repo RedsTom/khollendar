@@ -2563,7 +2563,6 @@ input[type="text"], input[type="password"], input[type="datetime-local"], input[
   color: rgb(243, 139, 168);
 }
 .slot-item {
-  cursor: move;
   -webkit-user-select: none;
   user-select: none;
 }

@@ -1,73 +1,134 @@
-htmx.onLoad((content) => {
-    const slotRankingList = content.querySelector("#slot-ranking");
-    if(!slotRankingList) return;
+(function () {
+    console.log("Slot ranking script loaded");
 
-    // Détecter si l'appareil est tactile
-    const isTouchDevice = ('ontouchstart' in window) ||
-                         (navigator.maxTouchPoints > 0) ||
-                         (navigator.msMaxTouchPoints > 0);
+    function updateRanks() {
+        const slotRankingList = document.getElementById("slot-ranking");
+        if (!slotRankingList) return;
 
-    // Configuration de base pour SortableJS
-    const sortableConfig = {
-        animation: 150,
-        ghostClass: 'sortable-ghost',
-        dragClass: 'sortable-drag',
-        // Désactiver le handle sur mobile pour permettre le drag sur toute la carte
-        handle: isTouchDevice ? null : '.drag-handle',
-        // Options pour améliorer le support tactile
-        forceFallback: true,
-        fallbackTolerance: 3,
-        touchStartThreshold: 5,
-        // Empêcher la sélection de texte pendant le drag
-        preventOnFilter: false,
-        onStart: function (evt) {
-            // Ajouter une classe pour le feedback visuel
-            evt.item.classList.add('dragging');
-        },
-        onEnd: function (evt) {
-            // Retirer la classe de feedback
-            evt.item.classList.remove('dragging');
+        const slotItems = slotRankingList.querySelectorAll('.slot-item');
+        slotItems.forEach((item, idx) => {
+            const rankEl = item.querySelector('.rank-number');
+            if (rankEl) rankEl.textContent = idx + 1;
 
-            const slotItems = document.querySelectorAll('#slot-ranking .slot-item');
+            // Update button states
+            const upBtn = item.querySelector('.move-up-btn');
+            const downBtn = item.querySelector('.move-down-btn');
 
-            const oldRanks = new Map();
-            slotItems.forEach((item, idx) => {
-                const rankEl = item.querySelector('.rank-number');
-                oldRanks.set(item, rankEl ? Number(rankEl.textContent) : undefined);
-                if (rankEl) rankEl.textContent = idx + 1;
-            });
+            if (upBtn) {
+                const isFirst = idx === 0;
+                upBtn.disabled = isFirst;
+                upBtn.style.opacity = isFirst ? '0.3' : '1';
+                upBtn.style.cursor = isFirst ? 'not-allowed' : 'pointer';
+            }
+            if (downBtn) {
+                const isLast = idx === slotItems.length - 1;
+                downBtn.disabled = isLast;
+                downBtn.style.opacity = isLast ? '0.3' : '1';
+                downBtn.style.cursor = isLast ? 'not-allowed' : 'pointer';
+            }
+        });
 
-            slotItems.forEach((item, idx) => {
-                const oldRank = oldRanks.get(item);
-                const newRank = idx + 1;
-                if (oldRank !== undefined && oldRank !== newRank) {
-                    const rankEl = item.querySelector('.rank-number');
-                    if (!rankEl) {
-                        return;
-                    }
+        // Enable navigation buttons
+        const submitButton = document.querySelector('button[form="rankingForm"]');
+        const backButton = document.querySelector('button[hx-post*="/previous"]');
 
-                    rankEl.animate([
-                        {
-                            transform: 'scale(1.15)',
-                        },
-                        {
-                            transform: 'scale(1)',
-                        }
-                    ], {
-                        duration: 400,
-                        easing: 'cubic-bezier(.33,1,.68,1)',
-                    })
-                }
-            });
+        if (submitButton) submitButton.disabled = false;
+        if (backButton) backButton.disabled = false;
+    }
+
+    function animateSwap(item, sibling) {
+        // 1. First: Get starting positions
+        const itemRect = item.getBoundingClientRect();
+        const siblingRect = sibling.getBoundingClientRect();
+
+        // 2. State Change: Swap in DOM
+        // (This is done by the caller, but we need to know the direction to apply transforms correctly)
+        // Actually, let's do the swap inside this function to control the timing perfectly.
+        // But the caller logic is slightly different for up/down.
+        // Let's just return the rects and let the caller swap, then we call a 'play' function.
+    }
+
+    // Global click listener for delegation
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        if (btn.classList.contains('move-up-btn')) {
+            e.preventDefault();
+            const item = btn.closest('.slot-item');
+            if (!item) return;
+
+            const prev = item.previousElementSibling;
+            if (prev) {
+                // FLIP Animation
+                const itemFirst = item.getBoundingClientRect().top;
+                const prevFirst = prev.getBoundingClientRect().top;
+
+                item.parentNode.insertBefore(item, prev);
+
+                const itemLast = item.getBoundingClientRect().top;
+                const prevLast = prev.getBoundingClientRect().top;
+
+                const itemDelta = itemFirst - itemLast;
+                const prevDelta = prevFirst - prevLast;
+
+                item.animate([
+                    { transform: `translateY(${itemDelta}px)` },
+                    { transform: 'translateY(0)' }
+                ], { duration: 300, easing: 'ease-out' });
+
+                prev.animate([
+                    { transform: `translateY(${prevDelta}px)` },
+                    { transform: 'translateY(0)' }
+                ], { duration: 300, easing: 'ease-out' });
+
+                updateRanks();
+            }
+        } else if (btn.classList.contains('move-down-btn')) {
+            e.preventDefault();
+            const item = btn.closest('.slot-item');
+            if (!item) return;
+
+            const next = item.nextElementSibling;
+            if (next) {
+                // FLIP Animation
+                const itemFirst = item.getBoundingClientRect().top;
+                const nextFirst = next.getBoundingClientRect().top;
+
+                item.parentNode.insertBefore(next, item);
+
+                const itemLast = item.getBoundingClientRect().top;
+                const nextLast = next.getBoundingClientRect().top;
+
+                const itemDelta = itemFirst - itemLast;
+                const nextDelta = nextFirst - nextLast;
+
+                item.animate([
+                    { transform: `translateY(${itemDelta}px)` },
+                    { transform: 'translateY(0)' }
+                ], { duration: 300, easing: 'ease-out' });
+
+                next.animate([
+                    { transform: `translateY(${nextDelta}px)` },
+                    { transform: 'translateY(0)' }
+                ], { duration: 300, easing: 'ease-out' });
+
+                updateRanks();
+            }
         }
-    };
+    });
 
-    const sortableInstance = Sortable.create(slotRankingList, sortableConfig);
+    // Initialize on load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateRanks);
+    } else {
+        updateRanks();
+    }
 
-    // Activer les boutons de navigation une fois que le drag-and-drop est initialisé
-    const submitButton = document.querySelector('button[form="rankingForm"]');
-    const backButton = document.querySelector('button[hx-post*="/previous"]');
-
-    if (submitButton) submitButton.disabled = false;
-    if (backButton) backButton.disabled = false;
-})
+    // Re-initialize on HTMX swaps
+    if (typeof htmx !== 'undefined') {
+        htmx.onLoad(function (content) {
+            updateRanks();
+        });
+    }
+})();
