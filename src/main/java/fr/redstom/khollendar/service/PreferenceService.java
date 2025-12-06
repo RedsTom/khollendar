@@ -18,9 +18,11 @@
  */
 package fr.redstom.khollendar.service;
 
+import fr.redstom.khollendar.dto.UserPreferenceSummary;
 import fr.redstom.khollendar.entity.KholleSession;
 import fr.redstom.khollendar.entity.KholleSlot;
 import fr.redstom.khollendar.entity.User;
+import fr.redstom.khollendar.entity.UserPreference;
 import fr.redstom.khollendar.repository.UserPreferenceRepository;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -198,5 +200,21 @@ public class PreferenceService {
         model.addAttribute("currentUser", user);
 
         return "fragments/kholles/preferences/PreferencesLockedError";
+    }
+
+    /**
+     * Groupe les préférences par utilisateur pour l'affichage administrateur
+     *
+     * @param preferences Liste de toutes les préférences d'une session
+     * @return Liste des résumés de préférences groupés par utilisateur
+     */
+    public List<UserPreferenceSummary> groupPreferencesByUser(List<UserPreference> preferences) {
+        return preferences.stream()
+                .collect(Collectors.groupingBy(UserPreference::user))
+                .entrySet()
+                .stream()
+                .map(entry -> new UserPreferenceSummary(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(summary -> summary.user().username()))
+                .collect(Collectors.toList());
     }
 }

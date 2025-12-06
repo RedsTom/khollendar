@@ -39,6 +39,9 @@ public interface KholleAssignmentRepository extends JpaRepository<KholleAssignme
     /** Trouve toutes les affectations d'une session */
     List<KholleAssignment> findBySession(KholleSession session);
 
+    /** Trouve toutes les affectations d'une session ordonnées par ID */
+    List<KholleAssignment> findBySessionOrderByIdAsc(KholleSession session);
+
     /** Trouve toutes les affectations d'un créneau */
     List<KholleAssignment> findBySlot(KholleSlot slot);
 
