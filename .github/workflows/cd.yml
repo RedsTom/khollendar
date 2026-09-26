@@ -158,4 +158,4 @@ jobs:
         run: |
           docker buildx imagetools create \
             $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '%s@sha256:%s ' "$IMAGE" *)
+            $(for d in *; do printf '%s@sha256:%s ' "$IMAGE" "$d"; done)
