@@ -6,24 +6,25 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   meta:
     name: Extract Docker metadata
     runs-on: ubuntu-latest
     outputs:
+      image: ${{ steps.repo.outputs.image }}
       tags: ${{ steps.meta.outputs.tags }}
       labels: ${{ steps.meta.outputs.labels }}
       json: ${{ steps.meta.outputs.json }}
     steps:
+      - name: Lowercase repository name
+        id: repo
+        run: echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ${{ steps.repo.outputs.image }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch
@@ -59,7 +60,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           labels: ${{ needs.meta.outputs.labels }}
-          outputs: type=image,name=ghcr.io/${{ github.repository }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ needs.meta.outputs.image }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha,scope=amd64
           cache-to: type=gha,scope=amd64,mode=max
 
@@ -106,7 +107,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/arm64
           labels: ${{ needs.meta.outputs.labels }}
-          outputs: type=image,name=ghcr.io/${{ github.repository }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ needs.meta.outputs.image }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha,scope=arm64
           cache-to: type=gha,scope=arm64,mode=max
 
@@ -153,7 +154,8 @@ jobs:
         working-directory: /tmp/digests
         env:
           DOCKER_METADATA_OUTPUT_JSON: ${{ needs.meta.outputs.json }}
+          IMAGE: ${{ needs.meta.outputs.image }}
         run: |
           docker buildx imagetools create \
             $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf 'ghcr.io/${{ github.repository }}@sha256:%s ' *)
+            $(printf '%s@sha256:%s ' "$IMAGE" *)
